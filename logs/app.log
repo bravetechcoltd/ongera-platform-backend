@@ -1,0 +1,36 @@
+[2026-03-07T19:13:17.150Z] [INFO] Database connection established successfully
+[2026-03-07T19:13:17.162Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-03-07T19:13:17.166Z] [INFO] Session cleanup service initialized
+[2026-03-07T19:13:17.180Z] [INFO] Socket.IO handlers initialized successfully
+[2026-03-07T19:13:17.203Z] [INFO] ============================================================
+[2026-03-07T19:13:17.214Z] [INFO] 🚀 Server Running
+[2026-03-07T19:13:17.218Z] [INFO] ============================================================
+[2026-03-07T19:13:17.221Z] [INFO] Environment: development
+[2026-03-07T19:13:17.229Z] [INFO] Port: 3002
+[2026-03-07T19:13:17.231Z] [INFO] API URL: http://localhost:3002
+[2026-03-07T19:13:17.242Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-03-07T19:13:17.251Z] [INFO] Socket.IO Path: /socket.io/
+[2026-03-07T19:13:17.254Z] [INFO] SSO Enabled: Yes
+[2026-03-07T19:13:17.262Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-03-07T19:13:17.279Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://ongera.rw, https://www.ongera.rw, https://api.ongera.rw, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-03-07T19:13:17.283Z] [INFO] ============================================================
+[2026-03-07T20:00:00.159Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-03-07T20:00:01.172Z] [INFO] ✅ [SESSION CLEANUP] No expired sessions found
+[2026-03-10T18:19:25.326Z] [INFO] Database connection established successfully
+[2026-03-10T18:19:25.332Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-03-10T18:19:25.333Z] [INFO] Session cleanup service initialized
+[2026-03-10T18:19:25.337Z] [INFO] Socket.IO handlers initialized successfully
+[2026-03-10T18:19:25.341Z] [INFO] ============================================================
+[2026-03-10T18:19:25.342Z] [INFO] 🚀 Server Running
+[2026-03-10T18:19:25.342Z] [INFO] ============================================================
+[2026-03-10T18:19:25.343Z] [INFO] Environment: development
+[2026-03-10T18:19:25.344Z] [INFO] Port: 3002
+[2026-03-10T18:19:25.345Z] [INFO] API URL: http://localhost:3002
+[2026-03-10T18:19:25.346Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-03-10T18:19:25.347Z] [INFO] Socket.IO Path: /socket.io/
+[2026-03-10T18:19:25.348Z] [INFO] SSO Enabled: Yes
+[2026-03-10T18:19:25.349Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-03-10T18:19:25.350Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://ongera.rw, https://www.ongera.rw, https://api.ongera.rw, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-03-10T18:19:25.351Z] [INFO] ============================================================
+[2026-03-10T19:00:00.053Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-03-10T19:00:00.995Z] [INFO] ✅ [SESSION CLEANUP] No expired sessions found

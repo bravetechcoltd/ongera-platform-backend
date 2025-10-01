@@ -1,0 +1,375 @@
+import { Request, Response } from "express";
+import dbConnection from '../database/db';
+import { Subscribe } from "../database/models/Subscribe";
+import { sendEmail, isValidEmail } from "../helpers/utils";
+import { SubscribeEmailTemplate } from '../helpers/SubscribeEmailTemplate';
+
+export class SubscribeController {
+  
+  static async subscribe(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email || !isValidEmail(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid email is required"
+        });
+      }
+
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+
+      const existingSubscriber = await subscribeRepo.findOne({ 
+        where: { email: email.toLowerCase() } 
+      });
+
+      if (existingSubscriber) {
+        if (existingSubscriber.is_active) {
+          return res.status(409).json({
+            success: false,
+            message: "This email is already subscribed"
+          });
+        } else {
+          existingSubscriber.is_active = true;
+          existingSubscriber.notify_new_communities = true;
+          existingSubscriber.notify_new_projects = true;
+          existingSubscriber.notify_new_events = true;
+          await subscribeRepo.save(existingSubscriber);
+
+          return res.status(200).json({
+            success: true,
+            message: "Welcome back! Your subscription has been reactivated.",
+            data: { subscriber: existingSubscriber }
+          });
+        }
+      }
+
+      const newSubscriber = subscribeRepo.create({
+        email: email.toLowerCase(),
+        is_active: true,
+        notify_new_communities: true,
+        notify_new_projects: true,
+        notify_new_events: true
+      });
+
+      await subscribeRepo.save(newSubscriber);
+
+      try {
+        await sendEmail({
+          to: email,
+          subject: "🎉 Welcome to Ongera - Subscription Confirmed!",
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px;">
+              <h2 style="color: #0158B7;">Welcome to Ongera!</h2>
+              <p>Thank you for subscribing to our platform notifications.</p>
+              <p>You'll now receive updates about:</p>
+              <ul>
+                <li>New communities</li>
+                <li>New research projects</li>
+                <li>Upcoming events</li>
+              </ul>
+              <p>Stay connected with the latest in research and academia!.</p>
+            </body>
+            </html>
+          `
+        });
+      } catch (emailError: any) {
+      }
+
+      res.status(201).json({
+        success: true,
+        message: "Successfully subscribed! You'll receive notifications about new content.",
+        data: { subscriber: newSubscriber }
+      });
+
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to subscribe",
+        error: error.message
+      });
+    }
+  }
+
+  static async getAllActiveSubscribers(): Promise<Subscribe[]> {
+    try {
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscribers = await subscribeRepo.find({
+        where: { is_active: true }
+      });
+      return subscribers;
+    } catch (error: any) {
+      return [];
+    }
+  }
+
+  static async getAllSubscribers(req: Request, res: Response) {
+    try {
+      const { is_active, notify_type } = req.query;
+
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const queryBuilder = subscribeRepo.createQueryBuilder("subscriber");
+
+      if (is_active !== undefined) {
+        queryBuilder.andWhere("subscriber.is_active = :is_active", { 
+          is_active: is_active === 'true' 
+        });
+      }
+
+      if (notify_type === 'communities') {
+        queryBuilder.andWhere("subscriber.notify_new_communities = :value", { value: true });
+      } else if (notify_type === 'projects') {
+        queryBuilder.andWhere("subscriber.notify_new_projects = :value", { value: true });
+      } else if (notify_type === 'events') {
+        queryBuilder.andWhere("subscriber.notify_new_events = :value", { value: true });
+      }
+
+      const subscribers = await queryBuilder
+        .orderBy("subscriber.subscribed_at", "DESC")
+        .getMany();
+
+      res.status(200).json({
+        success: true,
+        count: subscribers.length,
+        data: { subscribers }
+      });
+
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch subscribers",
+        error: error.message
+      });
+    }
+  }
+
+  static async unsubscribe(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email || !isValidEmail(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid email is required"
+        });
+      }
+
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscriber = await subscribeRepo.findOne({ 
+        where: { email: email.toLowerCase() } 
+      });
+
+      if (!subscriber) {
+        return res.status(404).json({
+          success: false,
+          message: "Email not found in subscribers list"
+        });
+      }
+
+      subscriber.is_active = false;
+      await subscribeRepo.save(subscriber);
+
+      res.status(200).json({
+        success: true,
+        message: "Successfully unsubscribed. You will no longer receive notifications."
+      });
+
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to unsubscribe",
+        error: error.message
+      });
+    }
+  }
+
+  static async updatePreferences(req: Request, res: Response) {
+    try {
+      const { email, notify_new_communities, notify_new_projects, notify_new_events } = req.body;
+
+      if (!email || !isValidEmail(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid email is required"
+        });
+      }
+
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscriber = await subscribeRepo.findOne({ 
+        where: { email: email.toLowerCase() } 
+      });
+
+      if (!subscriber) {
+        return res.status(404).json({
+          success: false,
+          message: "Subscriber not found"
+        });
+      }
+
+      if (notify_new_communities !== undefined) {
+        subscriber.notify_new_communities = notify_new_communities;
+      }
+      if (notify_new_projects !== undefined) {
+        subscriber.notify_new_projects = notify_new_projects;
+      }
+      if (notify_new_events !== undefined) {
+        subscriber.notify_new_events = notify_new_events;
+      }
+
+      await subscribeRepo.save(subscriber);
+
+      res.status(200).json({
+        success: true,
+        message: "Notification preferences updated successfully",
+        data: { subscriber }
+      });
+
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to update preferences",
+        error: error.message
+      });
+    }
+  }
+
+  static async notifyNewCommunity(communityData: any): Promise<void> {
+    try {
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscribers = await subscribeRepo.find({
+        where: { 
+          is_active: true,
+          notify_new_communities: true
+        }
+      });
+
+      if (subscribers.length === 0) {
+        return;
+      }
+
+      let emailsSent = 0;
+      let emailsFailed = 0;
+
+      for (const subscriber of subscribers) {
+        try {
+          const emailHtml = SubscribeEmailTemplate.getNewCommunityNotification(
+            communityData,
+            subscriber.email
+          );
+
+          await sendEmail({
+            to: subscriber.email,
+            subject: `🎉 New Community Created: ${communityData.name}`,
+            html: emailHtml
+          });
+
+          subscriber.last_notification_sent = new Date();
+          await subscribeRepo.save(subscriber);
+
+          emailsSent++;
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+        } catch (emailError: any) {
+          emailsFailed++;
+        }
+      }
+
+    } catch (error: any) {
+    }
+  }
+
+  static async notifyNewProject(projectData: any): Promise<void> {
+    try {
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscribers = await subscribeRepo.find({
+        where: { 
+          is_active: true,
+          notify_new_projects: true
+        }
+      });
+
+      if (subscribers.length === 0) {
+        return;
+      }
+
+      let emailsSent = 0;
+      let emailsFailed = 0;
+
+      for (const subscriber of subscribers) {
+        try {
+          const emailHtml = SubscribeEmailTemplate.getNewProjectNotification(
+            projectData,
+            subscriber.email
+          );
+
+          await sendEmail({
+            to: subscriber.email,
+            subject: `🔬 New Research: ${projectData.title}`,
+            html: emailHtml
+          });
+
+          subscriber.last_notification_sent = new Date();
+          await subscribeRepo.save(subscriber);
+
+          emailsSent++;
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+        } catch (emailError: any) {
+          emailsFailed++;
+        }
+      }
+
+    } catch (error: any) {
+    }
+  }
+
+  static async notifyNewEvent(eventData: any): Promise<void> {
+    try {
+      const subscribeRepo = dbConnection.getRepository(Subscribe);
+      const subscribers = await subscribeRepo.find({
+        where: { 
+          is_active: true,
+          notify_new_events: true
+        }
+      });
+
+      if (subscribers.length === 0) {
+        return;
+      }
+
+      let emailsSent = 0;
+      let emailsFailed = 0;
+
+      for (const subscriber of subscribers) {
+        try {
+          const emailHtml = SubscribeEmailTemplate.getNewEventNotification(
+            eventData,
+            subscriber.email
+          );
+
+          await sendEmail({
+            to: subscriber.email,
+            subject: `📅 New Event: ${eventData.title}`,
+            html: emailHtml
+          });
+
+          subscriber.last_notification_sent = new Date();
+          await subscribeRepo.save(subscriber);
+
+          emailsSent++;
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+        } catch (emailError: any) {
+          emailsFailed++;
+        }
+      }
+
+    } catch (error: any) {
+    }
+  }
+}

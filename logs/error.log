@@ -1,0 +1,19 @@
+[2026-03-10T18:17:19.169Z] [ERROR] Error starting server: | Meta: {"query":"ALTER TABLE \"activity_logs\" ADD \"action_type\" \"public\".\"activity_logs_action_type_enum\" NOT NULL","driverError":{"length":168,"name":"error","severity":"ERROR","code":"23502","schema":"public","table":"activity_logs","column":"action_type","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"},"length":168,"severity":"ERROR","code":"23502","schema":"public","table":"activity_logs","column":"action_type","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"}
+[2026-03-10T18:18:53.020Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:08:36.275Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:09:21.319Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:11:07.301Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:11:42.937Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:12:17.441Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:16:49.310Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:19:07.851Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-22T19:20:36.943Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-23T06:59:18.327Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-23T07:03:26.247Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-23T07:04:12.909Z] [ERROR] Error starting server: | Meta: {}
+[2026-03-23T07:05:15.476Z] [ERROR] Error starting server: | Meta: {}
+[2026-04-13T18:29:29.127Z] [ERROR] Error starting server: | Meta: {"query":"ALTER TABLE \"notifications\" ADD \"message\" text NOT NULL","driverError":{"length":160,"name":"error","severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"},"length":160,"severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"}
+[2026-04-13T18:35:31.904Z] [ERROR] Error starting server: | Meta: {"query":"ALTER TABLE \"notifications\" ADD \"message\" text NOT NULL","driverError":{"length":160,"name":"error","severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"},"length":160,"severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"}
+[2026-04-13T18:37:00.183Z] [ERROR] Error starting server: | Meta: {"query":"ALTER TABLE \"notifications\" ADD \"message\" text NOT NULL","driverError":{"length":160,"name":"error","severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"},"length":160,"severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"}
+[2026-04-21T19:01:51.423Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {}
+[2026-04-21T19:01:51.427Z] [ERROR] Session cleanup error: | Meta: {}

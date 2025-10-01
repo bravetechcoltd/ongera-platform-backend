@@ -1,0 +1,4 @@
+[2026-01-10T17:00:00.564Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {"message":"No metadata for \"UserSession\" was found."}
+[2026-01-10T17:00:00.565Z] [ERROR] Session cleanup error: | Meta: {"message":"No metadata for \"UserSession\" was found."}
+[2026-02-07T18:00:00.716Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {}
+[2026-02-07T18:00:00.720Z] [ERROR] Session cleanup error: | Meta: {}

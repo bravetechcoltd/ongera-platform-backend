@@ -1,0 +1,34 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const CommunityController_1 = require("../controllers/CommunityController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const multer_1 = __importDefault(require("../helpers/multer"));
+const router = (0, express_1.Router)();
+router.get("/search", CommunityController_1.CommunityController.searchCommunities);
+router.get("/admin/all", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.getAllCommunitiesForAdmin);
+router.get("/admin/pending", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.getPendingCommunities);
+router.patch("/admin/:id/approve", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.approveCommunity);
+router.delete("/admin/:id/reject", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.rejectCommunity);
+router.delete("/admin/:id", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.deleteCommunity);
+router.patch("/admin/:id/status", authMiddleware_1.authenticate, authMiddleware_1.requireAdmin, CommunityController_1.CommunityController.activateDeactivateCommunity);
+router.post("/", authMiddleware_1.authenticate, multer_1.default.single("cover_image"), CommunityController_1.CommunityController.createCommunity);
+router.get("/my-communities", authMiddleware_1.authenticate, CommunityController_1.CommunityController.getUserCommunities);
+router.post("/community-posts", authMiddleware_1.authenticate, CommunityController_1.CommunityController.createPost);
+router.post("/:community_id/posts", authMiddleware_1.authenticate, multer_1.default.single("post_image"), CommunityController_1.CommunityController.createCommunityPost);
+router.get("/:community_id/posts", CommunityController_1.CommunityController.getCommunityPosts);
+router.get("/suggestions/:projectId", authMiddleware_1.authenticate, CommunityController_1.CommunityController.getSuggestedCommunities);
+router.get("/:community_id/members", CommunityController_1.CommunityController.getCommunityMembers);
+router.get("/", CommunityController_1.CommunityController.getAllCommunities);
+router.get("/:id", CommunityController_1.CommunityController.getCommunityById);
+// router.post("/:id/join", authenticate, CommunityController.joinCommunity);
+router.post("/:id/leave", authMiddleware_1.authenticate, CommunityController_1.CommunityController.leaveCommunity);
+router.post("/:id/join", authMiddleware_1.authenticate, CommunityController_1.CommunityController.joinCommunity); // Enhanced to handle approval
+router.get("/join-requests/my-pending", authMiddleware_1.authenticate, CommunityController_1.CommunityController.getUserPendingRequests);
+router.get("/:community_id/join-requests", authMiddleware_1.authenticate, CommunityController_1.CommunityController.getCommunityJoinRequests);
+router.patch("/join-requests/:request_id/approve", authMiddleware_1.authenticate, CommunityController_1.CommunityController.approveJoinRequest);
+router.patch("/join-requests/:request_id/reject", authMiddleware_1.authenticate, CommunityController_1.CommunityController.rejectJoinRequest);
+exports.default = router;

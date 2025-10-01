@@ -1,0 +1,1688 @@
+[2025-11-06T13:15:58.373Z] [INFO] Database connection established successfully
+[2025-11-06T13:15:58.391Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-06T13:15:58.412Z] [INFO] ============================================================
+[2025-11-06T13:15:58.419Z] [INFO] 🚀 Server Running
+[2025-11-06T13:15:58.421Z] [INFO] ============================================================
+[2025-11-06T13:15:58.426Z] [INFO] Environment: development
+[2025-11-06T13:15:58.430Z] [INFO] Port: 3002
+[2025-11-06T13:15:58.432Z] [INFO] API URL: http://localhost:3002
+[2025-11-06T13:15:58.435Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-06T13:15:58.439Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-06T13:15:58.442Z] [INFO] ============================================================
+[2025-11-07T17:12:16.222Z] [INFO] Database connection established successfully
+[2025-11-07T17:12:16.236Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-07T17:12:16.252Z] [INFO] ============================================================
+[2025-11-07T17:12:16.254Z] [INFO] 🚀 Server Running
+[2025-11-07T17:12:16.256Z] [INFO] ============================================================
+[2025-11-07T17:12:16.258Z] [INFO] Environment: development
+[2025-11-07T17:12:16.261Z] [INFO] Port: 3002
+[2025-11-07T17:12:16.266Z] [INFO] API URL: http://localhost:3002
+[2025-11-07T17:12:16.268Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-07T17:12:16.271Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-07T17:12:16.273Z] [INFO] ============================================================
+[2025-11-12T15:27:15.760Z] [INFO] Database connection established successfully
+[2025-11-12T15:27:15.961Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-12T15:27:16.046Z] [INFO] ============================================================
+[2025-11-12T15:27:16.054Z] [INFO] 🚀 Server Running
+[2025-11-12T15:27:16.060Z] [INFO] ============================================================
+[2025-11-12T15:27:16.067Z] [INFO] Environment: development
+[2025-11-12T15:27:16.071Z] [INFO] Port: 3002
+[2025-11-12T15:27:16.077Z] [INFO] API URL: http://localhost:3002
+[2025-11-12T15:27:16.079Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-12T15:27:16.082Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-12T15:27:16.089Z] [INFO] ============================================================
+[2025-11-15T09:34:49.024Z] [INFO] Database connection established successfully
+[2025-11-15T09:34:49.046Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T09:34:49.063Z] [INFO] ============================================================
+[2025-11-15T09:34:49.066Z] [INFO] 🚀 Server Running
+[2025-11-15T09:34:49.068Z] [INFO] ============================================================
+[2025-11-15T09:34:49.073Z] [INFO] Environment: development
+[2025-11-15T09:34:49.078Z] [INFO] Port: 3002
+[2025-11-15T09:34:49.082Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T09:34:49.085Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T09:34:49.087Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T09:34:49.091Z] [INFO] ============================================================
+[2025-11-15T09:46:46.136Z] [INFO] Database connection established successfully
+[2025-11-15T09:46:46.143Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T09:46:46.151Z] [INFO] ============================================================
+[2025-11-15T09:46:46.152Z] [INFO] 🚀 Server Running
+[2025-11-15T09:46:46.153Z] [INFO] ============================================================
+[2025-11-15T09:46:46.154Z] [INFO] Environment: development
+[2025-11-15T09:46:46.155Z] [INFO] Port: 3002
+[2025-11-15T09:46:46.156Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T09:46:46.157Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T09:46:46.159Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T09:46:46.160Z] [INFO] ============================================================
+[2025-11-15T09:47:21.462Z] [INFO] Database connection established successfully
+[2025-11-15T09:47:21.481Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T09:47:21.498Z] [INFO] ============================================================
+[2025-11-15T09:47:21.501Z] [INFO] 🚀 Server Running
+[2025-11-15T09:47:21.504Z] [INFO] ============================================================
+[2025-11-15T09:47:21.509Z] [INFO] Environment: development
+[2025-11-15T09:47:21.512Z] [INFO] Port: 3002
+[2025-11-15T09:47:21.516Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T09:47:21.518Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T09:47:21.521Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T09:47:21.525Z] [INFO] ============================================================
+[2025-11-15T09:49:01.819Z] [INFO] Database connection established successfully
+[2025-11-15T09:49:01.836Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T09:49:01.852Z] [INFO] ============================================================
+[2025-11-15T09:49:01.856Z] [INFO] 🚀 Server Running
+[2025-11-15T09:49:01.860Z] [INFO] ============================================================
+[2025-11-15T09:49:01.866Z] [INFO] Environment: development
+[2025-11-15T09:49:01.870Z] [INFO] Port: 3002
+[2025-11-15T09:49:01.873Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T09:49:01.875Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T09:49:01.878Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T09:49:01.885Z] [INFO] ============================================================
+[2025-11-15T09:50:07.250Z] [INFO] Database connection established successfully
+[2025-11-15T09:50:07.258Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T09:50:07.266Z] [INFO] ============================================================
+[2025-11-15T09:50:07.268Z] [INFO] 🚀 Server Running
+[2025-11-15T09:50:07.269Z] [INFO] ============================================================
+[2025-11-15T09:50:07.271Z] [INFO] Environment: development
+[2025-11-15T09:50:07.272Z] [INFO] Port: 3002
+[2025-11-15T09:50:07.273Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T09:50:07.274Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T09:50:07.275Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T09:50:07.277Z] [INFO] ============================================================
+[2025-11-15T10:32:33.239Z] [INFO] Database connection established successfully
+[2025-11-15T10:32:33.258Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T10:32:33.274Z] [INFO] ============================================================
+[2025-11-15T10:32:33.278Z] [INFO] 🚀 Server Running
+[2025-11-15T10:32:33.281Z] [INFO] ============================================================
+[2025-11-15T10:32:33.283Z] [INFO] Environment: development
+[2025-11-15T10:32:33.291Z] [INFO] Port: 3002
+[2025-11-15T10:32:33.299Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T10:32:33.302Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T10:32:33.305Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T10:32:33.308Z] [INFO] ============================================================
+[2025-11-15T10:33:51.354Z] [INFO] Database connection established successfully
+[2025-11-15T10:33:51.373Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T10:33:51.389Z] [INFO] ============================================================
+[2025-11-15T10:33:51.391Z] [INFO] 🚀 Server Running
+[2025-11-15T10:33:51.395Z] [INFO] ============================================================
+[2025-11-15T10:33:51.400Z] [INFO] Environment: development
+[2025-11-15T10:33:51.404Z] [INFO] Port: 3002
+[2025-11-15T10:33:51.407Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T10:33:51.411Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T10:33:51.419Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T10:33:51.421Z] [INFO] ============================================================
+[2025-11-15T10:34:19.926Z] [INFO] Database connection established successfully
+[2025-11-15T10:34:19.942Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T10:34:19.959Z] [INFO] ============================================================
+[2025-11-15T10:34:19.962Z] [INFO] 🚀 Server Running
+[2025-11-15T10:34:19.966Z] [INFO] ============================================================
+[2025-11-15T10:34:19.970Z] [INFO] Environment: development
+[2025-11-15T10:34:19.973Z] [INFO] Port: 3002
+[2025-11-15T10:34:19.977Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T10:34:19.981Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T10:34:19.985Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T10:34:19.988Z] [INFO] ============================================================
+[2025-11-15T10:37:35.712Z] [INFO] Database connection established successfully
+[2025-11-15T10:37:35.728Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T10:37:35.741Z] [INFO] ============================================================
+[2025-11-15T10:37:35.744Z] [INFO] 🚀 Server Running
+[2025-11-15T10:37:35.747Z] [INFO] ============================================================
+[2025-11-15T10:37:35.750Z] [INFO] Environment: development
+[2025-11-15T10:37:35.752Z] [INFO] Port: 3002
+[2025-11-15T10:37:35.755Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T10:37:35.758Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T10:37:35.762Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T10:37:35.765Z] [INFO] ============================================================
+[2025-11-15T11:18:37.610Z] [INFO] Database connection established successfully
+[2025-11-15T11:18:37.624Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T11:18:37.640Z] [INFO] ============================================================
+[2025-11-15T11:18:37.643Z] [INFO] 🚀 Server Running
+[2025-11-15T11:18:37.648Z] [INFO] ============================================================
+[2025-11-15T11:18:37.651Z] [INFO] Environment: development
+[2025-11-15T11:18:37.653Z] [INFO] Port: 3002
+[2025-11-15T11:18:37.656Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T11:18:37.658Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T11:18:37.660Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T11:18:37.663Z] [INFO] ============================================================
+[2025-11-15T11:19:53.384Z] [INFO] Database connection established successfully
+[2025-11-15T11:19:53.401Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T11:19:53.413Z] [INFO] ============================================================
+[2025-11-15T11:19:53.417Z] [INFO] 🚀 Server Running
+[2025-11-15T11:19:53.420Z] [INFO] ============================================================
+[2025-11-15T11:19:53.423Z] [INFO] Environment: development
+[2025-11-15T11:19:53.425Z] [INFO] Port: 3002
+[2025-11-15T11:19:53.427Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T11:19:53.429Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T11:19:53.431Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T11:19:53.434Z] [INFO] ============================================================
+[2025-11-15T11:52:49.808Z] [INFO] Database connection established successfully
+[2025-11-15T11:52:49.845Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T11:52:49.880Z] [INFO] ============================================================
+[2025-11-15T11:52:49.884Z] [INFO] 🚀 Server Running
+[2025-11-15T11:52:49.887Z] [INFO] ============================================================
+[2025-11-15T11:52:49.897Z] [INFO] Environment: development
+[2025-11-15T11:52:49.901Z] [INFO] Port: 3002
+[2025-11-15T11:52:49.908Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T11:52:49.914Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T11:52:49.922Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T11:52:49.939Z] [INFO] ============================================================
+[2025-11-15T12:20:40.153Z] [INFO] Database connection established successfully
+[2025-11-15T12:20:40.167Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T12:20:40.183Z] [INFO] ============================================================
+[2025-11-15T12:20:40.186Z] [INFO] 🚀 Server Running
+[2025-11-15T12:20:40.189Z] [INFO] ============================================================
+[2025-11-15T12:20:40.194Z] [INFO] Environment: development
+[2025-11-15T12:20:40.199Z] [INFO] Port: 3002
+[2025-11-15T12:20:40.201Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T12:20:40.204Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T12:20:40.208Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T12:20:40.212Z] [INFO] ============================================================
+[2025-11-15T14:52:11.108Z] [INFO] Database connection established successfully
+[2025-11-15T14:52:11.169Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T14:52:11.183Z] [INFO] ============================================================
+[2025-11-15T14:52:11.185Z] [INFO] 🚀 Server Running
+[2025-11-15T14:52:11.186Z] [INFO] ============================================================
+[2025-11-15T14:52:11.195Z] [INFO] Environment: development
+[2025-11-15T14:52:11.196Z] [INFO] Port: 3002
+[2025-11-15T14:52:11.198Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T14:52:11.199Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T14:52:11.200Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T14:52:11.206Z] [INFO] ============================================================
+[2025-11-15T16:16:56.063Z] [INFO] Database connection established successfully
+[2025-11-15T16:16:56.096Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T16:16:56.102Z] [INFO] ============================================================
+[2025-11-15T16:16:56.103Z] [INFO] 🚀 Server Running
+[2025-11-15T16:16:56.104Z] [INFO] ============================================================
+[2025-11-15T16:16:56.105Z] [INFO] Environment: development
+[2025-11-15T16:16:56.105Z] [INFO] Port: 3002
+[2025-11-15T16:16:56.106Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T16:16:56.106Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T16:16:56.107Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T16:16:56.107Z] [INFO] ============================================================
+[2025-11-15T16:30:53.537Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-15T16:30:53.544Z] [INFO] HTTP server closed
+[2025-11-15T16:30:53.546Z] [INFO] Socket.IO closed
+[2025-11-15T16:31:21.288Z] [INFO] Database connection established successfully
+[2025-11-15T16:31:21.298Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T16:31:21.307Z] [INFO] ============================================================
+[2025-11-15T16:31:21.308Z] [INFO] 🚀 Server Running
+[2025-11-15T16:31:21.309Z] [INFO] ============================================================
+[2025-11-15T16:31:21.310Z] [INFO] Environment: development
+[2025-11-15T16:31:21.312Z] [INFO] Port: 3002
+[2025-11-15T16:31:21.314Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T16:31:21.315Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T16:31:21.316Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T16:31:21.317Z] [INFO] ============================================================
+[2025-11-15T16:36:54.146Z] [INFO] Database connection established successfully
+[2025-11-15T16:36:54.150Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T16:36:54.153Z] [INFO] ============================================================
+[2025-11-15T16:36:54.153Z] [INFO] 🚀 Server Running
+[2025-11-15T16:36:54.154Z] [INFO] ============================================================
+[2025-11-15T16:36:54.155Z] [INFO] Environment: development
+[2025-11-15T16:36:54.155Z] [INFO] Port: 3002
+[2025-11-15T16:36:54.156Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T16:36:54.157Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T16:36:54.158Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T16:36:54.159Z] [INFO] ============================================================
+[2025-11-15T17:51:14.667Z] [INFO] Database connection established successfully
+[2025-11-15T17:51:14.670Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T17:51:14.674Z] [INFO] ============================================================
+[2025-11-15T17:51:14.675Z] [INFO] 🚀 Server Running
+[2025-11-15T17:51:14.676Z] [INFO] ============================================================
+[2025-11-15T17:51:14.676Z] [INFO] Environment: development
+[2025-11-15T17:51:14.677Z] [INFO] Port: 3002
+[2025-11-15T17:51:14.677Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T17:51:14.678Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T17:51:14.678Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T17:51:14.679Z] [INFO] ============================================================
+[2025-11-15T18:19:56.994Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-15T18:19:57.015Z] [INFO] HTTP server closed
+[2025-11-15T18:19:57.018Z] [INFO] Socket.IO closed
+[2025-11-15T18:20:29.884Z] [INFO] Database connection established successfully
+[2025-11-15T18:20:29.896Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T18:20:29.906Z] [INFO] ============================================================
+[2025-11-15T18:20:29.907Z] [INFO] 🚀 Server Running
+[2025-11-15T18:20:29.908Z] [INFO] ============================================================
+[2025-11-15T18:20:29.908Z] [INFO] Environment: development
+[2025-11-15T18:20:29.909Z] [INFO] Port: 3002
+[2025-11-15T18:20:29.913Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T18:20:29.914Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T18:20:29.916Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T18:20:29.917Z] [INFO] ============================================================
+[2025-11-15T18:55:10.020Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-15T18:55:52.289Z] [INFO] Database connection established successfully
+[2025-11-15T18:55:52.306Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T18:55:52.322Z] [INFO] ============================================================
+[2025-11-15T18:55:52.324Z] [INFO] 🚀 Server Running
+[2025-11-15T18:55:52.327Z] [INFO] ============================================================
+[2025-11-15T18:55:52.329Z] [INFO] Environment: development
+[2025-11-15T18:55:52.331Z] [INFO] Port: 3002
+[2025-11-15T18:55:52.333Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T18:55:52.335Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T18:55:52.339Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T18:55:52.340Z] [INFO] ============================================================
+[2025-11-15T20:13:22.721Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-15T20:13:22.772Z] [INFO] HTTP server closed
+[2025-11-15T20:13:22.780Z] [INFO] Socket.IO closed
+[2025-11-15T20:14:12.281Z] [INFO] Database connection established successfully
+[2025-11-15T20:14:12.297Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T20:14:12.316Z] [INFO] ============================================================
+[2025-11-15T20:14:12.318Z] [INFO] 🚀 Server Running
+[2025-11-15T20:14:12.320Z] [INFO] ============================================================
+[2025-11-15T20:14:12.322Z] [INFO] Environment: development
+[2025-11-15T20:14:12.325Z] [INFO] Port: 3002
+[2025-11-15T20:14:12.329Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T20:14:12.332Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T20:14:12.334Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T20:14:12.337Z] [INFO] ============================================================
+[2025-11-15T20:46:02.681Z] [INFO] Database connection established successfully
+[2025-11-15T20:46:02.705Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T20:46:02.713Z] [INFO] ============================================================
+[2025-11-15T20:46:02.714Z] [INFO] 🚀 Server Running
+[2025-11-15T20:46:02.715Z] [INFO] ============================================================
+[2025-11-15T20:46:02.716Z] [INFO] Environment: development
+[2025-11-15T20:46:02.717Z] [INFO] Port: 3002
+[2025-11-15T20:46:02.718Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T20:46:02.722Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T20:46:02.729Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T20:46:02.741Z] [INFO] ============================================================
+[2025-11-15T20:46:57.268Z] [INFO] Database connection established successfully
+[2025-11-15T20:46:57.285Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T20:46:57.297Z] [INFO] ============================================================
+[2025-11-15T20:46:57.301Z] [INFO] 🚀 Server Running
+[2025-11-15T20:46:57.303Z] [INFO] ============================================================
+[2025-11-15T20:46:57.306Z] [INFO] Environment: development
+[2025-11-15T20:46:57.309Z] [INFO] Port: 3002
+[2025-11-15T20:46:57.311Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T20:46:57.313Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T20:46:57.318Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T20:46:57.321Z] [INFO] ============================================================
+[2025-11-15T21:02:17.186Z] [INFO] Database connection established successfully
+[2025-11-15T21:02:17.203Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T21:02:17.221Z] [INFO] ============================================================
+[2025-11-15T21:02:17.223Z] [INFO] 🚀 Server Running
+[2025-11-15T21:02:17.226Z] [INFO] ============================================================
+[2025-11-15T21:02:17.230Z] [INFO] Environment: development
+[2025-11-15T21:02:17.234Z] [INFO] Port: 3002
+[2025-11-15T21:02:17.238Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T21:02:17.253Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T21:02:17.259Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T21:02:17.271Z] [INFO] ============================================================
+[2025-11-15T21:03:42.529Z] [INFO] Database connection established successfully
+[2025-11-15T21:03:42.548Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T21:03:42.561Z] [INFO] ============================================================
+[2025-11-15T21:03:42.564Z] [INFO] 🚀 Server Running
+[2025-11-15T21:03:42.567Z] [INFO] ============================================================
+[2025-11-15T21:03:42.570Z] [INFO] Environment: development
+[2025-11-15T21:03:42.574Z] [INFO] Port: 3002
+[2025-11-15T21:03:42.577Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T21:03:42.582Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T21:03:42.585Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T21:03:42.588Z] [INFO] ============================================================
+[2025-11-15T21:04:47.964Z] [INFO] Database connection established successfully
+[2025-11-15T21:04:47.980Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-15T21:04:47.997Z] [INFO] ============================================================
+[2025-11-15T21:04:48.000Z] [INFO] 🚀 Server Running
+[2025-11-15T21:04:48.002Z] [INFO] ============================================================
+[2025-11-15T21:04:48.005Z] [INFO] Environment: development
+[2025-11-15T21:04:48.008Z] [INFO] Port: 3002
+[2025-11-15T21:04:48.011Z] [INFO] API URL: http://localhost:3002
+[2025-11-15T21:04:48.014Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-15T21:04:48.026Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-15T21:04:48.061Z] [INFO] ============================================================
+[2025-11-16T07:35:54.130Z] [INFO] Database connection established successfully
+[2025-11-16T07:35:54.149Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T07:35:54.167Z] [INFO] ============================================================
+[2025-11-16T07:35:54.169Z] [INFO] 🚀 Server Running
+[2025-11-16T07:35:54.172Z] [INFO] ============================================================
+[2025-11-16T07:35:54.174Z] [INFO] Environment: development
+[2025-11-16T07:35:54.176Z] [INFO] Port: 3002
+[2025-11-16T07:35:54.178Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T07:35:54.181Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T07:35:54.184Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T07:35:54.187Z] [INFO] ============================================================
+[2025-11-16T07:55:44.948Z] [INFO] Database connection established successfully
+[2025-11-16T07:55:44.978Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T07:55:44.996Z] [INFO] ============================================================
+[2025-11-16T07:55:44.999Z] [INFO] 🚀 Server Running
+[2025-11-16T07:55:45.002Z] [INFO] ============================================================
+[2025-11-16T07:55:45.005Z] [INFO] Environment: development
+[2025-11-16T07:55:45.008Z] [INFO] Port: 3002
+[2025-11-16T07:55:45.011Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T07:55:45.014Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T07:55:45.018Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T07:55:45.021Z] [INFO] ============================================================
+[2025-11-16T14:42:04.043Z] [INFO] Database connection established successfully
+[2025-11-16T14:42:04.058Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T14:42:04.062Z] [INFO] ============================================================
+[2025-11-16T14:42:04.063Z] [INFO] 🚀 Server Running
+[2025-11-16T14:42:04.063Z] [INFO] ============================================================
+[2025-11-16T14:42:04.064Z] [INFO] Environment: development
+[2025-11-16T14:42:04.065Z] [INFO] Port: 3002
+[2025-11-16T14:42:04.065Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T14:42:04.066Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T14:42:04.067Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T14:42:04.067Z] [INFO] ============================================================
+[2025-11-16T15:49:16.946Z] [INFO] Database connection established successfully
+[2025-11-16T15:49:16.970Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T15:49:16.976Z] [INFO] ============================================================
+[2025-11-16T15:49:16.977Z] [INFO] 🚀 Server Running
+[2025-11-16T15:49:16.978Z] [INFO] ============================================================
+[2025-11-16T15:49:16.978Z] [INFO] Environment: development
+[2025-11-16T15:49:16.979Z] [INFO] Port: 3002
+[2025-11-16T15:49:16.979Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T15:49:16.980Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T15:49:16.980Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T15:49:16.981Z] [INFO] ============================================================
+[2025-11-16T15:57:56.881Z] [INFO] Database connection established successfully
+[2025-11-16T15:57:56.891Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T15:57:56.895Z] [INFO] ============================================================
+[2025-11-16T15:57:56.896Z] [INFO] 🚀 Server Running
+[2025-11-16T15:57:56.896Z] [INFO] ============================================================
+[2025-11-16T15:57:56.897Z] [INFO] Environment: development
+[2025-11-16T15:57:56.898Z] [INFO] Port: 3002
+[2025-11-16T15:57:56.899Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T15:57:56.900Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T15:57:56.900Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T15:57:56.901Z] [INFO] ============================================================
+[2025-11-16T18:27:51.557Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-16T18:27:51.566Z] [INFO] HTTP server closed
+[2025-11-16T18:27:51.570Z] [INFO] Socket.IO closed
+[2025-11-16T18:28:28.863Z] [INFO] Database connection established successfully
+[2025-11-16T18:28:28.870Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-16T18:28:28.880Z] [INFO] ============================================================
+[2025-11-16T18:28:28.882Z] [INFO] 🚀 Server Running
+[2025-11-16T18:28:28.883Z] [INFO] ============================================================
+[2025-11-16T18:28:28.884Z] [INFO] Environment: development
+[2025-11-16T18:28:28.886Z] [INFO] Port: 3002
+[2025-11-16T18:28:28.887Z] [INFO] API URL: http://localhost:3002
+[2025-11-16T18:28:28.888Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-16T18:28:28.889Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-16T18:28:28.889Z] [INFO] ============================================================
+[2025-11-17T08:37:02.283Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-17T08:37:02.348Z] [INFO] HTTP server closed
+[2025-11-17T08:37:49.117Z] [INFO] Database connection established successfully
+[2025-11-17T08:37:49.133Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T08:37:49.148Z] [INFO] ============================================================
+[2025-11-17T08:37:49.154Z] [INFO] 🚀 Server Running
+[2025-11-17T08:37:49.162Z] [INFO] ============================================================
+[2025-11-17T08:37:49.165Z] [INFO] Environment: development
+[2025-11-17T08:37:49.167Z] [INFO] Port: 3002
+[2025-11-17T08:37:49.171Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T08:37:49.180Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T08:37:49.184Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T08:37:49.190Z] [INFO] ============================================================
+[2025-11-17T09:51:51.848Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-17T09:51:51.879Z] [INFO] HTTP server closed
+[2025-11-17T09:52:33.728Z] [INFO] Database connection established successfully
+[2025-11-17T09:52:33.743Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T09:52:33.759Z] [INFO] ============================================================
+[2025-11-17T09:52:33.762Z] [INFO] 🚀 Server Running
+[2025-11-17T09:52:33.764Z] [INFO] ============================================================
+[2025-11-17T09:52:33.767Z] [INFO] Environment: development
+[2025-11-17T09:52:33.769Z] [INFO] Port: 3002
+[2025-11-17T09:52:33.771Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T09:52:33.775Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T09:52:33.778Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T09:52:33.780Z] [INFO] ============================================================
+[2025-11-17T11:36:34.531Z] [INFO] Database connection established successfully
+[2025-11-17T11:36:34.537Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T11:36:34.542Z] [INFO] ============================================================
+[2025-11-17T11:36:34.543Z] [INFO] 🚀 Server Running
+[2025-11-17T11:36:34.543Z] [INFO] ============================================================
+[2025-11-17T11:36:34.544Z] [INFO] Environment: development
+[2025-11-17T11:36:34.544Z] [INFO] Port: 3002
+[2025-11-17T11:36:34.545Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T11:36:34.546Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T11:36:34.546Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T11:36:34.547Z] [INFO] ============================================================
+[2025-11-17T11:41:52.695Z] [INFO] Database connection established successfully
+[2025-11-17T11:41:52.706Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T11:41:52.709Z] [INFO] ============================================================
+[2025-11-17T11:41:52.710Z] [INFO] 🚀 Server Running
+[2025-11-17T11:41:52.710Z] [INFO] ============================================================
+[2025-11-17T11:41:52.711Z] [INFO] Environment: development
+[2025-11-17T11:41:52.711Z] [INFO] Port: 3002
+[2025-11-17T11:41:52.712Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T11:41:52.713Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T11:41:52.713Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T11:41:52.714Z] [INFO] ============================================================
+[2025-11-17T11:47:01.987Z] [INFO] Database connection established successfully
+[2025-11-17T11:47:02.006Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T11:47:02.015Z] [INFO] ============================================================
+[2025-11-17T11:47:02.016Z] [INFO] 🚀 Server Running
+[2025-11-17T11:47:02.017Z] [INFO] ============================================================
+[2025-11-17T11:47:02.018Z] [INFO] Environment: development
+[2025-11-17T11:47:02.019Z] [INFO] Port: 3002
+[2025-11-17T11:47:02.021Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T11:47:02.022Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T11:47:02.023Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T11:47:02.024Z] [INFO] ============================================================
+[2025-11-17T12:06:37.030Z] [INFO] Database connection established successfully
+[2025-11-17T12:06:37.047Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:06:37.052Z] [INFO] ============================================================
+[2025-11-17T12:06:37.053Z] [INFO] 🚀 Server Running
+[2025-11-17T12:06:37.054Z] [INFO] ============================================================
+[2025-11-17T12:06:37.054Z] [INFO] Environment: development
+[2025-11-17T12:06:37.055Z] [INFO] Port: 3002
+[2025-11-17T12:06:37.055Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:06:37.056Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:06:37.057Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:06:37.057Z] [INFO] ============================================================
+[2025-11-17T12:20:33.218Z] [INFO] Database connection established successfully
+[2025-11-17T12:20:33.241Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:20:33.247Z] [INFO] ============================================================
+[2025-11-17T12:20:33.248Z] [INFO] 🚀 Server Running
+[2025-11-17T12:20:33.248Z] [INFO] ============================================================
+[2025-11-17T12:20:33.249Z] [INFO] Environment: development
+[2025-11-17T12:20:33.249Z] [INFO] Port: 3002
+[2025-11-17T12:20:33.250Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:20:33.250Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:20:33.251Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:20:33.251Z] [INFO] ============================================================
+[2025-11-17T12:24:21.274Z] [INFO] Database connection established successfully
+[2025-11-17T12:24:21.292Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:24:21.298Z] [INFO] ============================================================
+[2025-11-17T12:24:21.299Z] [INFO] 🚀 Server Running
+[2025-11-17T12:24:21.300Z] [INFO] ============================================================
+[2025-11-17T12:24:21.301Z] [INFO] Environment: development
+[2025-11-17T12:24:21.302Z] [INFO] Port: 3002
+[2025-11-17T12:24:21.302Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:24:21.303Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:24:21.304Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:24:21.304Z] [INFO] ============================================================
+[2025-11-17T12:25:35.752Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-17T12:25:35.758Z] [INFO] HTTP server closed
+[2025-11-17T12:25:35.760Z] [INFO] Socket.IO closed
+[2025-11-17T12:26:06.230Z] [INFO] Database connection established successfully
+[2025-11-17T12:26:06.239Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:26:06.242Z] [INFO] ============================================================
+[2025-11-17T12:26:06.243Z] [INFO] 🚀 Server Running
+[2025-11-17T12:26:06.244Z] [INFO] ============================================================
+[2025-11-17T12:26:06.245Z] [INFO] Environment: development
+[2025-11-17T12:26:06.245Z] [INFO] Port: 3002
+[2025-11-17T12:26:06.246Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:26:06.247Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:26:06.247Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:26:06.248Z] [INFO] ============================================================
+[2025-11-17T12:36:06.837Z] [INFO] Database connection established successfully
+[2025-11-17T12:36:06.865Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:36:06.872Z] [INFO] ============================================================
+[2025-11-17T12:36:06.873Z] [INFO] 🚀 Server Running
+[2025-11-17T12:36:06.874Z] [INFO] ============================================================
+[2025-11-17T12:36:06.874Z] [INFO] Environment: development
+[2025-11-17T12:36:06.875Z] [INFO] Port: 3002
+[2025-11-17T12:36:06.876Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:36:06.876Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:36:06.877Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:36:06.878Z] [INFO] ============================================================
+[2025-11-17T12:41:01.731Z] [INFO] Database connection established successfully
+[2025-11-17T12:41:01.748Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-17T12:41:01.755Z] [INFO] ============================================================
+[2025-11-17T12:41:01.755Z] [INFO] 🚀 Server Running
+[2025-11-17T12:41:01.756Z] [INFO] ============================================================
+[2025-11-17T12:41:01.757Z] [INFO] Environment: development
+[2025-11-17T12:41:01.757Z] [INFO] Port: 3002
+[2025-11-17T12:41:01.758Z] [INFO] API URL: http://localhost:3002
+[2025-11-17T12:41:01.758Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-17T12:41:01.760Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-17T12:41:01.761Z] [INFO] ============================================================
+[2025-11-18T17:19:10.992Z] [INFO] Database connection established successfully
+[2025-11-18T17:19:11.001Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-18T17:19:11.005Z] [INFO] ============================================================
+[2025-11-18T17:19:11.006Z] [INFO] 🚀 Server Running
+[2025-11-18T17:19:11.006Z] [INFO] ============================================================
+[2025-11-18T17:19:11.007Z] [INFO] Environment: development
+[2025-11-18T17:19:11.008Z] [INFO] Port: 3002
+[2025-11-18T17:19:11.008Z] [INFO] API URL: http://localhost:3002
+[2025-11-18T17:19:11.009Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-18T17:19:11.009Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-18T17:19:11.010Z] [INFO] ============================================================
+[2025-11-18T19:06:13.006Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-18T19:06:13.029Z] [INFO] HTTP server closed
+[2025-11-18T19:09:03.006Z] [INFO] Database connection established successfully
+[2025-11-18T19:09:03.029Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-18T19:09:03.053Z] [INFO] ============================================================
+[2025-11-18T19:09:03.058Z] [INFO] 🚀 Server Running
+[2025-11-18T19:09:03.063Z] [INFO] ============================================================
+[2025-11-18T19:09:03.066Z] [INFO] Environment: development
+[2025-11-18T19:09:03.075Z] [INFO] Port: 3002
+[2025-11-18T19:09:03.078Z] [INFO] API URL: http://localhost:3002
+[2025-11-18T19:09:03.082Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-18T19:09:03.086Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-18T19:09:03.092Z] [INFO] ============================================================
+[2025-11-18T19:12:28.062Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-18T19:13:03.541Z] [INFO] Database connection established successfully
+[2025-11-18T19:13:03.548Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-18T19:13:03.553Z] [INFO] ============================================================
+[2025-11-18T19:13:03.559Z] [INFO] 🚀 Server Running
+[2025-11-18T19:13:03.559Z] [INFO] ============================================================
+[2025-11-18T19:13:03.563Z] [INFO] Environment: development
+[2025-11-18T19:13:03.564Z] [INFO] Port: 3002
+[2025-11-18T19:13:03.566Z] [INFO] API URL: http://localhost:3002
+[2025-11-18T19:13:03.567Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-18T19:13:03.569Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-18T19:13:03.570Z] [INFO] ============================================================
+[2025-11-19T05:27:14.927Z] [INFO] Database connection established successfully
+[2025-11-19T05:27:14.949Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-19T05:27:14.963Z] [INFO] ============================================================
+[2025-11-19T05:27:14.968Z] [INFO] 🚀 Server Running
+[2025-11-19T05:27:14.970Z] [INFO] ============================================================
+[2025-11-19T05:27:14.972Z] [INFO] Environment: development
+[2025-11-19T05:27:14.975Z] [INFO] Port: 3002
+[2025-11-19T05:27:14.977Z] [INFO] API URL: http://localhost:3002
+[2025-11-19T05:27:14.980Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-19T05:27:14.982Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-19T05:27:14.986Z] [INFO] ============================================================
+[2025-11-19T07:50:57.007Z] [INFO] Database connection established successfully
+[2025-11-19T07:50:57.030Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-19T07:50:57.038Z] [INFO] ============================================================
+[2025-11-19T07:50:57.039Z] [INFO] 🚀 Server Running
+[2025-11-19T07:50:57.040Z] [INFO] ============================================================
+[2025-11-19T07:50:57.041Z] [INFO] Environment: development
+[2025-11-19T07:50:57.044Z] [INFO] Port: 3002
+[2025-11-19T07:51:24.312Z] [INFO] Database connection established successfully
+[2025-11-19T07:51:24.333Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-19T07:51:24.349Z] [INFO] ============================================================
+[2025-11-19T07:51:24.358Z] [INFO] 🚀 Server Running
+[2025-11-19T07:51:24.361Z] [INFO] ============================================================
+[2025-11-19T07:51:24.368Z] [INFO] Environment: development
+[2025-11-19T07:51:24.372Z] [INFO] Port: 3002
+[2025-11-19T07:51:24.375Z] [INFO] API URL: http://localhost:3002
+[2025-11-19T07:51:24.379Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-19T07:51:24.384Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-19T07:51:24.387Z] [INFO] ============================================================
+[2025-11-19T14:44:50.407Z] [INFO] Database connection established successfully
+[2025-11-19T14:44:50.430Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-19T14:44:50.445Z] [INFO] ============================================================
+[2025-11-19T14:44:50.448Z] [INFO] 🚀 Server Running
+[2025-11-19T14:44:50.450Z] [INFO] ============================================================
+[2025-11-19T14:44:50.452Z] [INFO] Environment: development
+[2025-11-19T14:44:50.455Z] [INFO] Port: 3002
+[2025-11-19T14:44:50.458Z] [INFO] API URL: http://localhost:3002
+[2025-11-19T14:44:50.462Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-19T14:44:50.465Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-19T14:44:50.469Z] [INFO] ============================================================
+[2025-11-20T05:18:01.805Z] [INFO] Database connection established successfully
+[2025-11-20T05:18:01.834Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-20T05:18:01.855Z] [INFO] ============================================================
+[2025-11-20T05:18:01.859Z] [INFO] 🚀 Server Running
+[2025-11-20T05:18:01.865Z] [INFO] ============================================================
+[2025-11-20T05:18:01.869Z] [INFO] Environment: development
+[2025-11-20T05:18:01.878Z] [INFO] Port: 3002
+[2025-11-20T05:18:01.888Z] [INFO] API URL: http://localhost:3002
+[2025-11-20T05:18:01.892Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-20T05:18:01.899Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-20T05:18:01.908Z] [INFO] ============================================================
+[2025-11-20T07:24:10.045Z] [INFO] Database connection established successfully
+[2025-11-20T07:24:10.056Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-20T07:24:10.067Z] [INFO] ============================================================
+[2025-11-20T07:24:10.068Z] [INFO] 🚀 Server Running
+[2025-11-20T07:24:10.070Z] [INFO] ============================================================
+[2025-11-20T07:24:10.073Z] [INFO] Environment: development
+[2025-11-20T07:24:10.075Z] [INFO] Port: 3002
+[2025-11-20T07:24:10.076Z] [INFO] API URL: http://localhost:3002
+[2025-11-20T07:24:10.078Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-20T07:24:10.081Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-20T07:24:10.083Z] [INFO] ============================================================
+[2025-11-21T17:26:00.472Z] [INFO] Database connection established successfully
+[2025-11-21T17:26:00.534Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-21T17:26:00.562Z] [INFO] ============================================================
+[2025-11-21T17:26:00.577Z] [INFO] 🚀 Server Running
+[2025-11-21T17:26:00.591Z] [INFO] ============================================================
+[2025-11-21T17:26:00.596Z] [INFO] Environment: development
+[2025-11-21T17:26:00.607Z] [INFO] Port: 3002
+[2025-11-21T17:26:00.612Z] [INFO] API URL: http://localhost:3002
+[2025-11-21T17:26:00.621Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-21T17:26:00.627Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-21T17:26:00.638Z] [INFO] ============================================================
+[2025-11-21T18:49:18.670Z] [INFO] Database connection established successfully
+[2025-11-21T18:49:18.720Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-21T18:49:18.740Z] [INFO] ============================================================
+[2025-11-21T18:49:18.743Z] [INFO] 🚀 Server Running
+[2025-11-21T18:49:18.747Z] [INFO] ============================================================
+[2025-11-21T18:49:18.749Z] [INFO] Environment: development
+[2025-11-21T18:49:18.752Z] [INFO] Port: 3002
+[2025-11-21T18:49:18.755Z] [INFO] API URL: http://localhost:3002
+[2025-11-21T18:49:18.760Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-21T18:49:18.763Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-21T18:49:18.766Z] [INFO] ============================================================
+[2025-11-21T19:06:00.619Z] [INFO] Database connection established successfully
+[2025-11-21T19:06:00.661Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-21T19:06:00.679Z] [INFO] ============================================================
+[2025-11-21T19:06:00.684Z] [INFO] 🚀 Server Running
+[2025-11-21T19:06:00.687Z] [INFO] ============================================================
+[2025-11-21T19:06:00.689Z] [INFO] Environment: development
+[2025-11-21T19:06:00.692Z] [INFO] Port: 3002
+[2025-11-21T19:06:00.695Z] [INFO] API URL: http://localhost:3002
+[2025-11-21T19:06:00.698Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-21T19:06:00.701Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-21T19:06:00.704Z] [INFO] ============================================================
+[2025-11-22T07:26:17.027Z] [INFO] Database connection established successfully
+[2025-11-22T07:26:17.031Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T07:26:17.036Z] [INFO] ============================================================
+[2025-11-22T07:26:17.037Z] [INFO] 🚀 Server Running
+[2025-11-22T07:26:17.038Z] [INFO] ============================================================
+[2025-11-22T07:26:17.039Z] [INFO] Environment: development
+[2025-11-22T07:26:17.039Z] [INFO] Port: 3002
+[2025-11-22T07:26:17.040Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T07:26:17.040Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T07:26:17.041Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T07:26:17.042Z] [INFO] ============================================================
+[2025-11-22T07:28:45.560Z] [INFO] Database connection established successfully
+[2025-11-22T07:28:45.567Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T07:28:45.575Z] [INFO] ============================================================
+[2025-11-22T07:28:45.576Z] [INFO] 🚀 Server Running
+[2025-11-22T07:28:45.578Z] [INFO] ============================================================
+[2025-11-22T07:28:45.579Z] [INFO] Environment: development
+[2025-11-22T07:28:45.580Z] [INFO] Port: 3002
+[2025-11-22T07:28:45.581Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T07:28:45.582Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T07:28:45.583Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T07:28:45.584Z] [INFO] ============================================================
+[2025-11-22T07:29:33.909Z] [INFO] Database connection established successfully
+[2025-11-22T07:29:33.912Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T07:29:33.916Z] [INFO] ============================================================
+[2025-11-22T07:29:33.916Z] [INFO] 🚀 Server Running
+[2025-11-22T07:29:33.917Z] [INFO] ============================================================
+[2025-11-22T07:29:33.917Z] [INFO] Environment: development
+[2025-11-22T07:29:33.918Z] [INFO] Port: 3002
+[2025-11-22T07:29:33.919Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T07:29:33.919Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T07:29:33.920Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T07:29:33.921Z] [INFO] ============================================================
+[2025-11-22T07:38:24.602Z] [INFO] Database connection established successfully
+[2025-11-22T07:38:24.609Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T07:38:24.612Z] [INFO] ============================================================
+[2025-11-22T07:38:24.613Z] [INFO] 🚀 Server Running
+[2025-11-22T07:38:24.613Z] [INFO] ============================================================
+[2025-11-22T07:38:24.614Z] [INFO] Environment: development
+[2025-11-22T07:38:24.614Z] [INFO] Port: 3002
+[2025-11-22T07:38:24.615Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T07:38:24.615Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T07:38:24.616Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T07:38:24.616Z] [INFO] ============================================================
+[2025-11-22T08:46:25.864Z] [INFO] Database connection established successfully
+[2025-11-22T08:46:25.884Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T08:46:25.889Z] [INFO] ============================================================
+[2025-11-22T08:46:25.890Z] [INFO] 🚀 Server Running
+[2025-11-22T08:46:25.891Z] [INFO] ============================================================
+[2025-11-22T08:46:25.891Z] [INFO] Environment: development
+[2025-11-22T08:46:25.892Z] [INFO] Port: 3002
+[2025-11-22T08:46:25.893Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T08:46:25.894Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T08:46:25.894Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T08:46:25.895Z] [INFO] ============================================================
+[2025-11-22T08:47:28.035Z] [INFO] Database connection established successfully
+[2025-11-22T08:47:28.047Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T08:47:28.052Z] [INFO] ============================================================
+[2025-11-22T08:47:28.053Z] [INFO] 🚀 Server Running
+[2025-11-22T08:47:28.054Z] [INFO] ============================================================
+[2025-11-22T08:47:28.055Z] [INFO] Environment: development
+[2025-11-22T08:47:28.056Z] [INFO] Port: 3002
+[2025-11-22T08:47:28.057Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T08:47:28.058Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T08:47:28.058Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T08:47:28.060Z] [INFO] ============================================================
+[2025-11-22T09:21:28.494Z] [INFO] Database connection established successfully
+[2025-11-22T09:21:28.516Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:21:28.522Z] [INFO] ============================================================
+[2025-11-22T09:21:28.522Z] [INFO] 🚀 Server Running
+[2025-11-22T09:21:28.523Z] [INFO] ============================================================
+[2025-11-22T09:21:28.523Z] [INFO] Environment: development
+[2025-11-22T09:21:28.524Z] [INFO] Port: 3002
+[2025-11-22T09:21:28.524Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:21:28.525Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:21:28.526Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:21:28.526Z] [INFO] ============================================================
+[2025-11-22T09:30:31.300Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-22T09:30:31.315Z] [INFO] HTTP server closed
+[2025-11-22T09:31:03.858Z] [INFO] Database connection established successfully
+[2025-11-22T09:31:03.861Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:31:03.866Z] [INFO] ============================================================
+[2025-11-22T09:31:03.866Z] [INFO] 🚀 Server Running
+[2025-11-22T09:31:03.867Z] [INFO] ============================================================
+[2025-11-22T09:31:03.868Z] [INFO] Environment: development
+[2025-11-22T09:31:03.868Z] [INFO] Port: 3002
+[2025-11-22T09:31:03.869Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:31:03.869Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:31:03.870Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:31:03.871Z] [INFO] ============================================================
+[2025-11-22T09:52:37.205Z] [INFO] Database connection established successfully
+[2025-11-22T09:52:37.223Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:52:37.228Z] [INFO] ============================================================
+[2025-11-22T09:52:37.229Z] [INFO] 🚀 Server Running
+[2025-11-22T09:52:37.230Z] [INFO] ============================================================
+[2025-11-22T09:52:37.231Z] [INFO] Environment: development
+[2025-11-22T09:52:37.231Z] [INFO] Port: 3002
+[2025-11-22T09:52:37.232Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:52:37.233Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:52:37.234Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:52:37.235Z] [INFO] ============================================================
+[2025-11-22T09:53:42.158Z] [INFO] Database connection established successfully
+[2025-11-22T09:53:42.161Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:53:42.165Z] [INFO] ============================================================
+[2025-11-22T09:53:42.166Z] [INFO] 🚀 Server Running
+[2025-11-22T09:53:42.167Z] [INFO] ============================================================
+[2025-11-22T09:53:42.168Z] [INFO] Environment: development
+[2025-11-22T09:53:42.168Z] [INFO] Port: 3002
+[2025-11-22T09:53:42.169Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:53:42.169Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:53:42.170Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:53:42.171Z] [INFO] ============================================================
+[2025-11-22T09:54:09.452Z] [INFO] Database connection established successfully
+[2025-11-22T09:54:09.457Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:54:09.460Z] [INFO] ============================================================
+[2025-11-22T09:54:09.461Z] [INFO] 🚀 Server Running
+[2025-11-22T09:54:09.461Z] [INFO] ============================================================
+[2025-11-22T09:54:09.462Z] [INFO] Environment: development
+[2025-11-22T09:54:09.462Z] [INFO] Port: 3002
+[2025-11-22T09:54:09.463Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:54:09.463Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:54:09.464Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:54:09.464Z] [INFO] ============================================================
+[2025-11-22T09:55:03.085Z] [INFO] Database connection established successfully
+[2025-11-22T09:55:03.088Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T09:55:03.091Z] [INFO] ============================================================
+[2025-11-22T09:55:03.092Z] [INFO] 🚀 Server Running
+[2025-11-22T09:55:03.093Z] [INFO] ============================================================
+[2025-11-22T09:55:03.094Z] [INFO] Environment: development
+[2025-11-22T09:55:03.094Z] [INFO] Port: 3002
+[2025-11-22T09:55:03.095Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T09:55:03.095Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T09:55:03.096Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T09:55:03.097Z] [INFO] ============================================================
+[2025-11-22T10:04:20.019Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-22T10:04:20.040Z] [INFO] HTTP server closed
+[2025-11-22T10:04:52.138Z] [INFO] Database connection established successfully
+[2025-11-22T10:04:52.141Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T10:04:52.149Z] [INFO] ============================================================
+[2025-11-22T10:04:52.150Z] [INFO] 🚀 Server Running
+[2025-11-22T10:04:52.151Z] [INFO] ============================================================
+[2025-11-22T10:04:52.152Z] [INFO] Environment: development
+[2025-11-22T10:04:52.152Z] [INFO] Port: 3002
+[2025-11-22T10:04:52.157Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T10:04:52.158Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T10:04:52.159Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T10:04:52.160Z] [INFO] ============================================================
+[2025-11-22T11:20:50.286Z] [INFO] SIGINT received, shutting down gracefully
+[2025-11-22T11:21:23.893Z] [INFO] Database connection established successfully
+[2025-11-22T11:21:23.900Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T11:21:23.905Z] [INFO] ============================================================
+[2025-11-22T11:21:23.906Z] [INFO] 🚀 Server Running
+[2025-11-22T11:21:23.906Z] [INFO] ============================================================
+[2025-11-22T11:21:23.907Z] [INFO] Environment: development
+[2025-11-22T11:21:23.907Z] [INFO] Port: 3002
+[2025-11-22T11:21:23.908Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T11:21:23.908Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T11:21:23.910Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T11:21:23.910Z] [INFO] ============================================================
+[2025-11-22T11:33:22.017Z] [INFO] Database connection established successfully
+[2025-11-22T11:33:22.021Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T11:33:22.026Z] [INFO] ============================================================
+[2025-11-22T11:33:22.026Z] [INFO] 🚀 Server Running
+[2025-11-22T11:33:22.027Z] [INFO] ============================================================
+[2025-11-22T11:33:22.027Z] [INFO] Environment: development
+[2025-11-22T11:33:22.028Z] [INFO] Port: 3002
+[2025-11-22T11:33:22.028Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T11:33:22.029Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T11:33:22.029Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T11:33:22.029Z] [INFO] ============================================================
+[2025-11-22T12:17:58.388Z] [INFO] Database connection established successfully
+[2025-11-22T12:17:58.402Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T12:17:58.407Z] [INFO] ============================================================
+[2025-11-22T12:17:58.408Z] [INFO] 🚀 Server Running
+[2025-11-22T12:17:58.409Z] [INFO] ============================================================
+[2025-11-22T12:17:58.409Z] [INFO] Environment: development
+[2025-11-22T12:17:58.410Z] [INFO] Port: 3002
+[2025-11-22T12:17:58.410Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T12:17:58.411Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T12:17:58.411Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T12:17:58.412Z] [INFO] ============================================================
+[2025-11-22T14:56:34.694Z] [INFO] Database connection established successfully
+[2025-11-22T14:56:34.718Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T14:56:34.725Z] [INFO] ============================================================
+[2025-11-22T14:56:34.726Z] [INFO] 🚀 Server Running
+[2025-11-22T14:56:34.726Z] [INFO] ============================================================
+[2025-11-22T14:56:34.727Z] [INFO] Environment: development
+[2025-11-22T14:56:34.728Z] [INFO] Port: 3002
+[2025-11-22T14:56:34.728Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T14:56:34.728Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T14:56:34.729Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T14:56:34.729Z] [INFO] ============================================================
+[2025-11-22T15:04:03.350Z] [INFO] Database connection established successfully
+[2025-11-22T15:04:03.371Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T15:04:03.378Z] [INFO] ============================================================
+[2025-11-22T15:04:03.380Z] [INFO] 🚀 Server Running
+[2025-11-22T15:04:03.381Z] [INFO] ============================================================
+[2025-11-22T15:04:03.383Z] [INFO] Environment: development
+[2025-11-22T15:04:03.384Z] [INFO] Port: 3002
+[2025-11-22T15:04:03.385Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T15:04:03.386Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T15:04:03.387Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T15:04:03.388Z] [INFO] ============================================================
+[2025-11-22T15:06:41.610Z] [INFO] Database connection established successfully
+[2025-11-22T15:06:41.632Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T15:06:41.638Z] [INFO] ============================================================
+[2025-11-22T15:06:41.639Z] [INFO] 🚀 Server Running
+[2025-11-22T15:06:41.640Z] [INFO] ============================================================
+[2025-11-22T15:06:41.641Z] [INFO] Environment: development
+[2025-11-22T15:06:41.641Z] [INFO] Port: 3002
+[2025-11-22T15:06:41.642Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T15:06:41.643Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T15:06:41.644Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T15:06:41.644Z] [INFO] ============================================================
+[2025-11-22T15:30:34.932Z] [INFO] Database connection established successfully
+[2025-11-22T15:30:34.951Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T15:30:34.958Z] [INFO] ============================================================
+[2025-11-22T15:30:34.959Z] [INFO] 🚀 Server Running
+[2025-11-22T15:30:34.959Z] [INFO] ============================================================
+[2025-11-22T15:30:34.960Z] [INFO] Environment: development
+[2025-11-22T15:30:34.961Z] [INFO] Port: 3002
+[2025-11-22T15:30:34.961Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T15:30:34.962Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T15:30:34.963Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T15:30:34.964Z] [INFO] ============================================================
+[2025-11-22T17:24:56.266Z] [INFO] Database connection established successfully
+[2025-11-22T17:24:56.307Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:24:56.315Z] [INFO] ============================================================
+[2025-11-22T17:24:56.316Z] [INFO] 🚀 Server Running
+[2025-11-22T17:24:56.316Z] [INFO] ============================================================
+[2025-11-22T17:24:56.317Z] [INFO] Environment: development
+[2025-11-22T17:24:56.317Z] [INFO] Port: 3002
+[2025-11-22T17:24:56.318Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:24:56.318Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:24:56.319Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:24:56.319Z] [INFO] ============================================================
+[2025-11-22T17:33:21.804Z] [INFO] Database connection established successfully
+[2025-11-22T17:33:21.833Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:33:21.841Z] [INFO] ============================================================
+[2025-11-22T17:33:21.841Z] [INFO] 🚀 Server Running
+[2025-11-22T17:33:21.842Z] [INFO] ============================================================
+[2025-11-22T17:33:21.843Z] [INFO] Environment: development
+[2025-11-22T17:33:21.843Z] [INFO] Port: 3002
+[2025-11-22T17:33:21.844Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:33:21.844Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:33:21.845Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:33:21.845Z] [INFO] ============================================================
+[2025-11-22T17:48:39.185Z] [INFO] Database connection established successfully
+[2025-11-22T17:48:39.204Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:48:39.211Z] [INFO] ============================================================
+[2025-11-22T17:48:39.212Z] [INFO] 🚀 Server Running
+[2025-11-22T17:48:39.213Z] [INFO] ============================================================
+[2025-11-22T17:48:39.214Z] [INFO] Environment: development
+[2025-11-22T17:48:39.214Z] [INFO] Port: 3002
+[2025-11-22T17:48:39.215Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:48:39.215Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:48:39.216Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:48:39.217Z] [INFO] ============================================================
+[2025-11-22T17:52:45.085Z] [INFO] Database connection established successfully
+[2025-11-22T17:52:45.114Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:52:45.122Z] [INFO] ============================================================
+[2025-11-22T17:52:45.124Z] [INFO] 🚀 Server Running
+[2025-11-22T17:52:45.125Z] [INFO] ============================================================
+[2025-11-22T17:52:45.126Z] [INFO] Environment: development
+[2025-11-22T17:52:45.126Z] [INFO] Port: 3002
+[2025-11-22T17:52:45.127Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:52:45.127Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:52:45.128Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:52:45.128Z] [INFO] ============================================================
+[2025-11-22T17:54:26.305Z] [INFO] Database connection established successfully
+[2025-11-22T17:54:26.317Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:54:26.324Z] [INFO] ============================================================
+[2025-11-22T17:54:26.325Z] [INFO] 🚀 Server Running
+[2025-11-22T17:54:26.326Z] [INFO] ============================================================
+[2025-11-22T17:54:26.327Z] [INFO] Environment: development
+[2025-11-22T17:54:26.327Z] [INFO] Port: 3002
+[2025-11-22T17:54:26.328Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:54:26.329Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:54:26.330Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:54:26.330Z] [INFO] ============================================================
+[2025-11-22T17:59:16.325Z] [INFO] Database connection established successfully
+[2025-11-22T17:59:16.343Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-22T17:59:16.358Z] [INFO] ============================================================
+[2025-11-22T17:59:16.359Z] [INFO] 🚀 Server Running
+[2025-11-22T17:59:16.360Z] [INFO] ============================================================
+[2025-11-22T17:59:16.362Z] [INFO] Environment: development
+[2025-11-22T17:59:16.363Z] [INFO] Port: 3002
+[2025-11-22T17:59:16.364Z] [INFO] API URL: http://localhost:3002
+[2025-11-22T17:59:16.365Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-22T17:59:16.366Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-22T17:59:16.367Z] [INFO] ============================================================
+[2025-11-23T12:25:18.349Z] [INFO] Database connection established successfully
+[2025-11-23T12:25:18.354Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T12:25:18.359Z] [INFO] ============================================================
+[2025-11-23T12:25:18.359Z] [INFO] 🚀 Server Running
+[2025-11-23T12:25:18.360Z] [INFO] ============================================================
+[2025-11-23T12:25:18.360Z] [INFO] Environment: development
+[2025-11-23T12:25:18.361Z] [INFO] Port: 3002
+[2025-11-23T12:25:18.361Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T12:25:18.362Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T12:25:18.363Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T12:25:18.364Z] [INFO] ============================================================
+[2025-11-23T16:07:50.116Z] [INFO] Database connection established successfully
+[2025-11-23T16:07:50.150Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T16:07:50.158Z] [INFO] ============================================================
+[2025-11-23T16:07:50.159Z] [INFO] 🚀 Server Running
+[2025-11-23T16:07:50.159Z] [INFO] ============================================================
+[2025-11-23T16:07:50.160Z] [INFO] Environment: development
+[2025-11-23T16:07:50.161Z] [INFO] Port: 3002
+[2025-11-23T16:07:50.162Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T16:07:50.163Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T16:07:50.163Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T16:07:50.164Z] [INFO] ============================================================
+[2025-11-23T16:11:36.091Z] [INFO] Database connection established successfully
+[2025-11-23T16:11:36.099Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T16:11:36.103Z] [INFO] ============================================================
+[2025-11-23T16:11:36.103Z] [INFO] 🚀 Server Running
+[2025-11-23T16:11:36.104Z] [INFO] ============================================================
+[2025-11-23T16:11:36.105Z] [INFO] Environment: development
+[2025-11-23T16:11:36.105Z] [INFO] Port: 3002
+[2025-11-23T16:11:36.106Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T16:11:36.107Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T16:11:36.107Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T16:11:36.108Z] [INFO] ============================================================
+[2025-11-23T16:12:27.954Z] [INFO] Database connection established successfully
+[2025-11-23T16:12:27.960Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T16:12:27.966Z] [INFO] ============================================================
+[2025-11-23T16:12:27.967Z] [INFO] 🚀 Server Running
+[2025-11-23T16:12:27.968Z] [INFO] ============================================================
+[2025-11-23T16:12:27.969Z] [INFO] Environment: development
+[2025-11-23T16:12:27.970Z] [INFO] Port: 3002
+[2025-11-23T16:12:27.970Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T16:12:27.971Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T16:12:27.972Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T16:12:27.973Z] [INFO] ============================================================
+[2025-11-23T16:16:47.341Z] [INFO] Database connection established successfully
+[2025-11-23T16:16:47.357Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T16:16:47.364Z] [INFO] ============================================================
+[2025-11-23T16:16:47.365Z] [INFO] 🚀 Server Running
+[2025-11-23T16:16:47.365Z] [INFO] ============================================================
+[2025-11-23T16:16:47.366Z] [INFO] Environment: development
+[2025-11-23T16:16:47.366Z] [INFO] Port: 3002
+[2025-11-23T16:16:47.367Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T16:16:47.367Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T16:16:47.368Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T16:16:47.368Z] [INFO] ============================================================
+[2025-11-23T16:36:46.719Z] [INFO] Database connection established successfully
+[2025-11-23T16:36:46.748Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T16:36:46.757Z] [INFO] ============================================================
+[2025-11-23T16:36:46.758Z] [INFO] 🚀 Server Running
+[2025-11-23T16:36:46.759Z] [INFO] ============================================================
+[2025-11-23T16:36:46.760Z] [INFO] Environment: development
+[2025-11-23T16:36:46.760Z] [INFO] Port: 3002
+[2025-11-23T16:36:46.761Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T16:36:46.761Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T16:36:46.762Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T16:36:46.762Z] [INFO] ============================================================
+[2025-11-23T17:38:29.954Z] [INFO] Database connection established successfully
+[2025-11-23T17:38:29.958Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-23T17:38:29.963Z] [INFO] ============================================================
+[2025-11-23T17:38:29.963Z] [INFO] 🚀 Server Running
+[2025-11-23T17:38:29.964Z] [INFO] ============================================================
+[2025-11-23T17:38:29.964Z] [INFO] Environment: development
+[2025-11-23T17:38:29.965Z] [INFO] Port: 3002
+[2025-11-23T17:38:29.965Z] [INFO] API URL: http://localhost:3002
+[2025-11-23T17:38:29.966Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-23T17:38:29.966Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-23T17:38:29.967Z] [INFO] ============================================================
+[2025-11-24T13:56:27.934Z] [INFO] Database connection established successfully
+[2025-11-24T13:56:27.943Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T13:56:27.948Z] [INFO] ============================================================
+[2025-11-24T13:56:27.948Z] [INFO] 🚀 Server Running
+[2025-11-24T13:56:27.949Z] [INFO] ============================================================
+[2025-11-24T13:56:27.950Z] [INFO] Environment: development
+[2025-11-24T13:56:27.950Z] [INFO] Port: 3002
+[2025-11-24T13:56:27.951Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T13:56:27.951Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T13:56:27.952Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T13:56:27.952Z] [INFO] ============================================================
+[2025-11-24T17:14:22.754Z] [INFO] Database connection established successfully
+[2025-11-24T17:14:22.766Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T17:14:22.772Z] [INFO] ============================================================
+[2025-11-24T17:14:22.773Z] [INFO] 🚀 Server Running
+[2025-11-24T17:14:22.773Z] [INFO] ============================================================
+[2025-11-24T17:14:22.774Z] [INFO] Environment: development
+[2025-11-24T17:14:22.774Z] [INFO] Port: 3002
+[2025-11-24T17:14:22.775Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T17:14:22.775Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T17:14:22.776Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T17:14:22.776Z] [INFO] ============================================================
+[2025-11-24T17:32:44.246Z] [INFO] Database connection established successfully
+[2025-11-24T17:32:44.275Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T17:32:44.281Z] [INFO] ============================================================
+[2025-11-24T17:32:44.282Z] [INFO] 🚀 Server Running
+[2025-11-24T17:32:44.283Z] [INFO] ============================================================
+[2025-11-24T17:32:44.284Z] [INFO] Environment: development
+[2025-11-24T17:32:44.285Z] [INFO] Port: 3002
+[2025-11-24T17:32:44.286Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T17:32:44.287Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T17:32:44.288Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T17:32:44.289Z] [INFO] ============================================================
+[2025-11-24T17:33:32.773Z] [INFO] Database connection established successfully
+[2025-11-24T17:33:32.776Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T17:33:32.780Z] [INFO] ============================================================
+[2025-11-24T17:33:32.782Z] [INFO] 🚀 Server Running
+[2025-11-24T17:33:32.783Z] [INFO] ============================================================
+[2025-11-24T17:33:32.783Z] [INFO] Environment: development
+[2025-11-24T17:33:32.784Z] [INFO] Port: 3002
+[2025-11-24T17:33:32.785Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T17:33:32.785Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T17:33:32.786Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T17:33:32.786Z] [INFO] ============================================================
+[2025-11-24T17:34:19.421Z] [INFO] Database connection established successfully
+[2025-11-24T17:34:19.426Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T17:34:19.429Z] [INFO] ============================================================
+[2025-11-24T17:34:19.430Z] [INFO] 🚀 Server Running
+[2025-11-24T17:34:19.432Z] [INFO] ============================================================
+[2025-11-24T17:34:19.432Z] [INFO] Environment: development
+[2025-11-24T17:34:19.433Z] [INFO] Port: 3002
+[2025-11-24T17:34:19.433Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T17:34:19.434Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T17:34:19.435Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T17:34:19.435Z] [INFO] ============================================================
+[2025-11-24T17:45:46.073Z] [INFO] Database connection established successfully
+[2025-11-24T17:45:46.093Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-24T17:45:46.100Z] [INFO] ============================================================
+[2025-11-24T17:45:46.101Z] [INFO] 🚀 Server Running
+[2025-11-24T17:45:46.102Z] [INFO] ============================================================
+[2025-11-24T17:45:46.102Z] [INFO] Environment: development
+[2025-11-24T17:45:46.103Z] [INFO] Port: 3002
+[2025-11-24T17:45:46.103Z] [INFO] API URL: http://localhost:3002
+[2025-11-24T17:45:46.104Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-24T17:45:46.105Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-24T17:45:46.107Z] [INFO] ============================================================
+[2025-11-25T15:30:05.974Z] [INFO] Database connection established successfully
+[2025-11-25T15:30:05.984Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-25T15:30:05.994Z] [INFO] ============================================================
+[2025-11-25T15:30:05.995Z] [INFO] 🚀 Server Running
+[2025-11-25T15:30:05.996Z] [INFO] ============================================================
+[2025-11-25T15:30:05.999Z] [INFO] Environment: development
+[2025-11-25T15:30:06.000Z] [INFO] Port: 3002
+[2025-11-25T15:30:06.002Z] [INFO] API URL: http://localhost:3002
+[2025-11-25T15:30:06.009Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-25T15:30:06.011Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-25T15:30:06.012Z] [INFO] ============================================================
+[2025-11-26T15:33:33.570Z] [INFO] Database connection established successfully
+[2025-11-26T15:33:33.587Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-26T15:33:33.593Z] [INFO] ============================================================
+[2025-11-26T15:33:33.594Z] [INFO] 🚀 Server Running
+[2025-11-26T15:33:33.595Z] [INFO] ============================================================
+[2025-11-26T15:33:33.596Z] [INFO] Environment: development
+[2025-11-26T15:33:33.597Z] [INFO] Port: 3002
+[2025-11-26T15:33:33.598Z] [INFO] API URL: http://localhost:3002
+[2025-11-26T15:33:33.598Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-26T15:33:33.599Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-26T15:33:33.600Z] [INFO] ============================================================
+[2025-11-28T14:47:47.019Z] [INFO] Database connection established successfully
+[2025-11-28T14:47:47.062Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T14:47:47.097Z] [INFO] ============================================================
+[2025-11-28T14:47:47.103Z] [INFO] 🚀 Server Running
+[2025-11-28T14:47:47.106Z] [INFO] ============================================================
+[2025-11-28T14:47:47.110Z] [INFO] Environment: development
+[2025-11-28T14:47:47.111Z] [INFO] Port: 3002
+[2025-11-28T14:47:47.129Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T14:47:47.153Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T14:47:47.158Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T14:47:47.162Z] [INFO] ============================================================
+[2025-11-28T15:28:14.742Z] [INFO] Database connection established successfully
+[2025-11-28T15:28:14.804Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:28:14.830Z] [INFO] ============================================================
+[2025-11-28T15:28:14.835Z] [INFO] 🚀 Server Running
+[2025-11-28T15:28:14.841Z] [INFO] ============================================================
+[2025-11-28T15:28:14.845Z] [INFO] Environment: development
+[2025-11-28T15:28:14.848Z] [INFO] Port: 3002
+[2025-11-28T15:28:14.850Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:28:14.859Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:28:14.865Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:28:14.869Z] [INFO] ============================================================
+[2025-11-28T15:30:12.038Z] [INFO] Database connection established successfully
+[2025-11-28T15:30:12.054Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:30:12.065Z] [INFO] ============================================================
+[2025-11-28T15:30:12.066Z] [INFO] 🚀 Server Running
+[2025-11-28T15:30:12.067Z] [INFO] ============================================================
+[2025-11-28T15:30:12.068Z] [INFO] Environment: development
+[2025-11-28T15:30:12.070Z] [INFO] Port: 3002
+[2025-11-28T15:30:12.074Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:30:12.075Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:30:12.077Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:30:12.078Z] [INFO] ============================================================
+[2025-11-28T15:31:17.837Z] [INFO] Database connection established successfully
+[2025-11-28T15:31:17.856Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:31:17.878Z] [INFO] ============================================================
+[2025-11-28T15:31:17.884Z] [INFO] 🚀 Server Running
+[2025-11-28T15:31:17.887Z] [INFO] ============================================================
+[2025-11-28T15:31:17.892Z] [INFO] Environment: development
+[2025-11-28T15:31:17.895Z] [INFO] Port: 3002
+[2025-11-28T15:31:17.898Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:31:17.902Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:31:17.918Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:31:17.921Z] [INFO] ============================================================
+[2025-11-28T15:32:51.326Z] [INFO] Database connection established successfully
+[2025-11-28T15:32:51.348Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:32:51.382Z] [INFO] ============================================================
+[2025-11-28T15:32:51.387Z] [INFO] 🚀 Server Running
+[2025-11-28T15:32:51.399Z] [INFO] ============================================================
+[2025-11-28T15:32:51.403Z] [INFO] Environment: development
+[2025-11-28T15:32:51.407Z] [INFO] Port: 3002
+[2025-11-28T15:32:51.411Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:32:51.415Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:32:51.422Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:32:51.427Z] [INFO] ============================================================
+[2025-11-28T15:34:54.008Z] [INFO] Database connection established successfully
+[2025-11-28T15:34:54.038Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:34:54.079Z] [INFO] ============================================================
+[2025-11-28T15:34:54.088Z] [INFO] 🚀 Server Running
+[2025-11-28T15:34:54.097Z] [INFO] ============================================================
+[2025-11-28T15:34:54.106Z] [INFO] Environment: development
+[2025-11-28T15:34:54.109Z] [INFO] Port: 3002
+[2025-11-28T15:34:54.122Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:34:54.136Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:34:54.142Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:34:54.149Z] [INFO] ============================================================
+[2025-11-28T15:35:58.931Z] [INFO] Database connection established successfully
+[2025-11-28T15:35:58.954Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:35:58.975Z] [INFO] ============================================================
+[2025-11-28T15:35:58.978Z] [INFO] 🚀 Server Running
+[2025-11-28T15:35:58.984Z] [INFO] ============================================================
+[2025-11-28T15:35:58.988Z] [INFO] Environment: development
+[2025-11-28T15:35:58.992Z] [INFO] Port: 3002
+[2025-11-28T15:35:58.996Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:35:59.003Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:35:59.007Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:35:59.010Z] [INFO] ============================================================
+[2025-11-28T15:57:01.758Z] [INFO] Database connection established successfully
+[2025-11-28T15:57:01.778Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:57:01.793Z] [INFO] ============================================================
+[2025-11-28T15:57:01.796Z] [INFO] 🚀 Server Running
+[2025-11-28T15:57:01.799Z] [INFO] ============================================================
+[2025-11-28T15:57:01.801Z] [INFO] Environment: development
+[2025-11-28T15:57:01.803Z] [INFO] Port: 3002
+[2025-11-28T15:57:01.807Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:57:01.811Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:57:01.814Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:57:01.817Z] [INFO] ============================================================
+[2025-11-28T15:58:13.852Z] [INFO] Database connection established successfully
+[2025-11-28T15:58:13.865Z] [INFO] Socket.IO handlers initialized successfully
+[2025-11-28T15:58:13.876Z] [INFO] ============================================================
+[2025-11-28T15:58:13.878Z] [INFO] 🚀 Server Running
+[2025-11-28T15:58:13.881Z] [INFO] ============================================================
+[2025-11-28T15:58:13.883Z] [INFO] Environment: development
+[2025-11-28T15:58:13.885Z] [INFO] Port: 3002
+[2025-11-28T15:58:13.888Z] [INFO] API URL: http://localhost:3002
+[2025-11-28T15:58:13.890Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-11-28T15:58:13.893Z] [INFO] Socket.IO Path: /socket.io/
+[2025-11-28T15:58:13.896Z] [INFO] ============================================================
+[2025-12-03T16:45:29.446Z] [INFO] Database connection established successfully
+[2025-12-03T16:45:29.452Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-03T16:45:29.458Z] [INFO] ============================================================
+[2025-12-03T16:45:29.459Z] [INFO] 🚀 Server Running
+[2025-12-03T16:45:29.459Z] [INFO] ============================================================
+[2025-12-03T16:45:29.460Z] [INFO] Environment: development
+[2025-12-03T16:45:29.460Z] [INFO] Port: 3002
+[2025-12-03T16:45:29.461Z] [INFO] API URL: http://localhost:3002
+[2025-12-03T16:45:29.462Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-03T16:45:29.462Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-03T16:45:29.463Z] [INFO] ============================================================
+[2025-12-04T16:52:01.407Z] [INFO] Database connection established successfully
+[2025-12-04T16:52:01.417Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-04T16:52:01.422Z] [INFO] ============================================================
+[2025-12-04T16:52:01.424Z] [INFO] 🚀 Server Running
+[2025-12-04T16:52:01.427Z] [INFO] ============================================================
+[2025-12-04T16:52:01.428Z] [INFO] Environment: development
+[2025-12-04T16:52:01.429Z] [INFO] Port: 3002
+[2025-12-04T16:52:01.430Z] [INFO] API URL: http://localhost:3002
+[2025-12-04T16:52:01.431Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-04T16:52:01.433Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-04T16:52:01.434Z] [INFO] ============================================================
+[2025-12-15T07:55:46.509Z] [INFO] Database connection established successfully
+[2025-12-15T07:55:46.529Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T07:55:46.588Z] [INFO] ============================================================
+[2025-12-15T07:55:46.591Z] [INFO] 🚀 Server Running
+[2025-12-15T07:55:46.607Z] [INFO] ============================================================
+[2025-12-15T07:55:46.614Z] [INFO] Environment: development
+[2025-12-15T07:55:46.618Z] [INFO] Port: 3002
+[2025-12-15T07:55:46.630Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T07:55:46.642Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T07:55:46.658Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T07:55:46.662Z] [INFO] ============================================================
+[2025-12-15T10:00:03.100Z] [INFO] Database connection established successfully
+[2025-12-15T10:00:03.112Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T10:00:03.120Z] [INFO] ============================================================
+[2025-12-15T10:00:03.121Z] [INFO] 🚀 Server Running
+[2025-12-15T10:00:03.122Z] [INFO] ============================================================
+[2025-12-15T10:00:03.124Z] [INFO] Environment: development
+[2025-12-15T10:00:03.125Z] [INFO] Port: 3002
+[2025-12-15T10:00:03.126Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T10:00:03.127Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T10:00:03.129Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T10:00:03.130Z] [INFO] ============================================================
+[2025-12-15T10:03:50.554Z] [INFO] Database connection established successfully
+[2025-12-15T10:03:50.573Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T10:03:50.589Z] [INFO] ============================================================
+[2025-12-15T10:03:50.592Z] [INFO] 🚀 Server Running
+[2025-12-15T10:03:50.595Z] [INFO] ============================================================
+[2025-12-15T10:03:50.599Z] [INFO] Environment: development
+[2025-12-15T10:03:50.601Z] [INFO] Port: 3002
+[2025-12-15T10:03:50.604Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T10:03:50.606Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T10:03:50.609Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T10:03:50.612Z] [INFO] ============================================================
+[2025-12-15T11:11:35.628Z] [INFO] Database connection established successfully
+[2025-12-15T11:11:35.665Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T11:11:35.676Z] [INFO] ============================================================
+[2025-12-15T11:11:35.677Z] [INFO] 🚀 Server Running
+[2025-12-15T11:11:35.678Z] [INFO] ============================================================
+[2025-12-15T11:11:35.680Z] [INFO] Environment: development
+[2025-12-15T11:11:35.681Z] [INFO] Port: 3002
+[2025-12-15T11:11:35.682Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T11:11:35.683Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T11:11:35.685Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T11:11:35.687Z] [INFO] ============================================================
+[2025-12-15T11:12:36.312Z] [INFO] Database connection established successfully
+[2025-12-15T11:12:36.326Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T11:12:36.337Z] [INFO] ============================================================
+[2025-12-15T11:12:36.340Z] [INFO] 🚀 Server Running
+[2025-12-15T11:12:36.343Z] [INFO] ============================================================
+[2025-12-15T11:12:36.345Z] [INFO] Environment: development
+[2025-12-15T11:12:36.347Z] [INFO] Port: 3002
+[2025-12-15T11:12:36.350Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T11:12:36.353Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T11:12:36.356Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T11:12:36.358Z] [INFO] ============================================================
+[2025-12-15T14:16:56.885Z] [INFO] Database connection established successfully
+[2025-12-15T14:16:56.906Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T14:16:56.918Z] [INFO] ============================================================
+[2025-12-15T14:16:56.920Z] [INFO] 🚀 Server Running
+[2025-12-15T14:16:56.922Z] [INFO] ============================================================
+[2025-12-15T14:16:56.924Z] [INFO] Environment: development
+[2025-12-15T14:16:56.927Z] [INFO] Port: 3002
+[2025-12-15T14:16:56.929Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T14:16:56.931Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T14:16:56.933Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T14:16:56.935Z] [INFO] ============================================================
+[2025-12-15T14:37:15.810Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-15T14:38:05.316Z] [INFO] Database connection established successfully
+[2025-12-15T14:38:05.323Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T14:38:05.333Z] [INFO] ============================================================
+[2025-12-15T14:38:05.335Z] [INFO] 🚀 Server Running
+[2025-12-15T14:38:05.336Z] [INFO] ============================================================
+[2025-12-15T14:38:05.338Z] [INFO] Environment: development
+[2025-12-15T14:38:05.339Z] [INFO] Port: 3002
+[2025-12-15T14:38:05.341Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T14:38:05.342Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T14:38:05.343Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T14:38:05.344Z] [INFO] ============================================================
+[2025-12-15T14:57:58.300Z] [INFO] Database connection established successfully
+[2025-12-15T14:57:58.333Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T14:57:58.363Z] [INFO] ============================================================
+[2025-12-15T14:57:58.377Z] [INFO] 🚀 Server Running
+[2025-12-15T14:57:58.391Z] [INFO] ============================================================
+[2025-12-15T14:57:58.399Z] [INFO] Environment: development
+[2025-12-15T14:57:58.402Z] [INFO] Port: 3002
+[2025-12-15T14:57:58.406Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T14:57:58.410Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T14:57:58.420Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T14:57:58.424Z] [INFO] ============================================================
+[2025-12-15T15:38:13.138Z] [INFO] Database connection established successfully
+[2025-12-15T15:38:13.149Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T15:38:13.164Z] [INFO] ============================================================
+[2025-12-15T15:38:13.170Z] [INFO] 🚀 Server Running
+[2025-12-15T15:38:13.173Z] [INFO] ============================================================
+[2025-12-15T15:38:13.175Z] [INFO] Environment: development
+[2025-12-15T15:38:13.178Z] [INFO] Port: 3002
+[2025-12-15T15:38:13.181Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T15:38:13.183Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T15:38:13.184Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T15:38:13.185Z] [INFO] ============================================================
+[2025-12-15T16:13:04.614Z] [INFO] Database connection established successfully
+[2025-12-15T16:13:04.628Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:13:04.636Z] [INFO] ============================================================
+[2025-12-15T16:13:04.636Z] [INFO] 🚀 Server Running
+[2025-12-15T16:13:04.637Z] [INFO] ============================================================
+[2025-12-15T16:13:04.637Z] [INFO] Environment: development
+[2025-12-15T16:13:04.638Z] [INFO] Port: 3002
+[2025-12-15T16:13:04.638Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:13:04.639Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:13:04.639Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:13:04.640Z] [INFO] ============================================================
+[2025-12-15T16:17:46.327Z] [INFO] Database connection established successfully
+[2025-12-15T16:17:46.343Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:17:46.350Z] [INFO] ============================================================
+[2025-12-15T16:17:46.350Z] [INFO] 🚀 Server Running
+[2025-12-15T16:17:46.351Z] [INFO] ============================================================
+[2025-12-15T16:17:46.351Z] [INFO] Environment: development
+[2025-12-15T16:17:46.352Z] [INFO] Port: 3002
+[2025-12-15T16:17:46.352Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:17:46.353Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:17:46.354Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:17:46.354Z] [INFO] ============================================================
+[2025-12-15T16:21:29.460Z] [INFO] Database connection established successfully
+[2025-12-15T16:21:29.469Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:21:29.475Z] [INFO] ============================================================
+[2025-12-15T16:21:29.476Z] [INFO] 🚀 Server Running
+[2025-12-15T16:21:29.478Z] [INFO] ============================================================
+[2025-12-15T16:21:29.479Z] [INFO] Environment: development
+[2025-12-15T16:21:29.480Z] [INFO] Port: 3002
+[2025-12-15T16:21:29.481Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:21:29.482Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:21:29.483Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:21:29.484Z] [INFO] ============================================================
+[2025-12-15T16:55:17.124Z] [INFO] Database connection established successfully
+[2025-12-15T16:55:17.137Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:55:17.143Z] [INFO] ============================================================
+[2025-12-15T16:55:17.143Z] [INFO] 🚀 Server Running
+[2025-12-15T16:55:17.144Z] [INFO] ============================================================
+[2025-12-15T16:55:17.145Z] [INFO] Environment: development
+[2025-12-15T16:55:17.146Z] [INFO] Port: 3002
+[2025-12-15T16:55:17.146Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:55:17.146Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:55:17.147Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:55:17.147Z] [INFO] ============================================================
+[2025-12-15T16:57:54.971Z] [INFO] Database connection established successfully
+[2025-12-15T16:57:54.974Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:57:54.977Z] [INFO] ============================================================
+[2025-12-15T16:57:54.978Z] [INFO] 🚀 Server Running
+[2025-12-15T16:57:54.978Z] [INFO] ============================================================
+[2025-12-15T16:57:54.979Z] [INFO] Environment: development
+[2025-12-15T16:57:54.979Z] [INFO] Port: 3002
+[2025-12-15T16:57:54.979Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:57:54.980Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:57:54.980Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:57:54.981Z] [INFO] ============================================================
+[2025-12-15T16:59:17.273Z] [INFO] Database connection established successfully
+[2025-12-15T16:59:17.277Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T16:59:17.281Z] [INFO] ============================================================
+[2025-12-15T16:59:17.282Z] [INFO] 🚀 Server Running
+[2025-12-15T16:59:17.283Z] [INFO] ============================================================
+[2025-12-15T16:59:17.284Z] [INFO] Environment: development
+[2025-12-15T16:59:17.284Z] [INFO] Port: 3002
+[2025-12-15T16:59:17.285Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T16:59:17.286Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T16:59:17.286Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T16:59:17.287Z] [INFO] ============================================================
+[2025-12-15T17:09:31.369Z] [INFO] Database connection established successfully
+[2025-12-15T17:09:31.372Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T17:09:31.375Z] [INFO] ============================================================
+[2025-12-15T17:09:31.376Z] [INFO] 🚀 Server Running
+[2025-12-15T17:09:31.376Z] [INFO] ============================================================
+[2025-12-15T17:09:31.377Z] [INFO] Environment: development
+[2025-12-15T17:09:31.378Z] [INFO] Port: 3002
+[2025-12-15T17:09:31.379Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T17:09:31.380Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T17:09:31.380Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T17:09:31.381Z] [INFO] ============================================================
+[2025-12-15T17:10:33.738Z] [INFO] Database connection established successfully
+[2025-12-15T17:10:33.741Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T17:10:33.744Z] [INFO] ============================================================
+[2025-12-15T17:10:33.744Z] [INFO] 🚀 Server Running
+[2025-12-15T17:10:33.745Z] [INFO] ============================================================
+[2025-12-15T17:10:33.745Z] [INFO] Environment: development
+[2025-12-15T17:10:33.746Z] [INFO] Port: 3002
+[2025-12-15T17:10:33.746Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T17:10:33.747Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T17:10:33.747Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T17:10:33.748Z] [INFO] ============================================================
+[2025-12-15T17:11:31.838Z] [INFO] Database connection established successfully
+[2025-12-15T17:11:31.846Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T17:11:31.850Z] [INFO] ============================================================
+[2025-12-15T17:11:31.851Z] [INFO] 🚀 Server Running
+[2025-12-15T17:11:31.851Z] [INFO] ============================================================
+[2025-12-15T17:11:31.852Z] [INFO] Environment: development
+[2025-12-15T17:11:31.853Z] [INFO] Port: 3002
+[2025-12-15T17:11:31.854Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T17:11:31.855Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T17:11:31.856Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T17:11:31.857Z] [INFO] ============================================================
+[2025-12-15T17:44:56.895Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-15T17:44:56.905Z] [INFO] HTTP server closed
+[2025-12-15T17:44:56.907Z] [INFO] Socket.IO closed
+[2025-12-15T17:45:37.823Z] [INFO] Database connection established successfully
+[2025-12-15T17:45:37.831Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T17:45:37.835Z] [INFO] ============================================================
+[2025-12-15T17:45:37.836Z] [INFO] 🚀 Server Running
+[2025-12-15T17:45:37.836Z] [INFO] ============================================================
+[2025-12-15T17:45:37.837Z] [INFO] Environment: development
+[2025-12-15T17:45:37.838Z] [INFO] Port: 3002
+[2025-12-15T17:45:37.839Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T17:45:37.839Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T17:45:37.840Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T17:45:37.840Z] [INFO] ============================================================
+[2025-12-15T18:40:12.457Z] [INFO] Database connection established successfully
+[2025-12-15T18:40:12.471Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T18:40:12.476Z] [INFO] ============================================================
+[2025-12-15T18:40:12.477Z] [INFO] 🚀 Server Running
+[2025-12-15T18:40:12.478Z] [INFO] ============================================================
+[2025-12-15T18:40:12.479Z] [INFO] Environment: development
+[2025-12-15T18:40:12.480Z] [INFO] Port: 3002
+[2025-12-15T18:40:12.480Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T18:40:12.481Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T18:40:12.482Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T18:40:12.482Z] [INFO] ============================================================
+[2025-12-15T18:47:17.295Z] [INFO] Database connection established successfully
+[2025-12-15T18:47:17.303Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T18:47:17.306Z] [INFO] ============================================================
+[2025-12-15T18:47:17.306Z] [INFO] 🚀 Server Running
+[2025-12-15T18:47:17.307Z] [INFO] ============================================================
+[2025-12-15T18:47:17.307Z] [INFO] Environment: development
+[2025-12-15T18:47:17.308Z] [INFO] Port: 3002
+[2025-12-15T18:47:17.308Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T18:47:17.309Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T18:47:17.309Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T18:47:17.309Z] [INFO] ============================================================
+[2025-12-15T18:48:10.036Z] [INFO] Database connection established successfully
+[2025-12-15T18:48:10.039Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T18:48:10.042Z] [INFO] ============================================================
+[2025-12-15T18:48:10.043Z] [INFO] 🚀 Server Running
+[2025-12-15T18:48:10.044Z] [INFO] ============================================================
+[2025-12-15T18:48:10.044Z] [INFO] Environment: development
+[2025-12-15T18:48:10.045Z] [INFO] Port: 3002
+[2025-12-15T18:48:10.045Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T18:48:10.045Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T18:48:10.046Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T18:48:10.046Z] [INFO] ============================================================
+[2025-12-15T19:12:06.845Z] [INFO] Database connection established successfully
+[2025-12-15T19:12:06.855Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-15T19:12:06.862Z] [INFO] ============================================================
+[2025-12-15T19:12:06.863Z] [INFO] 🚀 Server Running
+[2025-12-15T19:12:06.864Z] [INFO] ============================================================
+[2025-12-15T19:12:06.865Z] [INFO] Environment: development
+[2025-12-15T19:12:06.866Z] [INFO] Port: 3002
+[2025-12-15T19:12:06.866Z] [INFO] API URL: http://localhost:3002
+[2025-12-15T19:12:06.867Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-15T19:12:06.867Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-15T19:12:06.868Z] [INFO] ============================================================
+[2025-12-18T06:26:26.742Z] [INFO] Database connection established successfully
+[2025-12-18T06:26:26.761Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T06:26:26.776Z] [INFO] ============================================================
+[2025-12-18T06:26:26.779Z] [INFO] 🚀 Server Running
+[2025-12-18T06:26:26.783Z] [INFO] ============================================================
+[2025-12-18T06:26:26.785Z] [INFO] Environment: development
+[2025-12-18T06:26:26.786Z] [INFO] Port: 3002
+[2025-12-18T06:26:26.788Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T06:26:26.791Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T06:26:26.793Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T06:26:26.795Z] [INFO] ============================================================
+[2025-12-18T07:57:53.819Z] [INFO] Database connection established successfully
+[2025-12-18T07:57:53.848Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T07:57:53.856Z] [INFO] ============================================================
+[2025-12-18T07:57:53.857Z] [INFO] 🚀 Server Running
+[2025-12-18T07:57:53.858Z] [INFO] ============================================================
+[2025-12-18T07:57:53.859Z] [INFO] Environment: development
+[2025-12-18T07:57:53.860Z] [INFO] Port: 3002
+[2025-12-18T07:57:53.860Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T07:57:53.861Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T07:57:53.862Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T07:57:53.863Z] [INFO] ============================================================
+[2025-12-18T08:37:09.073Z] [INFO] Database connection established successfully
+[2025-12-18T08:37:09.086Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T08:37:09.090Z] [INFO] ============================================================
+[2025-12-18T08:37:09.091Z] [INFO] 🚀 Server Running
+[2025-12-18T08:37:09.092Z] [INFO] ============================================================
+[2025-12-18T08:37:09.092Z] [INFO] Environment: development
+[2025-12-18T08:37:09.093Z] [INFO] Port: 3002
+[2025-12-18T08:37:09.093Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T08:37:09.093Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T08:37:09.094Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T08:37:09.095Z] [INFO] ============================================================
+[2025-12-18T08:53:18.984Z] [INFO] Database connection established successfully
+[2025-12-18T08:53:18.991Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T08:53:18.994Z] [INFO] ============================================================
+[2025-12-18T08:53:18.995Z] [INFO] 🚀 Server Running
+[2025-12-18T08:53:18.995Z] [INFO] ============================================================
+[2025-12-18T08:53:18.996Z] [INFO] Environment: development
+[2025-12-18T08:53:18.997Z] [INFO] Port: 3002
+[2025-12-18T08:53:18.998Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T08:53:18.999Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T08:53:18.999Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T08:53:19.000Z] [INFO] ============================================================
+[2025-12-18T09:47:01.240Z] [INFO] Database connection established successfully
+[2025-12-18T09:47:01.262Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T09:47:01.270Z] [INFO] ============================================================
+[2025-12-18T09:47:01.271Z] [INFO] 🚀 Server Running
+[2025-12-18T09:47:01.271Z] [INFO] ============================================================
+[2025-12-18T09:47:01.272Z] [INFO] Environment: development
+[2025-12-18T09:47:01.273Z] [INFO] Port: 3002
+[2025-12-18T09:47:01.274Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T09:47:01.276Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T09:47:01.276Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T09:47:01.277Z] [INFO] ============================================================
+[2025-12-18T09:49:39.757Z] [INFO] Database connection established successfully
+[2025-12-18T09:49:39.764Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T09:49:39.770Z] [INFO] ============================================================
+[2025-12-18T09:49:39.771Z] [INFO] 🚀 Server Running
+[2025-12-18T09:49:39.772Z] [INFO] ============================================================
+[2025-12-18T09:49:39.773Z] [INFO] Environment: development
+[2025-12-18T09:49:39.773Z] [INFO] Port: 3002
+[2025-12-18T09:49:39.774Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T09:49:39.775Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T09:49:39.775Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T09:49:39.776Z] [INFO] ============================================================
+[2025-12-18T09:50:12.628Z] [INFO] Database connection established successfully
+[2025-12-18T09:50:12.635Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T09:50:12.641Z] [INFO] ============================================================
+[2025-12-18T09:50:12.642Z] [INFO] 🚀 Server Running
+[2025-12-18T09:50:12.644Z] [INFO] ============================================================
+[2025-12-18T09:50:12.645Z] [INFO] Environment: development
+[2025-12-18T09:50:12.646Z] [INFO] Port: 3002
+[2025-12-18T09:50:12.647Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T09:50:12.647Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T09:50:12.648Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T09:50:12.649Z] [INFO] ============================================================
+[2025-12-18T09:51:28.099Z] [INFO] Database connection established successfully
+[2025-12-18T09:51:28.105Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T09:51:28.110Z] [INFO] ============================================================
+[2025-12-18T09:51:28.111Z] [INFO] 🚀 Server Running
+[2025-12-18T09:51:28.112Z] [INFO] ============================================================
+[2025-12-18T09:51:28.112Z] [INFO] Environment: development
+[2025-12-18T09:51:28.113Z] [INFO] Port: 3002
+[2025-12-18T09:51:28.114Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T09:51:28.115Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T09:51:28.117Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T09:51:28.118Z] [INFO] ============================================================
+[2025-12-18T10:02:35.839Z] [INFO] Database connection established successfully
+[2025-12-18T10:02:35.854Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:02:35.863Z] [INFO] ============================================================
+[2025-12-18T10:02:35.866Z] [INFO] 🚀 Server Running
+[2025-12-18T10:02:35.868Z] [INFO] ============================================================
+[2025-12-18T10:02:35.869Z] [INFO] Environment: development
+[2025-12-18T10:02:35.871Z] [INFO] Port: 3002
+[2025-12-18T10:02:35.873Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:02:35.876Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:02:35.878Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:02:35.880Z] [INFO] ============================================================
+[2025-12-18T10:03:30.948Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-18T10:03:30.956Z] [INFO] HTTP server closed
+[2025-12-18T10:03:30.958Z] [INFO] Socket.IO closed
+[2025-12-18T10:03:46.484Z] [INFO] Database connection established successfully
+[2025-12-18T10:03:46.488Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:03:46.491Z] [INFO] ============================================================
+[2025-12-18T10:03:46.492Z] [INFO] 🚀 Server Running
+[2025-12-18T10:03:46.493Z] [INFO] ============================================================
+[2025-12-18T10:03:46.494Z] [INFO] Environment: development
+[2025-12-18T10:03:46.494Z] [INFO] Port: 3002
+[2025-12-18T10:03:46.495Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:03:46.495Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:03:46.496Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:03:46.496Z] [INFO] ============================================================
+[2025-12-18T10:05:05.661Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-18T10:05:57.709Z] [INFO] Database connection established successfully
+[2025-12-18T10:05:57.715Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:05:57.721Z] [INFO] ============================================================
+[2025-12-18T10:05:57.722Z] [INFO] 🚀 Server Running
+[2025-12-18T10:05:57.723Z] [INFO] ============================================================
+[2025-12-18T10:05:57.724Z] [INFO] Environment: development
+[2025-12-18T10:05:57.725Z] [INFO] Port: 3002
+[2025-12-18T10:05:57.725Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:05:57.727Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:05:57.728Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:05:57.728Z] [INFO] ============================================================
+[2025-12-18T10:07:00.469Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-18T10:07:08.923Z] [INFO] Database connection established successfully
+[2025-12-18T10:07:08.929Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:07:08.936Z] [INFO] ============================================================
+[2025-12-18T10:07:08.937Z] [INFO] 🚀 Server Running
+[2025-12-18T10:07:08.938Z] [INFO] ============================================================
+[2025-12-18T10:07:08.939Z] [INFO] Environment: development
+[2025-12-18T10:07:08.940Z] [INFO] Port: 3002
+[2025-12-18T10:07:08.941Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:07:08.942Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:07:08.943Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:07:08.944Z] [INFO] ============================================================
+[2025-12-18T10:07:38.878Z] [INFO] SIGINT received, shutting down gracefully
+[2025-12-18T10:08:13.633Z] [INFO] Database connection established successfully
+[2025-12-18T10:08:13.637Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:08:13.640Z] [INFO] ============================================================
+[2025-12-18T10:08:13.641Z] [INFO] 🚀 Server Running
+[2025-12-18T10:08:13.641Z] [INFO] ============================================================
+[2025-12-18T10:08:13.642Z] [INFO] Environment: development
+[2025-12-18T10:08:13.643Z] [INFO] Port: 3002
+[2025-12-18T10:08:13.644Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:08:13.644Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:08:13.645Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:08:13.645Z] [INFO] ============================================================
+[2025-12-18T10:09:36.961Z] [INFO] Database connection established successfully
+[2025-12-18T10:09:36.974Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:09:36.982Z] [INFO] ============================================================
+[2025-12-18T10:09:36.983Z] [INFO] 🚀 Server Running
+[2025-12-18T10:09:36.984Z] [INFO] ============================================================
+[2025-12-18T10:09:36.985Z] [INFO] Environment: development
+[2025-12-18T10:09:36.986Z] [INFO] Port: 3002
+[2025-12-18T10:09:37.006Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:09:37.006Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:09:37.011Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:09:37.035Z] [INFO] ============================================================
+[2025-12-18T10:24:20.015Z] [INFO] Database connection established successfully
+[2025-12-18T10:24:20.023Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:24:20.026Z] [INFO] ============================================================
+[2025-12-18T10:24:20.027Z] [INFO] 🚀 Server Running
+[2025-12-18T10:24:20.027Z] [INFO] ============================================================
+[2025-12-18T10:24:20.028Z] [INFO] Environment: development
+[2025-12-18T10:24:20.028Z] [INFO] Port: 3002
+[2025-12-18T10:24:20.029Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:24:20.029Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:24:20.030Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:24:20.030Z] [INFO] ============================================================
+[2025-12-18T10:25:38.452Z] [INFO] Database connection established successfully
+[2025-12-18T10:25:38.459Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-18T10:25:38.463Z] [INFO] ============================================================
+[2025-12-18T10:25:38.464Z] [INFO] 🚀 Server Running
+[2025-12-18T10:25:38.464Z] [INFO] ============================================================
+[2025-12-18T10:25:38.465Z] [INFO] Environment: development
+[2025-12-18T10:25:38.465Z] [INFO] Port: 3002
+[2025-12-18T10:25:38.466Z] [INFO] API URL: http://localhost:3002
+[2025-12-18T10:25:38.466Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-18T10:25:38.467Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-18T10:25:38.468Z] [INFO] ============================================================
+[2025-12-20T12:30:00.092Z] [INFO] Database connection established successfully
+[2025-12-20T12:30:00.105Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2025-12-20T12:30:00.106Z] [INFO] Session cleanup service initialized
+[2025-12-20T12:30:00.110Z] [INFO] Socket.IO handlers initialized successfully
+[2025-12-20T12:30:00.113Z] [INFO] ============================================================
+[2025-12-20T12:30:00.114Z] [INFO] 🚀 Server Running
+[2025-12-20T12:30:00.114Z] [INFO] ============================================================
+[2025-12-20T12:30:00.115Z] [INFO] Environment: development
+[2025-12-20T12:30:00.115Z] [INFO] Port: 3002
+[2025-12-20T12:30:00.116Z] [INFO] API URL: http://localhost:3002
+[2025-12-20T12:30:00.116Z] [INFO] Socket.IO URL: http://localhost:3002
+[2025-12-20T12:30:00.116Z] [INFO] Socket.IO Path: /socket.io/
+[2025-12-20T12:30:00.117Z] [INFO] SSO Enabled: Yes
+[2025-12-20T12:30:00.117Z] [INFO] BwengePlus URL: Not configured
+[2025-12-20T12:30:00.117Z] [INFO] ============================================================

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const EngagementController_1 = require("../controllers/EngagementController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const router = (0, express_1.Router)();
+router.post("/like", authMiddleware_1.authenticate, EngagementController_1.EngagementController.toggleLike);
+router.post("/comment", authMiddleware_1.authenticate, EngagementController_1.EngagementController.createComment);
+router.get("/comments", EngagementController_1.EngagementController.getComments);
+router.post("/bookmark", authMiddleware_1.authenticate, EngagementController_1.EngagementController.toggleBookmark);
+router.get("/bookmarks", authMiddleware_1.authenticate, EngagementController_1.EngagementController.getUserBookmarks);
+exports.default = router;

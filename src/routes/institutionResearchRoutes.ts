@@ -2,7 +2,7 @@ import { Router } from "express";
 import { InstitutionResearchController } from "../controllers/InstitutionResearchController";
 import { InstitutionProjectCommentController } from "../controllers/InstitutionProjectCommentController";
 import { authenticate } from "../middlewares/authMiddleware";
-import { uploadResearchFiles } from "../helpers/multer";
+import { uploadResearchFiles, uploadFields, handleMulterError } from "../helpers/multer";
 
 const router = Router();
 
@@ -14,15 +14,15 @@ router.put("/:id", authenticate, uploadResearchFiles, InstitutionResearchControl
 
 // Submit & review
 router.post("/:id/submit", authenticate, InstitutionResearchController.submitProject);
-router.post("/:id/supervisor-review", authenticate, InstitutionResearchController.supervisorReview);
-router.post("/:id/instructor-review", authenticate, InstitutionResearchController.instructorReview);
+router.post("/:id/supervisor-review", authenticate, uploadResearchFiles, handleMulterError, InstitutionResearchController.supervisorReview);
+router.post("/:id/instructor-review", authenticate, uploadResearchFiles, handleMulterError, InstitutionResearchController.instructorReview);
 router.post("/:id/publish", authenticate, InstitutionResearchController.publishProject);
 
 // Activity
 router.get("/:id/activity", authenticate, InstitutionResearchController.getActivity);
 
 // Comments
-router.post("/:id/comments", authenticate, InstitutionProjectCommentController.create);
+router.post("/:id/comments", authenticate, uploadFields, handleMulterError, InstitutionProjectCommentController.create);
 router.get("/:id/comments", authenticate, InstitutionProjectCommentController.list);
 router.patch("/:id/comments/:commentId/resolve", authenticate, InstitutionProjectCommentController.resolve);
 

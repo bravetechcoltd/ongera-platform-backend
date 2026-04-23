@@ -20,7 +20,7 @@ export class NotificationService {
       const mailOptions = {
         from: process.env.SMTP_FROM,
         to: adminEmail,
-        subject: '🔔 New Community Awaiting Approval - Ongera',
+        subject: '🔔 New Community Awaiting Approval - BWENGE',
         html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +33,7 @@ export class NotificationService {
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <div style="padding: 30px; background: white;">
@@ -92,11 +92,11 @@ export class NotificationService {
     
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Admin Panel</strong><br>
+        <strong>BWENGE Admin Panel</strong><br>
         Community Management System
       </div>
       <div style="color: #94a3b8; font-size: 12px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -116,7 +116,7 @@ export class NotificationService {
       const mailOptions = {
         from: process.env.SMTP_FROM,
         to: community.creator.email,
-        subject: '🎉 Your Community Has Been Approved - Ongera',
+        subject: 'Your Community Has Been Approved - BWENGE',
         html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -129,7 +129,7 @@ export class NotificationService {
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <div style="padding: 30px; background: white;">
@@ -155,7 +155,7 @@ export class NotificationService {
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Great news! Your community is now live on the Ongera platform and visible to all users.
+        Great news! Your community is now live on the BWENGE platform and visible to all users.
       </div>
       
       <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 18px; border-radius: 6px; margin: 20px 0;">
@@ -196,7 +196,7 @@ export class NotificationService {
         Thank you for contributing to our community!
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -216,7 +216,7 @@ export class NotificationService {
       const mailOptions = {
         from: process.env.SMTP_FROM,
         to: community.creator.email,
-        subject: 'Community Submission Update - Ongera',
+        subject: 'Community Submission Update - BWENGE',
         html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -229,7 +229,7 @@ export class NotificationService {
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <div style="padding: 30px; background: white;">
@@ -238,7 +238,7 @@ export class NotificationService {
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Thank you for your interest in creating a community on Ongera. After careful review, we're unable to approve your community submission at this time.
+        Thank you for your interest in creating a community on BWENGE. After careful review, we're unable to approve your community submission at this time.
       </div>
       
       <span style="display: inline-block; background: #dc3545; color: white; padding: 8px 20px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 10px 0;">
@@ -295,10 +295,10 @@ export class NotificationService {
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Questions? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Questions? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     

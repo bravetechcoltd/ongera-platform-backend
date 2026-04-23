@@ -28,7 +28,7 @@ export class MonthlyStarCongratulationsTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Congratulations Banner -->
@@ -44,7 +44,7 @@ export class MonthlyStarCongratulationsTemplate {
       </div>
       
       <div style="color: #4a4a4a; font-size: 14px; line-height: 1.5; margin-bottom: 12px;">
-        We are thrilled to announce that you have been selected as the <strong>Monthly Star</strong> for <strong>${data.month} ${data.year}</strong>${data.community_name ? ` in the <strong>${data.community_name}</strong> community` : ' across the entire Ongera platform'}!
+        We are thrilled to announce that you have been selected as the <strong>Monthly Star</strong> for <strong>${data.month} ${data.year}</strong>${data.community_name ? ` in the <strong>${data.community_name}</strong> community` : ' across the entire BWENGE platform'}!
       </div>
       
       <!-- Status Badge -->
@@ -148,21 +148,21 @@ export class MonthlyStarCongratulationsTemplate {
       <div style="height: 1px; background: #e9ecef; margin: 20px 0;"></div>
       
       <div style="color: #6c757d; font-size: 12px; text-align: center; line-height: 1.4;">
-        Thank you for being an outstanding member of the Ongera community!
+        Thank you for being an outstanding member of the BWENGE community!
       </div>
     </div>
     
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 20px 25px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 12px; line-height: 1.4; margin-bottom: 6px;">
-        <strong>Ongera Research Platform</strong><br>
+        <strong>BWENGE Research Platform</strong><br>
         Empowering Rwanda's Research Community
       </div>
       <div style="color: #6c757d; font-size: 11px; margin-bottom: 6px;">
         Connecting Researchers • Advancing Knowledge • Building the Future
       </div>
       <div style="color: #6c757d; font-size: 11px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     

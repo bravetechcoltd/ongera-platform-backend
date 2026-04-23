@@ -57,12 +57,12 @@ export class SubscribeController {
       try {
         await sendEmail({
           to: email,
-          subject: "🎉 Welcome to Ongera - Subscription Confirmed!",
+          subject: "Welcome to Bwenge - Subscription Confirmed!",
           html: `
             <!DOCTYPE html>
             <html>
             <body style="font-family: Arial, sans-serif; padding: 20px;">
-              <h2 style="color: #0158B7;">Welcome to Ongera!</h2>
+              <h2 style="color: #0158B7;">Welcome to Bwenge!</h2>
               <p>Thank you for subscribing to our platform notifications.</p>
               <p>You'll now receive updates about:</p>
               <ul>
@@ -261,7 +261,7 @@ export class SubscribeController {
 
           await sendEmail({
             to: subscriber.email,
-            subject: `🎉 New Community Created: ${communityData.name}`,
+            subject: `New Community Created: ${communityData.name}`,
             html: emailHtml
           });
 

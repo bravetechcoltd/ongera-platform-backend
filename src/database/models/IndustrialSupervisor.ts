@@ -56,6 +56,9 @@ export class IndustrialSupervisor {
   @Column({ default: true })
   is_active: boolean;
 
+  @Column({ type: "simple-array", nullable: true })
+  pending_project_ids: string[];
+
   @Column({ type: "timestamp", nullable: true })
   accepted_at: Date;
 

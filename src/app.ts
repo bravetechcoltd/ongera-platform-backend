@@ -23,6 +23,7 @@ import monthlyStarTrackerRoutes from "./routes/monthlyStarTracker";
 import institutionWorkRoutes from "./routes/institutionWorkRoutes";
 import institutionResearchRoutes from "./routes/institutionResearchRoutes";
 import institutionResearchAdminRoutes from "./routes/institutionResearchAdminRoutes";
+import heroSlideRoutes from "./routes/heroSlideRoutes";
 
 
 const app: Application = express();
@@ -86,7 +87,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// Routes
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", ssoRoutes); // ✅ NEW: SSO routes
@@ -108,9 +108,10 @@ app.use("/api/institution-portal", institutionPortalRoutes);
 app.use("/api/institution-work", institutionWorkRoutes);
 app.use("/api/institution-research-projects", institutionResearchRoutes);
 app.use("/api/admin/institution-research", institutionResearchAdminRoutes);
+app.use("/api/hero-slides", heroSlideRoutes);
 app.get("/", (req, res) => {
   res.json({ 
-    message: "Welcome to ONGERA Platform API",
+    message: "Welcome to Bwenge Platform API",
     sso_enabled: true, // ✅ NEW
     supported_systems: ["ONGERA", "BWENGE_PLUS"] // ✅ NEW
   });

@@ -56,7 +56,7 @@ export class DeleteResearchProjectTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -199,7 +199,7 @@ export class DeleteResearchProjectTemplate {
         <div style="color: #6c757d; font-size: 14px; line-height: 1.5; margin-bottom: 15px;">
           If you believe this deletion was made in error or if you have questions about the decision, please contact our support team.
         </div>
-        <a href="mailto:support@ongera.com" 
+        <a href="mailto:bwengeorg@gmail.com" 
            style="display: inline-block; background: #f8f9fa; color: #0158B7; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; border: 1px solid #dee2e6;">
           Email Support Team
         </a>

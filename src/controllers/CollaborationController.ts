@@ -303,7 +303,7 @@ export class CollaborationController {
 
         await sendEmail({
           to: request.requester.email,
-          subject: `🎉 Your Collaboration Request for "${request.project.title}" Has Been Approved!`,
+          subject: `Your Collaboration Request for "${request.project.title}" Has Been Approved!`,
           html: emailHtml
         });
       } catch (emailError: any) {
@@ -1047,7 +1047,7 @@ export class CollaborationController {
 
         await sendEmail({
           to: contribution.contributor.email,
-          subject: `🎉 Your Contribution to "${contribution.project.title}" Has Been Approved!`,
+          subject: `Your Contribution to "${contribution.project.title}" Has Been Approved!`,
           html: emailHtml
         });
       } catch (emailError: any) {

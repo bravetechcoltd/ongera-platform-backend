@@ -744,7 +744,7 @@ static async approveCommunity(req: Request, res: Response) {
 
       await sendEmail({
         to: creatorEmail,
-        subject: `🎉 Your Community "${community.name}" Has Been Approved!`,
+        subject: `Your Community "${community.name}" Has Been Approved!`,
         html: emailHtml
       });
 
@@ -1979,7 +1979,7 @@ static async approveJoinRequest(req: Request, res: Response) {
 
       await sendEmail({
         to: joinRequest.user.email,
-        subject: `🎉 Welcome to "${joinRequest.community.name}"!`,
+        subject: `Welcome to "${joinRequest.community.name}"!`,
         html: approvalEmailHtml
       });
 

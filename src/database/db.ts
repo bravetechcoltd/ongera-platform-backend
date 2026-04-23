@@ -2,6 +2,19 @@ import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Make `timestamp without time zone` columns (the default for TypeORM
+// @CreateDateColumn / @UpdateDateColumn) parse as UTC instead of in the
+// Node process's local timezone. Without this, when the Node server runs
+// in a non-UTC tz (e.g. Africa/Kigali, UTC+2), JS Date instances coming out
+// of pg are shifted by the server offset — chat messages and other
+// timestamps then display as N hours in the past on the client.
+// 1114 = OID for `timestamp without time zone`.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pgTypes = require('pg').types;
+pgTypes.setTypeParser(1114, (str: string | null) =>
+  str ? new Date(str.endsWith('Z') ? str : str + 'Z') : null
+);
+
 const requiresSSL = (): boolean => {
   const url = process.env.DATABASE_URL || '';
   return url.includes('sslmode=require') || url.includes('neon.tech');

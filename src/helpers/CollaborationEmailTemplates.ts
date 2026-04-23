@@ -37,7 +37,7 @@ static getContributionApprovedTemplate(
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -105,11 +105,11 @@ static getContributionApprovedTemplate(
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -137,7 +137,7 @@ static getContributionApprovedTemplate(
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -217,11 +217,11 @@ static getContributionApprovedTemplate(
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -251,7 +251,7 @@ static getContributionApprovedTemplate(
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -319,11 +319,11 @@ static getContributionApprovedTemplate(
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -354,7 +354,7 @@ static getContributionApprovedTemplate(
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -411,11 +411,11 @@ static getContributionApprovedTemplate(
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     

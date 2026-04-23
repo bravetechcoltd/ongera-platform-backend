@@ -48,7 +48,7 @@ export class ApproveUserRequestToJoinCommunityTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -194,7 +194,7 @@ export class ApproveUserRequestToJoinCommunityTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->

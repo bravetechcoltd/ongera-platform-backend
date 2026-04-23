@@ -269,7 +269,9 @@ export const uploadResearchFiles = upload.fields([
   { name: "project_file", maxCount: 1 },
   { name: "cover_image", maxCount: 1 },
   { name: "post_image", maxCount: 1 },
-  { name: "additional_files", maxCount: 5 }
+  { name: "additional_files", maxCount: 5 },
+  { name: "attachments", maxCount: 10 },
+  { name: "revised_document", maxCount: 1 },
 ])
 export const getAllowedExtensions = () => ({ ...allowedExtensions })
 export const isExtensionAllowed = (ext: string) => allAllowedExtensions.includes(ext.toLowerCase())

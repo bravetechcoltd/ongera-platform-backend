@@ -26,6 +26,48 @@ import { UserSession, SystemType } from "../database/models/UserSession";
 
 import { ActivateDeactivateDeleteUserTemplate } from "../helpers/ActivateDeactivateDeleteUserTemplate";
 import { InstructorStudent } from "../database/models/InstructorStudent";
+import {
+  IndustrialSupervisor,
+  SupervisorInvitationStatus,
+} from "../database/models/IndustrialSupervisor";
+
+// Loads non-expired PENDING supervisor invitations for a user, shaped for
+// the frontend banner: token + minimal institution info, no DB internals.
+async function loadPendingSupervisorInvitations(userId: string) {
+  const repo = dbConnection.getRepository(IndustrialSupervisor);
+  const rows = await repo.find({
+    where: {
+      user: { id: userId } as any,
+      invitation_status: SupervisorInvitationStatus.PENDING,
+    },
+    relations: ["institution", "institution.profile"],
+    order: { created_at: "DESC" },
+  });
+  const now = new Date();
+  return rows
+    .filter((r) => !r.invitation_expires_at || r.invitation_expires_at > now)
+    .map((r) => ({
+      invitation_id: r.id,
+      token: r.invitation_token,
+      expires_at: r.invitation_expires_at,
+      expertise_area: r.expertise_area || null,
+      organization: r.organization || null,
+      pending_project_count: Array.isArray(r.pending_project_ids)
+        ? r.pending_project_ids.length
+        : 0,
+      institution: {
+        id: r.institution?.id,
+        name:
+          r.institution?.profile?.institution_name ||
+          [r.institution?.first_name, r.institution?.last_name]
+            .filter(Boolean)
+            .join(" ") ||
+          null,
+        logo_url: r.institution?.profile_picture_url || null,
+        email: r.institution?.email || null,
+      },
+    }));
+}
 import { Like } from "../database/models/Like";
 import { Comment } from "../database/models/Comment";
 import { EventAttendee } from "../database/models/EventAttendee";
@@ -674,6 +716,7 @@ static async login(req: Request, res: Response) {
         instructor_email: user.assignedInstructor[0].instructor.email,
         assigned_at: user.assignedInstructor[0].assigned_at
       } : null,
+      pending_supervisor_invitations: await loadPendingSupervisorInvitations(user.id),
     };
 
     if (user.profile) {
@@ -1051,7 +1094,7 @@ static async googleLogin(req: Request, res: Response) {
     const profilePicture = payload.picture || "";
 
     const userRepo = dbConnection.getRepository(User);
-    let user = await userRepo.findOne({
+    const existingUser = await userRepo.findOne({
       where: { email },
       relations: ["profile"]
     });
@@ -1060,7 +1103,7 @@ static async googleLogin(req: Request, res: Response) {
     // ENHANCED: Do NOT auto-create account via Google.
     // User must have applied and been approved first.
     // ============================================================
-    if (!user) {
+    if (!existingUser) {
       return res.status(404).json({
         success: false,
         message: "No account found with this Google email. Please apply to join BwengePlus first.",
@@ -1069,22 +1112,22 @@ static async googleLogin(req: Request, res: Response) {
     }
 
     // Update social auth info if account exists but wasn't Google-linked yet
-    if (!user.social_auth_provider) {
+    if (!existingUser.social_auth_provider) {
       const updates: any = {
         social_auth_provider: "google",
         social_auth_id: googleId,
         last_login: new Date(),
       };
 
-      if (!user.profile_picture_url) {
+      if (!existingUser.profile_picture_url) {
         updates.profile_picture_url = profilePicture;
       }
 
-      if (!user.IsForWhichSystem) {
+      if (!existingUser.IsForWhichSystem) {
         updates.IsForWhichSystem = SystemType.ONGERA;
       }
 
-      if (!user.is_verified) {
+      if (!existingUser.is_verified) {
         updates.is_verified = true;
       }
 
@@ -1092,33 +1135,37 @@ static async googleLogin(req: Request, res: Response) {
         .createQueryBuilder()
         .update(User)
         .set(updates)
-        .where("id = :id", { id: user.id })
+        .where("id = :id", { id: existingUser.id })
         .execute();
     } else {
-      user.last_login = new Date();
-      await userRepo.save(user);
+      await userRepo
+        .createQueryBuilder()
+        .update(User)
+        .set({ last_login: new Date() })
+        .where("id = :id", { id: existingUser.id })
+        .execute();
     }
 
     // ============================================================
     // APPLICATION STATUS GATE — block pending/rejected accounts
     // ============================================================
-    if (user.application_status === ApplicationStatus.PENDING) {
+    if (existingUser.application_status === ApplicationStatus.PENDING) {
       return res.status(403).json({
         success: false,
         message: "Your application is pending review by our admin team. You will receive an email once approved.",
         code: "PENDING_APPROVAL"
       });
     }
-    if (user.application_status === ApplicationStatus.REJECTED) {
+    if (existingUser.application_status === ApplicationStatus.REJECTED) {
       return res.status(403).json({
         success: false,
         message: "Your application was not approved. Please contact support for more information.",
         code: "APPLICATION_REJECTED",
-        rejection_reason: user.rejection_reason || null
+        rejection_reason: existingUser.rejection_reason || null
       });
     }
 
-    if (!user.is_active) {
+    if (!existingUser.is_active) {
       return res.status(403).json({
         success: false,
         message: "Account is deactivated. Please contact support.",
@@ -1126,32 +1173,140 @@ static async googleLogin(req: Request, res: Response) {
       });
     }
 
+    // ============================================================
+    // Reload user with all relations needed for the rich response
+    // (mirrors normal login so institution portal info, assigned
+    //  students/instructor, etc. are returned)
+    // ============================================================
+    const user = await userRepo
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.profile", "profile")
+      .leftJoinAndSelect("user.assignedStudents", "assignedStudents")
+      .leftJoinAndSelect("assignedStudents.student", "student")
+      .leftJoinAndSelect("user.assignedInstructor", "assignedInstructor")
+      .leftJoinAndSelect("assignedInstructor.instructor", "instructor")
+      .select([
+        "user.id", "user.email",
+        "user.first_name", "user.last_name", "user.username",
+        "user.phone_number", "user.profile_picture_url", "user.bio",
+        "user.account_type", "user.is_verified", "user.is_active",
+        "user.date_joined", "user.last_login", "user.country", "user.city",
+        "user.social_auth_provider", "user.social_auth_id",
+        "user.IsForWhichSystem", "user.bwenge_role",
+        "user.primary_institution_id", "user.is_institution_member",
+        "user.institution_ids", "user.institution_role",
+        "profile", "assignedStudents", "student", "assignedInstructor", "instructor"
+      ])
+      .where("user.id = :id", { id: existingUser.id })
+      .getOne();
+
+    await userRepo
+      .createQueryBuilder()
+      .update(User)
+      .set({ isUserLogin: true })
+      .where("id = :id", { id: user.id })
+      .execute();
+
+    // ============================================================
+    // Create sessions for both systems (matches normal login)
+    // ============================================================
+    const sessionRepo = dbConnection.getRepository(UserSession);
+
+    const ongeraSessionToken = crypto.randomBytes(32).toString('hex');
+    const ongeraSession = sessionRepo.create({
+      user_id: user.id,
+      system: SystemType.ONGERA,
+      session_token: ongeraSessionToken,
+      device_info: req.headers['user-agent'] || '',
+      ip_address: req.ip,
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      is_active: true
+    });
+    await sessionRepo.save(ongeraSession);
+
+    const bwengeSessionToken = crypto.randomBytes(32).toString('hex');
+    const bwengeSession = sessionRepo.create({
+      user_id: user.id,
+      system: SystemType.BWENGE_PLUS,
+      session_token: bwengeSessionToken,
+      device_info: req.headers['user-agent'] || '',
+      ip_address: req.ip,
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      is_active: true
+    });
+    await sessionRepo.save(bwengeSession);
+
     const jwtToken = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email, 
+      {
+        userId: user.id,
+        email: user.email,
         account_type: user.account_type,
-        system: SystemType.ONGERA
+        is_instructor: user.assignedStudents?.length > 0,
+        system: SystemType.ONGERA,
+        session_tokens: {
+          ongera: ongeraSessionToken,
+          bwenge: bwengeSessionToken
+        }
       },
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );
 
+    const responseData: any = {
+      id: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      username: user.username,
+      phone_number: user.phone_number,
+      profile_picture_url: user.profile_picture_url,
+      bio: user.bio,
+      account_type: user.account_type,
+      is_verified: user.is_verified,
+      country: user.country,
+      city: user.city,
+      IsForWhichSystem: user.IsForWhichSystem || SystemType.ONGERA,
+      bwenge_role: user.bwenge_role,
+      is_institution_member: user.is_institution_member || false,
+      institution_ids: user.institution_ids || [],
+      primary_institution_id: user.primary_institution_id,
+      institution_role: user.institution_role,
+      institution_portal_role: user.institution_portal_role || null,
+      is_industrial_supervisor: user.is_industrial_supervisor || false,
+      industrial_supervisor_institutions: user.industrial_supervisor_institutions || [],
+      has_institution_portal_access: !!(
+        user.institution_portal_role ||
+        user.is_industrial_supervisor ||
+        user.is_institution_member ||
+        user.account_type === "Institution"
+      ),
+      is_instructor: user.assignedStudents?.length > 0,
+      student_count: user.assignedStudents?.length || 0,
+      has_assigned_instructor: user.assignedInstructor?.length > 0,
+      assigned_students: user.assignedStudents?.map(link => ({
+        student_id: link.student.id,
+        student_name: `${link.student.first_name} ${link.student.last_name}`,
+        student_email: link.student.email,
+        assigned_at: link.assigned_at
+      })) || [],
+      assigned_instructor: user.assignedInstructor?.length > 0 ? {
+        instructor_id: user.assignedInstructor[0].instructor.id,
+        instructor_name: `${user.assignedInstructor[0].instructor.first_name} ${user.assignedInstructor[0].instructor.last_name}`,
+        instructor_email: user.assignedInstructor[0].instructor.email,
+        assigned_at: user.assignedInstructor[0].assigned_at
+      } : null,
+      pending_supervisor_invitations: await loadPendingSupervisorInvitations(user.id),
+    };
+
+    if (user.profile) {
+      responseData.profile = { ...user.profile };
+    }
+
     res.json({
       success: true,
       message: "Google login successful",
       data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          first_name: user.first_name,
-          last_name: user.last_name,
-          account_type: user.account_type,
-          is_verified: user.is_verified,
-          profile_picture_url: user.profile_picture_url,
-          IsForWhichSystem: user.IsForWhichSystem || SystemType.ONGERA,
-          profile: user.profile,
-        },
+        user: responseData,
         token: jwtToken,
       },
     });
@@ -1182,6 +1337,8 @@ static async googleLogin(req: Request, res: Response) {
       }
 
       const { password_hash, ...userData } = user;
+      (userData as any).pending_supervisor_invitations =
+        await loadPendingSupervisorInvitations(user.id);
 
       res.json({
         success: true,

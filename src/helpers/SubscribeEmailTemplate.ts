@@ -61,7 +61,7 @@ export class SubscribeEmailTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -71,7 +71,7 @@ export class SubscribeEmailTemplate {
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Exciting news! A new community has just been created on Ongera platform. This could be a great opportunity to connect with like-minded researchers!
+        Exciting news! A new community has just been created on BWENGE platform. This could be a great opportunity to connect with like-minded researchers!
       </div>
       
       <span style="display: inline-block; background: #28a745; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 5px 0;">
@@ -119,7 +119,7 @@ export class SubscribeEmailTemplate {
       <div style="height: 1px; background: #e9ecef; margin: 20px 0;"></div>
       
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5;">
-        You're receiving this email because you subscribed to Ongera platform notifications.
+        You're receiving this email because you subscribed to BWENGE platform notifications.
         <a href="${process.env.FRONTEND_URL}/unsubscribe?email=${subscriberEmail}" style="color: #0158B7; text-decoration: none;">Unsubscribe</a>
       </div>
     </div>
@@ -127,11 +127,11 @@ export class SubscribeEmailTemplate {
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -161,7 +161,7 @@ export class SubscribeEmailTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -214,7 +214,7 @@ export class SubscribeEmailTemplate {
       <div style="height: 1px; background: #e9ecef; margin: 20px 0;"></div>
       
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5;">
-        You're receiving this email because you subscribed to Ongera platform notifications.
+        You're receiving this email because you subscribed to BWENGE platform notifications.
         <a href="${process.env.FRONTEND_URL}/unsubscribe?email=${subscriberEmail}" style="color: #0158B7; text-decoration: none;">Unsubscribe</a>
       </div>
     </div>
@@ -222,11 +222,11 @@ export class SubscribeEmailTemplate {
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -256,7 +256,7 @@ export class SubscribeEmailTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -309,7 +309,7 @@ export class SubscribeEmailTemplate {
       <div style="height: 1px; background: #e9ecef; margin: 20px 0;"></div>
       
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5;">
-        You're receiving this email because you subscribed to Ongera platform notifications.
+        You're receiving this email because you subscribed to BWENGE platform notifications.
         <a href="${process.env.FRONTEND_URL}/unsubscribe?email=${subscriberEmail}" style="color: #0158B7; text-decoration: none;">Unsubscribe</a>
       </div>
     </div>
@@ -317,11 +317,11 @@ export class SubscribeEmailTemplate {
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     

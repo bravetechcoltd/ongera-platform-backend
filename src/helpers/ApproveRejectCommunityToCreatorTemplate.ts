@@ -34,7 +34,7 @@ export class ApproveRejectCommunityToCreatorTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -77,7 +77,7 @@ export class ApproveRejectCommunityToCreatorTemplate {
       
       <!-- Success Message -->
       <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 18px; border-radius: 6px; margin: 20px 0;">
-        <div style="color: #155724; font-weight: 600; font-size: 15px; margin-bottom: 8px;">🎉 Congratulations!</div>
+        <div style="color: #155724; font-weight: 600; font-size: 15px; margin-bottom: 8px;">Congratulations!</div>
         <div style="color: #155724; font-size: 14px; line-height: 1.5;">
           Your community is now officially part of the Rwanda Research Hub platform. Start engaging with members and building your academic community!
         </div>
@@ -139,7 +139,7 @@ export class ApproveRejectCommunityToCreatorTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->

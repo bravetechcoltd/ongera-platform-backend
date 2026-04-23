@@ -9,7 +9,8 @@ const router = Router();
 
 // ==================== INSTITUTION RESEARCH PORTAL — Supervisor Management ====================
 router.post("/supervisors/invite", authenticate, IndustrialSupervisorController.invite);
-router.patch("/supervisors/accept/:token", IndustrialSupervisorController.acceptInvitation);
+router.patch("/supervisors/accept/:token", authenticate, IndustrialSupervisorController.acceptInvitation);
+router.get("/supervisors/my-pending-invitations", authenticate, IndustrialSupervisorController.myPendingInvitations);
 router.get("/supervisors", authenticate, IndustrialSupervisorController.listSupervisors);
 router.delete("/supervisors/:supervisorId", authenticate, IndustrialSupervisorController.revokeSupervisor);
 router.post("/assign-supervisor-to-student", authenticate, IndustrialSupervisorController.assignSupervisorToStudent);
@@ -150,6 +151,32 @@ router.patch(
   "/members/students/:studentId/reassign",
   authenticate,
   InstitutionPortalController.reassignStudentInstructor
+);
+
+// ==================== ITEM 3: Supervisor ↔ Project assignment ====================
+router.get(
+  "/supervisors/:supervisorId/projects",
+  authenticate,
+  InstitutionPortalController.getSupervisorAssignedProjects
+);
+
+router.post(
+  "/supervisors/:supervisorId/projects",
+  authenticate,
+  InstitutionPortalController.assignProjectsToSupervisor
+);
+
+router.delete(
+  "/supervisors/:supervisorId/projects/:projectId",
+  authenticate,
+  InstitutionPortalController.unassignProjectFromSupervisor
+);
+
+// ==================== ITEM 5: Multi-student collaborator picker ====================
+router.get(
+  "/portal/all-students",
+  authenticate,
+  InstitutionPortalController.getAllPortalStudents
 );
 
 export default router;

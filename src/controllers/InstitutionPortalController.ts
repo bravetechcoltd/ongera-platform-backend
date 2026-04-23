@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Request, Response } from "express";
-import { IsNull } from "typeorm";
+import { IsNull, In } from "typeorm";
 import dbConnection from '../database/db';
 import { User, AccountType, BwengeRole, InstitutionRole } from "../database/models/User";
 import { ResearchProject, ProjectApprovalStatus } from "../database/models/ResearchProject";
@@ -14,7 +14,36 @@ import {
   IndustrialSupervisor,
   SupervisorInvitationStatus,
 } from "../database/models/IndustrialSupervisor";
-import { InstitutionProjectActivity } from "../database/models/InstitutionProjectActivity";
+import { InstitutionProjectActivity, InstitutionActivityType } from "../database/models/InstitutionProjectActivity";
+import { sendEmail } from "../helpers/utils";
+
+// ---------- Shared portal email template ----------
+function buildPortalEmail(title: string, body: string) {
+  return `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: #0158B7; padding: 20px; color: white; text-align: center;">
+        <h2 style="margin:0;">Bwenge Institution Portal</h2>
+      </div>
+      <div style="padding: 25px; background: #ffffff; border: 1px solid #e5e7eb;">
+        <h3 style="color:#111827; margin-top:0;">${title}</h3>
+        <div style="color:#374151; line-height:1.6; font-size:15px;">${body}</div>
+      </div>
+      <div style="padding:15px; background:#f9fafb; color:#6b7280; font-size:12px; text-align:center;">
+        Bwenge Platform · Institution Portal
+      </div>
+    </div>
+  `;
+}
+
+function institutionDisplayName(institution: User | null | undefined): string {
+  if (!institution) return "your institution";
+  return (
+    (institution as any).profile?.institution_name ||
+    `${institution.first_name || ""} ${institution.last_name || ""}`.trim() ||
+    institution.username ||
+    "your institution"
+  );
+}
 
 export class InstitutionPortalController {
   
@@ -635,7 +664,14 @@ export class InstitutionPortalController {
   static async addStudentToInstitutionPortal(req: Request, res: Response) {
     try {
       const institutionId = req.user.userId;
-      const { student_email, instructor_id, academic_year, semester } = req.body;
+      const {
+        student_email,
+        instructor_id,
+        academic_year,
+        semester,
+        department,
+        registration_number,
+      } = req.body;
 
       if (!student_email || !instructor_id) {
         return res.status(400).json({
@@ -646,7 +682,8 @@ export class InstitutionPortalController {
 
       const userRepo = dbConnection.getRepository(User);
       const institution = await userRepo.findOne({
-        where: { id: institutionId, account_type: AccountType.INSTITUTION }
+        where: { id: institutionId, account_type: AccountType.INSTITUTION },
+        relations: ["profile"],
       });
       if (!institution) {
         return res.status(403).json({
@@ -693,6 +730,8 @@ export class InstitutionPortalController {
         institution_id: institutionId,
         academic_year,
         semester,
+        department: department || null,
+        registration_number: registration_number || null,
         is_institution_portal_member: true,
         assigned_at: new Date()
       });
@@ -710,10 +749,37 @@ export class InstitutionPortalController {
       student.institution_role = InstitutionRole.MEMBER;
       await userRepo.save(student);
 
+      // Email the student that they were added to this institution's portal
+      try {
+        const instName = institutionDisplayName(institution);
+        const instructorName = `${instructor.first_name || ""} ${instructor.last_name || ""}`.trim() || instructor.email;
+        const detailRows: string[] = [];
+        if (instructorName) detailRows.push(`<li><b>Instructor:</b> ${instructorName}</li>`);
+        if (academic_year) detailRows.push(`<li><b>Academic year:</b> ${academic_year}</li>`);
+        if (semester) detailRows.push(`<li><b>Semester:</b> ${semester}</li>`);
+        if (department) detailRows.push(`<li><b>Department:</b> ${department}</li>`);
+        if (registration_number) detailRows.push(`<li><b>Registration number:</b> ${registration_number}</li>`);
+        const studentName = student.first_name || "there";
+
+        await sendEmail({
+          to: student.email,
+          subject: `You've been added to ${instName} on Bwenge`,
+          html: buildPortalEmail(
+            `Welcome to ${instName}'s portal`,
+            `<p>Hi ${studentName},</p>
+             <p><b>${instName}</b> has added you as a portal student. You can now collaborate on institution research projects under their academic supervision.</p>
+             ${detailRows.length ? `<ul>${detailRows.join("")}</ul>` : ""}
+             <p>Sign in to your Bwenge dashboard to view your institution portal.</p>`
+          ),
+        });
+      } catch (e) {
+        console.error("Add-student email failed:", e);
+      }
+
       return res.status(201).json({
         success: true,
         message: "Student added to institution portal",
-        data: { link, student: { id: student.id, email: student.email } }
+        data: { link, student: { id: student.id, email: student.email, first_name: student.first_name, last_name: student.last_name } }
       });
 
     } catch (error: any) {
@@ -743,7 +809,8 @@ export class InstitutionPortalController {
 
       const userRepo = dbConnection.getRepository(User);
       const institution = await userRepo.findOne({
-        where: { id: institutionId, account_type: AccountType.INSTITUTION }
+        where: { id: institutionId, account_type: AccountType.INSTITUTION },
+        relations: ["profile"],
       });
       if (!institution) {
         return res.status(403).json({
@@ -789,6 +856,24 @@ export class InstitutionPortalController {
         instructor.bwenge_role = BwengeRole.INSTRUCTOR;
       }
       await userRepo.save(instructor);
+
+      // Email the instructor about being added to this institution's portal
+      try {
+        const instName = institutionDisplayName(institution);
+        const name = instructor.first_name || "there";
+        await sendEmail({
+          to: instructor.email,
+          subject: `You've been added as an instructor at ${instName} on Bwenge`,
+          html: buildPortalEmail(
+            `Welcome to ${instName}'s portal`,
+            `<p>Hi ${name},</p>
+             <p><b>${instName}</b> has added you as an instructor in their institution portal. You can now supervise students and review their research projects.</p>
+             <p>Sign in to your Bwenge dashboard to access your institution portal.</p>`
+          ),
+        });
+      } catch (e) {
+        console.error("Add-instructor email failed:", e);
+      }
 
       return res.status(201).json({
         success: true,
@@ -862,6 +947,8 @@ export class InstitutionPortalController {
             instructor: l.instructor,
             academic_year: l.academic_year,
             semester: l.semester,
+            department: l.department,
+            registration_number: l.registration_number,
             assigned_at: l.assigned_at,
             is_institution_portal_member: l.is_institution_portal_member
           })),
@@ -1331,6 +1418,231 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
         message: "Failed to reassign student",
         error: error.message
       });
+    }
+  }
+
+  // ====================================================================
+  // ITEM 3 — Supervisor ↔ Project explicit assignment
+  // (Replaces the old "supervisor sees every project of their institution"
+  //  philosophy. Assignment is always explicit, made via the institution-
+  //  portal supervisors page.)
+  // ====================================================================
+
+  /**
+   * GET /api/institution-portal/supervisors/:supervisorId/projects
+   * List the institution-research projects this supervisor is currently
+   * assigned to (M2M institution_project_supervisors).
+   * Caller must be the institution that invited the supervisor.
+   */
+  static async getSupervisorAssignedProjects(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const { supervisorId } = req.params;
+
+      const supRepo = dbConnection.getRepository(IndustrialSupervisor);
+      const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
+
+      const inv = await supRepo.findOne({
+        where: { id: supervisorId, institution: { id: institutionId } as any },
+        relations: ["user"],
+      });
+      if (!inv) {
+        return res.status(404).json({ success: false, message: "Supervisor invitation not found for your institution" });
+      }
+
+      // Show only the supervisor's currently-assigned projects. The institution
+      // boundary is implicit because a supervisor invitation is per-institution
+      // and the Manage-Projects modal can only assign projects from this
+      // institution's portal in the first place.
+      const projects = await projectRepo
+        .createQueryBuilder("p")
+        .leftJoinAndSelect("p.institution", "institution")
+        .leftJoinAndSelect("p.students", "students")
+        .leftJoinAndSelect("p.industrial_supervisors", "supervisors")
+        .where("supervisors.id = :uid", { uid: inv.user.id })
+        .orderBy("p.created_at", "DESC")
+        .getMany();
+
+      return res.json({ success: true, data: projects });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  /**
+   * POST /api/institution-portal/supervisors/:supervisorId/projects
+   * Body: { project_ids: string[] }
+   * Assigns this supervisor to the listed projects (idempotent — already
+   * assigned projects are silently skipped). Sends one email summarising
+   * the new assignments.
+   */
+  static async assignProjectsToSupervisor(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const { supervisorId } = req.params;
+      const { project_ids } = req.body || {};
+
+      if (!Array.isArray(project_ids) || project_ids.length === 0) {
+        return res.status(400).json({ success: false, message: "project_ids must be a non-empty array" });
+      }
+
+      const userRepo = dbConnection.getRepository(User);
+      const supRepo = dbConnection.getRepository(IndustrialSupervisor);
+      const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
+
+      const institution = await userRepo.findOne({ where: { id: institutionId }, relations: ["profile"] });
+      if (!institution || institution.account_type !== AccountType.INSTITUTION) {
+        return res.status(403).json({ success: false, message: "Only institution accounts can assign supervisor projects" });
+      }
+
+      const inv = await supRepo.findOne({
+        where: {
+          id: supervisorId,
+          institution: { id: institutionId } as any,
+          invitation_status: SupervisorInvitationStatus.ACCEPTED,
+          is_active: true,
+        },
+        relations: ["user"],
+      });
+      if (!inv || !inv.user) {
+        return res.status(404).json({ success: false, message: "Active supervisor not found for your institution" });
+      }
+
+      const projects = await projectRepo.find({
+        where: { id: In(project_ids) },
+        relations: ["industrial_supervisors", "students"],
+      });
+
+      const newlyAssigned: InstitutionResearchProject[] = [];
+      for (const p of projects) {
+        const already = (p.industrial_supervisors || []).some((s) => s.id === inv.user.id);
+        if (!already) {
+          p.industrial_supervisors = [...(p.industrial_supervisors || []), inv.user];
+          await projectRepo.save(p);
+          newlyAssigned.push(p);
+        }
+      }
+
+      // Email the supervisor about the new assignments (single digest mail)
+      if (newlyAssigned.length > 0) {
+        try {
+          const instName = institutionDisplayName(institution);
+          const list = newlyAssigned.map((p) => `<li>${p.title}</li>`).join("");
+          await sendEmail({
+            to: inv.user.email,
+            subject: `New supervisor assignments at ${instName}`,
+            html: buildPortalEmail(
+              `You have new project assignments`,
+              `<p>${instName} has assigned ${newlyAssigned.length} project${newlyAssigned.length === 1 ? "" : "s"} to you for advisory supervision:</p>
+               <ul>${list}</ul>
+               <p>Sign in to your Bwenge dashboard to review these projects. Your reviews are advisory and run independently of the instructor review.</p>`
+            ),
+          });
+        } catch (e) {
+          console.error("Supervisor assignment email failed:", e);
+        }
+      }
+
+      return res.json({
+        success: true,
+        message: `${newlyAssigned.length} project${newlyAssigned.length === 1 ? "" : "s"} assigned`,
+        data: { assigned: newlyAssigned.map((p) => p.id), already_assigned: project_ids.filter((id) => !newlyAssigned.find((p) => p.id === id)) },
+      });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  /**
+   * DELETE /api/institution-portal/supervisors/:supervisorId/projects/:projectId
+   * Removes this supervisor from the project's M2M.
+   */
+  static async unassignProjectFromSupervisor(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const { supervisorId, projectId } = req.params;
+
+      const supRepo = dbConnection.getRepository(IndustrialSupervisor);
+      const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
+
+      const inv = await supRepo.findOne({
+        where: { id: supervisorId, institution: { id: institutionId } as any },
+        relations: ["user"],
+      });
+      if (!inv || !inv.user) {
+        return res.status(404).json({ success: false, message: "Supervisor invitation not found for your institution" });
+      }
+
+      const project = await projectRepo.findOne({
+        where: { id: projectId },
+        relations: ["industrial_supervisors"],
+      });
+      if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+
+      project.industrial_supervisors = (project.industrial_supervisors || []).filter((s) => s.id !== inv.user.id);
+      await projectRepo.save(project);
+
+      return res.json({ success: true, message: "Supervisor unassigned from project" });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // ====================================================================
+  // ITEM 5 — Multi-student collaborator picker support
+  // ====================================================================
+
+  /**
+   * GET /api/institution-portal/portal/all-students
+   * Returns every student registered as a portal member of the caller's
+   * institution. Used by the create-project page to populate the
+   * collaborator multi-select. Includes their existing department /
+   * registration_number from InstructorStudent so the form can pre-fill.
+   */
+  static async getAllPortalStudents(req: Request, res: Response) {
+    try {
+      const callerId = req.user.userId;
+      const userRepo = dbConnection.getRepository(User);
+      const insRepo = dbConnection.getRepository(InstructorStudent);
+
+      const caller = await userRepo.findOne({ where: { id: callerId } });
+      if (!caller) return res.status(404).json({ success: false, message: "User not found" });
+
+      const institutionId =
+        caller.account_type === AccountType.INSTITUTION
+          ? caller.id
+          : caller.primary_institution_id || (caller.institution_ids || [])[0];
+
+      if (!institutionId) {
+        return res.status(400).json({ success: false, message: "No institution context for this user" });
+      }
+
+      const links = await insRepo.find({
+        where: { institution_id: institutionId, is_institution_portal_member: true },
+        relations: ["student"],
+        order: { assigned_at: "DESC" },
+      });
+
+      // Dedupe by student id (a student may have multiple instructor links)
+      const byId = new Map<string, any>();
+      for (const l of links) {
+        if (!l.student?.id) continue;
+        if (byId.has(l.student.id)) continue;
+        byId.set(l.student.id, {
+          student: l.student,
+          department: l.department,
+          registration_number: l.registration_number,
+          academic_year: l.academic_year,
+          semester: l.semester,
+        });
+      }
+
+      // Exclude the caller themselves so they aren't listed as their own collaborator
+      byId.delete(callerId);
+
+      return res.json({ success: true, data: Array.from(byId.values()) });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
     }
   }
 }

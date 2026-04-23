@@ -1791,7 +1791,7 @@ static async extendEventDate(req: Request, res: Response) {
         
         await sendEmail({
           to: newOrganizer.email,
-          subject: `🎉 You're Now the Organizer: ${event.title}`,
+          subject: `You're Now the Organizer: ${event.title}`,
           html: newOrganizerEmail
         });
       } catch (emailError) {

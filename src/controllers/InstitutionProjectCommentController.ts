@@ -13,6 +13,7 @@ import {
   InstitutionActivityType,
 } from "../database/models/InstitutionProjectActivity";
 import { InstructorStudent } from "../database/models/InstructorStudent";
+import { UploadToCloud } from "../helpers/cloud";
 
 async function canAccess(
   userId: string,
@@ -30,7 +31,6 @@ async function canAccess(
   if ((project.industrial_supervisors || []).some((s) => s.id === userId)) return true;
 
   // Institution admin / portal-admin with membership fallback
-  // (mirrors the Rule 2 block in canUserSeeProject)
   if (caller) {
     const isInstitutionAdmin =
       caller.account_type === AccountType.INSTITUTION ||
@@ -43,11 +43,8 @@ async function canAccess(
           : caller.primary_institution_id || (caller.institution_ids || [])[0];
 
       if (adminInstId) {
-        // Direct FK match
         if (project.institution?.id === adminInstId) return true;
 
-        // Portal-student membership fallback: project.institution is null but
-        // one of the project's students belongs to this institution's portal
         const projectStudentIds = (project.students || []).map((s) => s.id).filter(Boolean);
         if (projectStudentIds.length > 0) {
           const instructorStudentRepo = dbConnection.getRepository(InstructorStudent);
@@ -72,6 +69,7 @@ export class InstitutionProjectCommentController {
       const userId = req.user.userId;
       const { id } = req.params;
       const { content, comment_type, page_reference, priority, parent_comment_id } = req.body;
+      const attachments = (req.files as any)?.attachments || [];
 
       if (!content || !content.trim()) {
         return res.status(400).json({ success: false, message: "Content is required" });
@@ -96,6 +94,23 @@ export class InstitutionProjectCommentController {
         return res.status(403).json({ success: false, message: "No access" });
       }
 
+      // Upload attachments
+      const uploadedAttachments = [];
+      for (const file of attachments) {
+        try {
+          const uploaded = await UploadToCloud(file);
+          uploadedAttachments.push({
+            file_url: uploaded.secure_url,
+            file_name: file.originalname,
+            file_type: file.mimetype,
+            file_size: file.size,
+            uploaded_at: new Date(),
+          });
+        } catch (err) {
+          console.error("Attachment upload failed:", err);
+        }
+      }
+
       const comment = commentRepo.create({
         project,
         author: { id: userId } as any,
@@ -108,6 +123,7 @@ export class InstitutionProjectCommentController {
           ? priority
           : InstitutionCommentPriority.MEDIUM,
         parent_comment_id: parent_comment_id || null,
+        attachments: uploadedAttachments.length > 0 ? uploadedAttachments : null,
       });
       const saved = await commentRepo.save(comment);
 
@@ -116,7 +132,7 @@ export class InstitutionProjectCommentController {
           project,
           actor: { id: userId } as any,
           action_type: InstitutionActivityType.COMMENT_ADDED,
-          description: `New ${comment.comment_type} comment added`,
+          description: `New ${comment.comment_type} comment added${uploadedAttachments.length > 0 ? ` with ${uploadedAttachments.length} attachment(s)` : ""}`,
         })
       );
 
@@ -199,7 +215,6 @@ export class InstitutionProjectCommentController {
       });
       if (!comment) return res.status(404).json({ success: false, message: "Comment not found" });
 
-      // Resolve gate: owning students OR institution admin (including portal-admin fallback)
       const isStudent = (project.students || []).some((s) => s.id === userId);
       const isDirectAdmin = project.institution?.id === userId;
       const isPortalAdmin =

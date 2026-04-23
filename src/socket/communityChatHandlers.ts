@@ -3,6 +3,7 @@ import { CommunityChatMessage, MessageType, ChatType } from "../database/models/
 import { Community } from "../database/models/Community";
 import { User } from "../database/models/User";
 import dbConnection from "../database/db";
+import { Brackets } from "typeorm";
 
 interface ActiveUser {
   userId: string;
@@ -12,7 +13,25 @@ interface ActiveUser {
   lastSeen: Date;
 }
 
-const activeCommunityUsers = new Map<string, Map<string, ActiveUser>>();
+// Exported so HTTP controllers can read live presence state.
+export const activeCommunityUsers = new Map<string, Map<string, ActiveUser>>();
+
+/**
+ * Returns the list of users currently connected (with at least one open socket)
+ * for a given community. Used by the REST `/members/online` endpoint so the UI
+ * has correct presence on first paint, before any socket events arrive.
+ */
+export const getOnlineUsersForCommunity = (communityId: string) => {
+  const map = activeCommunityUsers.get(communityId);
+  if (!map) return [];
+  return Array.from(map.values())
+    .filter((u) => u.isOnline && u.socketIds.size > 0)
+    .map((u) => ({
+      userId: u.userId,
+      userName: u.userName,
+      communityId,
+    }));
+};
 
 export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
   const messageRepository = dbConnection.getRepository(CommunityChatMessage);
@@ -28,6 +47,7 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
       }
 
       const joinedRooms: string[] = [];
+      const onlineSnapshots: Record<string, any[]> = {};
 
       for (const communityId of data.communityIds) {
         const community = await communityRepository.findOne({
@@ -57,7 +77,10 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
           const user = await userRepository.findOne({ where: { id: userId } });
           communityUsers.set(userId, {
             userId,
-            userName: user?.first_name || user?.username || "Unknown",
+            userName:
+              `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
+              user?.username ||
+              "Unknown",
             socketIds: new Set([socket.id]),
             isOnline: true,
             lastSeen: new Date(),
@@ -66,16 +89,26 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
           const userInfo = communityUsers.get(userId)!;
           userInfo.socketIds.add(socket.id);
           userInfo.isOnline = true;
+          userInfo.lastSeen = new Date();
         }
 
+        // Tell everyone in the room this user is now online
         io.to(communityRoom).emit("user_online", {
           userId,
           userName: communityUsers.get(userId)!.userName,
           communityId,
         });
+
+        // Send the full current online snapshot back to the joining socket only,
+        // so it can seed its UI state without waiting for events to trickle in.
+        onlineSnapshots[communityId] = getOnlineUsersForCommunity(communityId);
+        socket.emit("community_online_snapshot", {
+          communityId,
+          onlineMembers: onlineSnapshots[communityId],
+        });
       }
 
-      callback?.({ success: true, joinedRooms });
+      callback?.({ success: true, joinedRooms, onlineSnapshots });
     } catch (error) {
       callback?.({ success: false, error: "Failed to join rooms" });
     }
@@ -94,6 +127,7 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
         replyToMessageId?: string;
         chat_type?: ChatType;
         recipient_user_id?: string;
+        client_temp_id?: string;
       },
       callback
     ) => {
@@ -159,6 +193,8 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
         message.reply_to_message_id = data.replyToMessageId || null;
         message.chat_type = chatType;
         message.recipient_user_id = data.recipient_user_id || null;
+        // Sender has implicitly read their own message
+        message.read_by = [userId];
 
         const savedMessage = await messageRepository.save(message);
 
@@ -167,7 +203,7 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
           recipientUser = await userRepository.findOne({ where: { id: data.recipient_user_id } });
         }
 
-        const responseData = {
+        const responseData: any = {
           id: savedMessage.id,
           communityId: data.communityId,
           content: savedMessage.content,
@@ -177,7 +213,9 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
           fileType: savedMessage.file_type,
           sender: {
             id: sender.id,
-            name: sender.first_name || sender.username,
+            name:
+              `${sender.first_name || ""} ${sender.last_name || ""}`.trim() ||
+              sender.username,
             profilePicture: sender.profile_picture_url,
           },
           replyTo: replyToMessage
@@ -186,20 +224,29 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
                 content: replyToMessage.content,
                 sender: {
                   id: replyToMessage.sender.id,
-                  name: replyToMessage.sender.first_name || replyToMessage.sender.username,
+                  name:
+                    `${replyToMessage.sender.first_name || ""} ${replyToMessage.sender.last_name || ""}`.trim() ||
+                    replyToMessage.sender.username,
                 },
               }
             : null,
           reactions: savedMessage.reactions,
           edited: savedMessage.edited,
           createdAt: savedMessage.created_at,
+          read_by: savedMessage.read_by,
           chat_type: savedMessage.chat_type,
           recipient_user_id: savedMessage.recipient_user_id,
-          recipientUser: recipientUser ? {
-            id: recipientUser.id,
-            name: recipientUser.first_name || recipientUser.username,
-            profilePicture: recipientUser.profile_picture_url,
-          } : null,
+          recipientUser: recipientUser
+            ? {
+                id: recipientUser.id,
+                name:
+                  `${recipientUser.first_name || ""} ${recipientUser.last_name || ""}`.trim() ||
+                  recipientUser.username,
+                profilePicture: recipientUser.profile_picture_url,
+              }
+            : null,
+          // Echo client temp id so the sender can match server message → optimistic message
+          client_temp_id: data.client_temp_id || null,
         };
 
         if (chatType === ChatType.COMMUNITY) {
@@ -208,7 +255,7 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
         } else if (chatType === ChatType.DIRECT) {
           const senderRoom = `user_${userId}_community_${data.communityId}`;
           io.to(senderRoom).emit("new_community_message", responseData);
-          
+
           const recipientRoom = `user_${data.recipient_user_id}_community_${data.communityId}`;
           io.to(recipientRoom).emit("new_community_message", responseData);
         }
@@ -385,7 +432,8 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
 
   socket.on("typing_indicator", (data: { communityId: string; recipient_user_id?: string }) => {
     const userId = socket.data.user?.id;
-    const userName = socket.data.user?.username;
+    const userName =
+      socket.data.user?.username || socket.data.user?.first_name || "Someone";
 
     if (!userId) return;
 
@@ -419,21 +467,102 @@ export const setupCommunityChatHandlers = (io: Server, socket: Socket) => {
     }
   });
 
-  socket.on("fetch_online_members", (data: { communityId: string }, callback) => {
-    const communityUsers = activeCommunityUsers.get(data.communityId);
+  // Mark messages as read via socket — broadcasts a `messages_read` event so
+  // the original senders can update their checkmarks in real time.
+  socket.on(
+    "mark_messages_read",
+    async (
+      data: { communityId: string; chatType?: ChatType; otherUserId?: string },
+      callback
+    ) => {
+      try {
+        const userId = socket.data.user?.id;
+        if (!userId) {
+          return callback?.({ success: false, error: "Not authenticated" });
+        }
 
-    if (!communityUsers) {
-      return callback?.({ success: true, onlineUsers: [] });
+        const chatType = data.chatType || ChatType.COMMUNITY;
+
+        const qb = messageRepository
+          .createQueryBuilder("message")
+          .where("message.community_id = :communityId", { communityId: data.communityId })
+          .andWhere("message.chat_type = :chatType", { chatType })
+          .andWhere("message.deleted_for_everyone = :deleted", { deleted: false })
+          .andWhere("message.sender_id != :userId", { userId })
+          .andWhere(
+            new Brackets((qb2) => {
+              qb2
+                .where("message.read_by IS NULL")
+                .orWhere("NOT (:userId = ANY(message.read_by))", { userId });
+            })
+          );
+
+        if (chatType === ChatType.DIRECT) {
+          if (!data.otherUserId) {
+            return callback?.({ success: false, error: "otherUserId required for direct chat" });
+          }
+          qb.andWhere(
+            new Brackets((qb2) => {
+              qb2
+                .where(
+                  new Brackets((q3) => {
+                    q3.where("CAST(message.sender_id AS TEXT) = :other", { other: data.otherUserId })
+                      .andWhere("CAST(message.recipient_user_id AS TEXT) = :userId", { userId });
+                  })
+                );
+            })
+          );
+        }
+
+        const unread = await qb.getMany();
+        const ids = unread.map((m) => m.id);
+
+        if (ids.length > 0) {
+          await messageRepository
+            .createQueryBuilder()
+            .update(CommunityChatMessage)
+            .set({
+              read_by: () => `array_append(COALESCE(read_by, ARRAY[]::text[]), '${userId}')`,
+            })
+            .where("id IN (:...ids)", { ids })
+            .andWhere(
+              "NOT (:userId = ANY(COALESCE(read_by, ARRAY[]::text[])))",
+              { userId }
+            )
+            .execute();
+
+          // Notify senders that this reader has now seen their messages.
+          const payload = {
+            communityId: data.communityId,
+            chatType,
+            messageIds: ids,
+            readerId: userId,
+            readAt: new Date(),
+          };
+
+          if (chatType === ChatType.COMMUNITY) {
+            io.to(`community_${data.communityId}`).emit("messages_read", payload);
+          } else if (chatType === ChatType.DIRECT && data.otherUserId) {
+            io.to(`user_${data.otherUserId}_community_${data.communityId}`).emit(
+              "messages_read",
+              payload
+            );
+            io.to(`user_${userId}_community_${data.communityId}`).emit(
+              "messages_read",
+              payload
+            );
+          }
+        }
+
+        callback?.({ success: true, markedCount: ids.length });
+      } catch (error) {
+        callback?.({ success: false, error: "Failed to mark messages as read" });
+      }
     }
+  );
 
-    const onlineUsers = Array.from(communityUsers.values())
-      .filter((user) => user.isOnline)
-      .map((user) => ({
-        userId: user.userId,
-        userName: user.userName,
-      }));
-
-    callback?.({ success: true, onlineUsers });
+  socket.on("fetch_online_members", (data: { communityId: string }, callback) => {
+    callback?.({ success: true, onlineUsers: getOnlineUsersForCommunity(data.communityId) });
   });
 
   socket.on("disconnect", () => {

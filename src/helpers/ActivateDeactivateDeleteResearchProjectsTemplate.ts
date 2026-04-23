@@ -26,7 +26,7 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -97,11 +97,11 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     
@@ -128,7 +128,7 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -138,7 +138,7 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        We are writing to inform you that your research project has been permanently deleted from Ongera Platform.
+        We are writing to inform you that your research project has been permanently deleted from BWENGE Platform.
       </div>
       
       <span style="display: inline-block; background: #dc3545; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 5px 0;">
@@ -181,7 +181,7 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
       <div style="background: white; padding: 18px; border-radius: 8px; margin-top: 20px; border: 2px solid #e9ecef;">
         <div style="color: #0158B7; font-weight: 600; font-size: 15px; margin-bottom: 8px;">📧 Questions or Concerns?</div>
         <div style="color: #6c757d; font-size: 14px; line-height: 1.5;">
-          If you believe this was done in error or have questions, please contact our support team at support@ongera.com
+          If you believe this was done in error or have questions, please contact our support team at bwengeorg@gmail.com
         </div>
       </div>
     </div>
@@ -189,11 +189,11 @@ export class ActivateDeactivateDeleteResearchProjectsTemplate {
     <!-- Footer -->
     <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 2px solid #e9ecef;">
       <div style="color: #6c757d; font-size: 13px; line-height: 1.5; margin-bottom: 8px;">
-        <strong>Ongera Platform</strong><br>
+        <strong>BWENGE Platform</strong><br>
         Connecting Researchers & Academics Worldwide
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        © ${new Date().getFullYear()} Ongera. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE. All rights reserved.
       </div>
     </div>
     

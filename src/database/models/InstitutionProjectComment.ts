@@ -75,6 +75,15 @@ export class InstitutionProjectComment {
   @Column({ type: "uuid", nullable: true })
   parent_comment_id: string;
 
+  @Column({ type: "jsonb", nullable: true })
+  attachments: {
+    file_url: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    uploaded_at: Date;
+  }[];
+
   @CreateDateColumn()
   created_at: Date;
 

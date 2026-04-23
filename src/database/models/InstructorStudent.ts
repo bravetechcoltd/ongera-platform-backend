@@ -48,6 +48,12 @@ export class InstructorStudent {
   @Column({ nullable: true })
   semester: string;
 
+  @Column({ nullable: true })
+  department: string;
+
+  @Column({ nullable: true })
+  registration_number: string;
+
   @Column({ default: false })
   is_institution_portal_member: boolean;
 

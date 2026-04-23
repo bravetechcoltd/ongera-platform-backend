@@ -69,6 +69,7 @@ export class InstitutionResearchAdminController {
         ],
       });
       if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+
       return res.json({ success: true, data: project });
     } catch (err: any) {
       return res.status(500).json({ success: false, message: err.message });

@@ -32,14 +32,14 @@ export const sendVerificationOTP = async (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify Your Email - Ongera</title>
+  <title>Verify Your Email - BWENGE</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -49,7 +49,7 @@ export const sendVerificationOTP = async (
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Thank you for registering with Ongera! To complete your account setup and start collaborating with researchers across Rwanda, please verify your email address.
+        Thank you for registering with BWENGE! To complete your account setup and start collaborating with researchers across Rwanda, please verify your email address.
       </div>
       
       <!-- Status Badge -->
@@ -109,10 +109,10 @@ export const sendVerificationOTP = async (
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Need help? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Need help? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -125,7 +125,7 @@ export const sendVerificationOTP = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '🔐 Verify Your Email - Ongera Platform',
+      subject: '🔐 Verify Your Email - BWENGE Platform',
       html
     });
     return true;
@@ -149,14 +149,14 @@ export const sendPasswordChangeOTP = async (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Change Your Password - Ongera</title>
+  <title>Change Your Password - BWENGE</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -215,10 +215,10 @@ export const sendPasswordChangeOTP = async (
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Need help? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Need help? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -231,7 +231,7 @@ export const sendPasswordChangeOTP = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '🔑 Change Your Password - Ongera Platform',
+      subject: '🔑 Change Your Password - BWENGE Platform',
       html
     });
     return true;
@@ -254,14 +254,14 @@ export const sendEmailVerifiedNotification = async (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Verified - Ongera</title>
+  <title>Email Verified - BWENGE</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -283,12 +283,12 @@ export const sendEmailVerifiedNotification = async (
       <div style="background: #E3F2FD; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0158B7; text-align: center;">
         <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
         <div style="color: #0158B7; font-size: 18px; font-weight: 700;">
-          Welcome to Ongera Community
+          Welcome to BWENGE Community
         </div>
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Your account is now fully activated. You can now access all features of the Ongera Research Platform.
+        Your account is now fully activated. You can now access all features of the BWENGE Research Platform.
       </div>
       
       <!-- Next Steps -->
@@ -328,10 +328,10 @@ export const sendEmailVerifiedNotification = async (
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Need assistance? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Need assistance? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -344,7 +344,7 @@ export const sendEmailVerifiedNotification = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '🎉 Welcome to Ongera - Email Verified!',
+      subject: 'Welcome to BWENGE - Email Verified!',
       html
     });
     return true;
@@ -366,14 +366,14 @@ export const sendInstructorCredentials = async (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Ongera - Instructor Credentials</title>
+  <title>Welcome to BWENGE - Instructor Credentials</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -383,7 +383,7 @@ export const sendInstructorCredentials = async (
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Your instructor account has been created on the Ongera Research Platform by <strong>${institutionName}</strong>. You can now access the platform and manage student research projects.
+        Your instructor account has been created on the BWENGE Research Platform by <strong>${institutionName}</strong>. You can now access the platform and manage student research projects.
       </div>
       
       <!-- Status Badge -->
@@ -452,10 +452,10 @@ export const sendInstructorCredentials = async (
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Need help? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Need help? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -468,7 +468,7 @@ export const sendInstructorCredentials = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '👨‍🏫 Welcome to Ongera - Instructor Credentials',
+      subject: '👨‍🏫 Welcome to BWENGE - Instructor Credentials',
       html
     });
     return true;
@@ -492,14 +492,14 @@ export const sendStudentCredentials = async (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Ongera - Student Credentials</title>
+  <title>Welcome to BWENGE - Student Credentials</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <div style="max-width: 600px; margin: 0 auto; background: white;">
     
     <!-- Header -->
     <div style="background: #0158B7; padding: 25px 30px; text-align: center;">
-      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">ONGERA</div>
+      <div style="color: white; font-size: 26px; font-weight: bold; letter-spacing: 1px;">BWENGE</div>
     </div>
     
     <!-- Body -->
@@ -509,7 +509,7 @@ export const sendStudentCredentials = async (
       </div>
       
       <div style="color: #4a4a4a; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
-        Your student account has been created on the Ongera Research Platform by <strong>${institutionName}</strong>. You can now upload your research projects for review.
+        Your student account has been created on the BWENGE Research Platform by <strong>${institutionName}</strong>. You can now upload your research projects for review.
       </div>
       
       <!-- Status Badge -->
@@ -591,10 +591,10 @@ export const sendStudentCredentials = async (
         Building Rwanda's Academic Community Together
       </div>
       <div style="color: #6c757d; font-size: 13px;">
-        Need help? Contact us at <a href="mailto:support@ongera.rw" style="color: #0158B7; text-decoration: none; font-weight: 600;">support@ongera.rw</a>
+        Need help? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color: #0158B7; text-decoration: none; font-weight: 600;">bwengeorg@gmail.com</a>
       </div>
       <div style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
-        © ${new Date().getFullYear()} Ongera Research Platform. All rights reserved.
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
       </div>
     </div>
     
@@ -607,7 +607,7 @@ export const sendStudentCredentials = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '🎓 Welcome to Ongera - Student Credentials',
+      subject: '🎓 Welcome to BWENGE - Student Credentials',
       html
     });
     return true;
@@ -652,7 +652,7 @@ export const sendApplicationReceivedEmail = async (
       </div>
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
-      <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:support@ongera.rw" style="color:#0158B7;text-decoration:none;">support@ongera.rw</a></div>
+      <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
       <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus. All rights reserved.</div>
     </div>
   </div>
@@ -778,7 +778,7 @@ export const sendAccountActivatedEmail = async (
       </div>
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
-      <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:support@ongera.rw" style="color:#0158B7;text-decoration:none;">support@ongera.rw</a></div>
+      <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
       <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus.</div>
     </div>
   </div>
@@ -830,7 +830,7 @@ export const sendAccountRejectedEmail = async (
       </div>
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
-      <div style="color:#6c757d;font-size:13px;">Contact us: <a href="mailto:support@ongera.rw" style="color:#0158B7;text-decoration:none;">support@ongera.rw</a></div>
+      <div style="color:#6c757d;font-size:13px;">Contact us: <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
       <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus.</div>
     </div>
   </div>

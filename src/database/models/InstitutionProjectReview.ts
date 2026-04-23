@@ -71,4 +71,14 @@ export class InstitutionProjectReview {
 
   @Column({ default: false })
   is_final: boolean;
+
+  // NEW: Revised document attachment for rework requests
+  @Column({ type: "jsonb", nullable: true })
+  revised_document: {
+    file_url: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+    uploaded_at: Date;
+  };
 }

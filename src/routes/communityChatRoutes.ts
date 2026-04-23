@@ -40,6 +40,18 @@ router.get(
   CommunityChatController.getOnlineMembers as RequestHandler
 );
 
+// Mark messages as read (HTTP) — used on modal open and on window focus.
+router.patch(
+  "/:communityId/messages/read",
+  CommunityChatController.markMessagesAsRead as RequestHandler
+);
+
+// Search messages across the full conversation history.
+router.get(
+  "/:communityId/search",
+  CommunityChatController.searchMessages as RequestHandler
+);
+
 // ==================== NEW ROUTES FOR DIRECT CHAT ====================
 
 // Get community members available for direct chat

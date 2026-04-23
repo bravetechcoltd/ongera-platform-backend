@@ -152,4 +152,30 @@ router.patch(
   InstitutionPortalController.reassignStudentInstructor
 );
 
+// ==================== ITEM 3: Supervisor ↔ Project assignment ====================
+router.get(
+  "/supervisors/:supervisorId/projects",
+  authenticate,
+  InstitutionPortalController.getSupervisorAssignedProjects
+);
+
+router.post(
+  "/supervisors/:supervisorId/projects",
+  authenticate,
+  InstitutionPortalController.assignProjectsToSupervisor
+);
+
+router.delete(
+  "/supervisors/:supervisorId/projects/:projectId",
+  authenticate,
+  InstitutionPortalController.unassignProjectFromSupervisor
+);
+
+// ==================== ITEM 5: Multi-student collaborator picker ====================
+router.get(
+  "/portal/all-students",
+  authenticate,
+  InstitutionPortalController.getAllPortalStudents
+);
+
 export default router;

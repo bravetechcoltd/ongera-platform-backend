@@ -61,6 +61,7 @@ async function canAccess(
         }
       }
     }
+
   }
 
   return false;

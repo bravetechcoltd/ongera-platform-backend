@@ -95,8 +95,8 @@ export class IndustrialSupervisorController {
         invitation = await supRepo.save(invitation);
       }
 
-      const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-      const acceptUrl = `${clientUrl}/institution-portal/supervisor-invitation/${token}`;
+      const clientUrl = process.env.CLIENT_URL;
+      const acceptUrl = `${clientUrl}/dashboard/user/institution-portal/supervisor-invitation/${token}`;
       const institutionName = institution.profile?.institution_name || `${institution.first_name} ${institution.last_name || ""}`;
 
       await sendEmail({

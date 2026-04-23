@@ -9,7 +9,9 @@
       "Bash(mkdir -p C:/Users/Dell/Desktop/MyProject/ongera-platform-frontend/src/app/dashboard/user/institution-portal/supervisors)",
       "Bash(mkdir -p C:/Users/Dell/Desktop/MyProject/ongera-platform-frontend/src/app/dashboard/user/institution-portal/students)",
       "Bash(npx tsc *)",
-      "Bash(echo \"EXIT=$?\")"
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(\"/c/Program Files/nodejs/npx.cmd\" --prefix \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend\" tsc --noEmit -p \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/tsconfig.json\")",
+      "Bash(\"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/node_modules/.bin/tsc\" --noEmit -p \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/tsconfig.json\")"
     ]
   }
 }

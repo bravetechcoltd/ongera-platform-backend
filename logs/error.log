@@ -17,3 +17,6 @@
 [2026-04-13T18:37:00.183Z] [ERROR] Error starting server: | Meta: {"query":"ALTER TABLE \"notifications\" ADD \"message\" text NOT NULL","driverError":{"length":160,"name":"error","severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"},"length":160,"severity":"ERROR","code":"23502","schema":"public","table":"notifications","column":"message","file":"tablecmds.c","line":"6279","routine":"ATRewriteTable"}
 [2026-04-21T19:01:51.423Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {}
 [2026-04-21T19:01:51.427Z] [ERROR] Session cleanup error: | Meta: {}
+[2026-04-25T10:21:46.823Z] [ERROR] Error starting server: | Meta: {"errno":-4077,"code":"ECONNRESET","syscall":"read"}
+[2026-04-26T11:00:21.915Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-04-26T11:00:21.918Z] [ERROR] Session cleanup error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}

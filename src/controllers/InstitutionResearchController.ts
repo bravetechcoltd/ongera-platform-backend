@@ -22,7 +22,10 @@ import {
   InstitutionActivityType,
 } from "../database/models/InstitutionProjectActivity";
 import { InstructorStudent } from "../database/models/InstructorStudent";
-import { IndustrialSupervisor } from "../database/models/IndustrialSupervisor";
+import {
+  IndustrialSupervisor,
+  SupervisorInvitationStatus,
+} from "../database/models/IndustrialSupervisor";
 import {
   ResearchProject,
   ProjectStatus,
@@ -96,6 +99,7 @@ function buildEmail(title: string, message: string) {
  *   2. An institution-portal admin whose primary_institution_id or institution_ids array
  *      contains the owning institution's id
  *   3. Explicitly assigned as a student, instructor, or industrial supervisor on the project
+ *      (industrial supervisors are EXPLICIT assignments only — see Item 3 philosophy)
  *
  * The caller object is optional for backward-compat; when omitted only rule 1 and 3 apply.
  */
@@ -198,6 +202,7 @@ export class InstitutionResearchController {
         doi,
         is_multi_student,
         max_students,
+        collaborators,
       } = req.body;
 
       if (!title || !abstract || !project_type) {
@@ -241,6 +246,27 @@ export class InstitutionResearchController {
       if (typeof keywords === "string") kw = keywords.split(",").map((k) => k.trim()).filter(Boolean);
       else if (Array.isArray(keywords)) kw = keywords;
 
+      // Item 5: parse multi-student collaborators. The body field accepts either
+      // a JSON string (when sent through multipart/form-data) or an array.
+      // Each entry is { student_id, department?, registration_number? }.
+      let collabList: Array<{ student_id: string; department?: string; registration_number?: string }> = [];
+      if (collaborators) {
+        try {
+          const raw = typeof collaborators === "string" ? JSON.parse(collaborators) : collaborators;
+          if (Array.isArray(raw)) collabList = raw.filter((c) => c && c.student_id && c.student_id !== userId);
+        } catch {
+          collabList = [];
+        }
+      }
+
+      const collaboratorUsers: User[] = [];
+      if (collabList.length > 0) {
+        const ids = collabList.map((c) => c.student_id);
+        collaboratorUsers.push(...await userRepo.find({ where: { id: In(ids) } }));
+      }
+
+      const projectStudents: User[] = [creator, ...collaboratorUsers.filter((u) => u.id !== creator.id)];
+
       const project = projectRepo.create({
         title,
         abstract,
@@ -251,12 +277,13 @@ export class InstitutionResearchController {
         semester: semester && Object.values(AcademicSemester).includes(semester) ? semester : null,
         keywords: kw,
         doi,
-        is_multi_student: is_multi_student === true || is_multi_student === "true",
-        max_students: parseInt(max_students) || 1,
+        is_multi_student:
+          is_multi_student === true || is_multi_student === "true" || projectStudents.length > 1,
+        max_students: Math.max(parseInt(max_students) || 1, projectStudents.length),
         cover_image_url,
         project_file_url,
         institution: institution as any,
-        students: [creator],
+        students: projectStudents,
         status: InstitutionProjectStatus.DRAFT,
       });
 
@@ -278,6 +305,44 @@ export class InstitutionResearchController {
       }
 
       const saved = await projectRepo.save(project);
+
+      // Item 5: persist department / registration_number on each collaborator's
+      // InstructorStudent record (the central per-portal-member metadata table)
+      // and email each collaborator to let them know they were added.
+      if (collabList.length > 0 && institutionId) {
+        for (const c of collabList) {
+          const target = collaboratorUsers.find((u) => u.id === c.student_id);
+          if (!target) continue;
+
+          // Upsert InstructorStudent metadata for this portal student
+          if (c.department || c.registration_number) {
+            const links = await insRepo.find({
+              where: { student: { id: target.id }, institution_id: institutionId },
+            });
+            for (const link of links) {
+              if (c.department) link.department = c.department;
+              if (c.registration_number) link.registration_number = c.registration_number;
+              await insRepo.save(link);
+            }
+          }
+
+          // Notify the collaborator via email
+          try {
+            await sendEmail({
+              to: target.email,
+              subject: `You've been added as a collaborator on '${saved.title}'`,
+              html: buildEmail(
+                `Project collaboration invite`,
+                `<p>Hi ${target.first_name || "there"},</p>
+                 <p><b>${creator.first_name || creator.email}</b> has added you as a collaborator on the institution research project '<b>${saved.title}</b>'.</p>
+                 <p>You now have owner-level access to this project. Open the Institution Research Portal to view and contribute to it.</p>`
+              ),
+            });
+          } catch (e) {
+            console.error("Collaborator email failed:", e);
+          }
+        }
+      }
 
       // Save additional files as version 1
       const allFiles = [
@@ -385,6 +450,11 @@ static async listProjects(req: Request, res: Response) {
       }
 
     } else if (user.is_industrial_supervisor) {
+      // Industrial supervisors only see projects EXPLICITLY assigned to them via
+      // the institution_project_supervisors M2M (populated by createProject's
+      // legacy auto-attach path or by the institution-portal "assign projects to
+      // supervisor" UI). No institution-level fallback — supervisors only review
+      // what they were specifically assigned to supervise.
       qb.andWhere("supervisors.id = :uid", { uid: userId });
 
     } else {
@@ -627,42 +697,44 @@ static async listProjects(req: Request, res: Response) {
         return res.status(400).json({ success: false, message: "At least one file is required to submit" });
       }
 
-      const hasSupervisors = (project.industrial_supervisors || []).length > 0;
-
-      // Industrial supervisor stage is optional: when no supervisors are assigned,
-      // skip Stage 2 and go directly to instructor review.
-      project.status = hasSupervisors
-        ? InstitutionProjectStatus.SUBMITTED
-        : InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
+      // Item 4: review pipeline — submit always goes directly to instructor review.
+      // The industrial supervisor stage is now an advisory parallel track; their
+      // reviews are recorded but do not block the instructor flow. Supervisors are
+      // notified if assigned, but the project moves straight to UNDER_INSTRUCTOR_REVIEW.
+      project.status = InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
       project.submission_date = new Date();
       await projectRepo.save(project);
+
+      const hasSupervisors = (project.industrial_supervisors || []).length > 0;
 
       await logActivity(
         id,
         userId,
         InstitutionActivityType.SUBMITTED,
-        hasSupervisors
-          ? `Project submitted for review`
-          : `Project submitted — no industrial supervisor assigned, forwarded directly to instructor review`
+        `Project submitted for instructor review${hasSupervisors ? " (industrial supervisors notified for advisory review)" : ""}`
       );
 
-      const targets = hasSupervisors
-        ? [...(project.industrial_supervisors || []), ...(project.instructors || [])]
-        : [...(project.instructors || [])];
-      await notifyUsers(
-        targets,
-        hasSupervisors
-          ? "New Institution Research Project Submitted"
-          : "New Institution Research Project Awaiting Instructor Review",
-        buildEmail(
-          hasSupervisors ? "A new project awaits your review" : "A new project awaits instructor review",
-          `A student has submitted '<b>${project.title}</b>'${
-            hasSupervisors
-              ? ` for your review`
-              : ` for instructor review (no industrial supervisor was assigned to this project)`
-          }. Please check the Institution Research Portal.`
-        )
-      );
+      const instructorTargets = project.instructors || [];
+      if (instructorTargets.length > 0) {
+        await notifyUsers(
+          instructorTargets,
+          "New Institution Research Project Awaiting Instructor Review",
+          buildEmail(
+            "A new project awaits instructor review",
+            `A student has submitted '<b>${project.title}</b>' for your review. Please check the Institution Research Portal.`
+          )
+        );
+      }
+      if (hasSupervisors) {
+        await notifyUsers(
+          project.industrial_supervisors || [],
+          "Project submitted — advisory supervisor review available",
+          buildEmail(
+            "Advisory review available",
+            `A student has submitted '<b>${project.title}</b>'. As an assigned industrial supervisor you may post an advisory review at any time; your review is independent of the instructor review.`
+          )
+        );
+      }
 
       return res.json({ success: true, message: "Project submitted", data: project });
     } catch (err: any) {
@@ -678,6 +750,7 @@ static async listProjects(req: Request, res: Response) {
       const { action, feedback } = req.body;
       const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
       const reviewRepo = dbConnection.getRepository(InstitutionProjectReview);
+      const userRepo = dbConnection.getRepository(User);
 
       if (!["APPROVED", "REWORK_REQUESTED", "REJECTED"].includes(action)) {
         return res.status(400).json({ success: false, message: "Invalid action" });
@@ -689,17 +762,24 @@ static async listProjects(req: Request, res: Response) {
       });
       if (!project) return res.status(404).json({ success: false, message: "Project not found" });
 
-      // Supervisor-only gate: never widened — assigned supervisors only
+      // Supervisor gate (Item 3 philosophy): only EXPLICITLY assigned supervisors may
+      // post a supervisor review. Assignments are managed via the institution-portal
+      // supervisors page (assign/unassign projects to a supervisor) or the legacy
+      // assignSupervisorToStudent path that auto-attaches at create-time.
       const isSupervisor = (project.industrial_supervisors || []).some((s) => s.id === userId);
       if (!isSupervisor) {
         return res.status(403).json({ success: false, message: "You are not an assigned supervisor" });
       }
 
+      // Item 4: supervisor review is now advisory and non-blocking. It can be posted
+      // at any non-final status. The review is recorded and notifications are sent,
+      // but project status is NOT auto-mutated by supervisor actions — the instructor
+      // flow and the institution publish/reject decision remain independent.
       if (
-        project.status !== InstitutionProjectStatus.SUBMITTED &&
-        project.status !== InstitutionProjectStatus.UNDER_SUPERVISOR_REVIEW
+        project.status === InstitutionProjectStatus.PUBLISHED ||
+        project.status === InstitutionProjectStatus.REJECTED
       ) {
-        return res.status(400).json({ success: false, message: "Project not in supervisor review stage" });
+        return res.status(400).json({ success: false, message: "Project is already finalized" });
       }
 
       if ((action === "REWORK_REQUESTED" || action === "REJECTED") && (!feedback || feedback.trim().length < 10)) {
@@ -718,39 +798,33 @@ static async listProjects(req: Request, res: Response) {
       await reviewRepo.save(review);
 
       if (action === "APPROVED") {
-        project.status = InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
-        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_APPROVED, `Supervisor approved — forwarded to instructor review`);
+        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_APPROVED, `Supervisor recorded an approval (advisory)`);
         await notifyUsers(
           [...(project.instructors || []), ...(project.students || [])],
-          "Project approved by supervisor — now with instructor",
+          "Industrial supervisor approved your project (advisory)",
           buildEmail(
-            "Stage 2 approved",
-            `The industrial supervisor approved '<b>${project.title}</b>'. It has been forwarded to Stage 3 (instructor review).`
+            "Supervisor approval (advisory)",
+            `The industrial supervisor approved '<b>${project.title}</b>'. The instructor review continues independently.`
           )
         );
       } else if (action === "REWORK_REQUESTED") {
-        project.status = InstitutionProjectStatus.REWORK_REQUESTED;
-        project.rework_reason = feedback;
-        project.requires_rework = true;
-        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REWORK, `Supervisor requested rework`);
+        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REWORK, `Supervisor recorded a rework request (advisory)`);
         await notifyUsers(
           project.students || [],
-          "Rework requested on your project",
+          "Industrial supervisor requested rework (advisory)",
           buildEmail(
-            "Rework required",
-            `The industrial supervisor has requested rework on '<b>${project.title}</b>'.<br/><br/><b>Reason:</b> ${feedback}`
+            "Rework recommendation",
+            `The industrial supervisor has recommended rework on '<b>${project.title}</b>'.<br/><br/><b>Reason:</b> ${feedback}<br/><br/>This is advisory; your instructor's review continues separately.`
           )
         );
       } else {
-        project.status = InstitutionProjectStatus.REJECTED;
-        project.rejection_reason = feedback;
-        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REJECTED, `Supervisor rejected project`);
+        await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REJECTED, `Supervisor recorded a rejection (advisory)`);
         await notifyUsers(
           [...(project.students || []), ...(project.instructors || [])],
-          "Project rejected by supervisor",
+          "Industrial supervisor rejected your project (advisory)",
           buildEmail(
-            "Project rejected",
-            `'<b>${project.title}</b>' has been rejected.<br/><br/><b>Reason:</b> ${feedback}`
+            "Supervisor rejection (advisory)",
+            `The industrial supervisor rejected '<b>${project.title}</b>'.<br/><br/><b>Reason:</b> ${feedback}<br/><br/>This is advisory; your instructor and the institution retain final decision.`
           )
         );
       }
@@ -860,167 +934,203 @@ static async listProjects(req: Request, res: Response) {
     }
   }
 
-  // --- PUBLISH (Stage 4 / Institution Admin) ---
-  static async publishProject(req: Request, res: Response) {
-    try {
-      const userId = req.user.userId;
-      const { id } = req.params;
-      const { action, visibility, notes } = req.body;
-      const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
-      const reviewRepo = dbConnection.getRepository(InstitutionProjectReview);
-      const researchRepo = dbConnection.getRepository(ResearchProject);
-      const userRepo = dbConnection.getRepository(User);
+static async publishProject(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId;
+    const { id } = req.params;
+    const { action, visibility, notes } = req.body;
+    const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
+    const reviewRepo = dbConnection.getRepository(InstitutionProjectReview);
+    const researchRepo = dbConnection.getRepository(ResearchProject);
+    const userRepo = dbConnection.getRepository(User);
+    const instructorStudentRepo = dbConnection.getRepository(InstructorStudent);
 
-      const [project, caller] = await Promise.all([
-        projectRepo.findOne({
-          where: { id },
-          relations: ["students", "instructors", "industrial_supervisors", "institution"],
-        }),
-        userRepo.findOne({ where: { id: userId } }),
-      ]);
+    const [project, caller] = await Promise.all([
+      projectRepo.findOne({
+        where: { id },
+        relations: ["students", "instructors", "industrial_supervisors", "institution"],
+      }),
+      userRepo.findOne({ where: { id: userId } }),
+    ]);
 
-      if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+    if (!project) return res.status(404).json({ success: false, message: "Project not found" });
 
-      // Publish gate: institution account that owns the project, OR an institution-portal
-      // admin whose institution matches the owning institution.
-      const isOwningInstitution = project.institution?.id === userId;
-      const isInstitutionPortalAdmin =
-        caller?.institution_portal_role === InstitutionPortalRole.INSTITUTION_ADMIN &&
-        project.institution?.id &&
-        (
-          caller.primary_institution_id === project.institution.id ||
-          (caller.institution_ids || []).includes(project.institution.id)
-        );
+    // ── Publish gate ──────────────────────────────────────────────────────
+    // Allowed when the caller is:
+    //   (a) The institution account whose FK is on the project
+    //   (b) An institution account (account_type=Institution) that has this
+    //       project's students as portal members — covers the null-institution-FK case
+    //   (c) A portal-admin user (institution_portal_role=INSTITUTION_ADMIN) whose
+    //       institution matches via FK or membership
+    const canPublish = await (async () => {
+      if (!caller) return false;
 
-      if (!isOwningInstitution && !isInstitutionPortalAdmin) {
-        return res.status(403).json({ success: false, message: "Only the owning institution admin can publish" });
+      const isInstAccount = caller.account_type === AccountType.INSTITUTION;
+      const isPortalAdmin = caller.institution_portal_role === InstitutionPortalRole.INSTITUTION_ADMIN;
+
+      if (!isInstAccount && !isPortalAdmin) return false;
+
+      // Which institution does this caller administer?
+      const adminInstId = isInstAccount
+        ? caller.id
+        : caller.primary_institution_id || (caller.institution_ids || [])[0];
+
+      if (!adminInstId) return false;
+
+      // (a/c) Direct FK match
+      if (project.institution?.id === adminInstId) return true;
+
+      // (b) Membership fallback — any project student is a portal member here
+      const projectStudentIds = (project.students || []).map((s) => s.id).filter(Boolean);
+      if (projectStudentIds.length > 0) {
+        const matchCount = await instructorStudentRepo
+          .createQueryBuilder("link")
+          .where("link.institution_id = :instId", { instId: adminInstId })
+          .andWhere("link.is_institution_portal_member = true")
+          .andWhere("link.student_id IN (:...sids)", { sids: projectStudentIds })
+          .getCount();
+        if (matchCount > 0) return true;
       }
 
-      if (project.status !== InstitutionProjectStatus.APPROVED) {
-        return res.status(400).json({ success: false, message: "Only APPROVED projects can be published" });
-      }
+      return false;
+    })();
 
-      if (!["PUBLISH", "REJECT"].includes(action)) {
-        return res.status(400).json({ success: false, message: "Invalid action" });
-      }
+    if (!canPublish) {
+      return res.status(403).json({ success: false, message: "Only the owning institution admin can publish" });
+    }
+    // ── End gate ──────────────────────────────────────────────────────────
 
-      if (action === "REJECT") {
-        project.status = InstitutionProjectStatus.REJECTED;
-        project.rejection_reason = notes || "Rejected at final publication stage";
+    // Item 4: institution can publish or reject from ANY non-final status. The
+    // industrial supervisor / instructor reviews are advisory; the institution
+    // retains the final decision and can override at any time. Only PUBLISHED
+    // and REJECTED are terminal states (idempotency guard).
+    if (
+      project.status === InstitutionProjectStatus.PUBLISHED ||
+      project.status === InstitutionProjectStatus.REJECTED
+    ) {
+      return res.status(400).json({ success: false, message: "Project is already finalized" });
+    }
 
-        const review = reviewRepo.create({
-          project,
-          reviewer: { id: userId } as any,
-          reviewer_role: InstitutionReviewerRole.INSTITUTION_ADMIN,
-          action: InstitutionReviewAction.REJECTED,
-          feedback: notes,
-          stage: InstitutionReviewStage.INSTITUTION_STAGE,
-          is_final: true,
-        });
-        await reviewRepo.save(review);
+    if (!["PUBLISH", "REJECT"].includes(action)) {
+      return res.status(400).json({ success: false, message: "Invalid action" });
+    }
 
-        await logActivity(id, userId, InstitutionActivityType.ADMIN_REJECTED, `Institution admin rejected project`);
-        await notifyUsers(
-          [...(project.students || []), ...(project.instructors || []), ...(project.industrial_supervisors || [])],
-          "Project rejected at final stage",
-          buildEmail(
-            "Project rejected",
-            `'<b>${project.title}</b>' was rejected by the institution admin.<br/><br/><b>Notes:</b> ${notes || "—"}`
-          )
-        );
-
-        await projectRepo.save(project);
-        return res.json({ success: true, message: "Project rejected", data: project });
-      }
-
-      // PUBLISH
-      if (!visibility || !["INSTITUTION_ONLY", "PUBLIC"].includes(visibility)) {
-        return res.status(400).json({
-          success: false,
-          message: "visibility must be INSTITUTION_ONLY or PUBLIC",
-        });
-      }
-
-      project.status = InstitutionProjectStatus.PUBLISHED;
-      project.visibility_after_publish = visibility as InstitutionPublishVisibility;
-      project.publication_date = new Date();
-      project.final_approval_date = new Date();
+    if (action === "REJECT") {
+      project.status = InstitutionProjectStatus.REJECTED;
+      project.rejection_reason = notes || "Rejected at final publication stage";
 
       const review = reviewRepo.create({
         project,
         reviewer: { id: userId } as any,
         reviewer_role: InstitutionReviewerRole.INSTITUTION_ADMIN,
-        action:
-          visibility === "PUBLIC"
-            ? InstitutionReviewAction.PUBLISHED_PUBLIC
-            : InstitutionReviewAction.PUBLISHED_PRIVATE,
+        action: InstitutionReviewAction.REJECTED,
         feedback: notes,
         stage: InstitutionReviewStage.INSTITUTION_STAGE,
         is_final: true,
       });
       await reviewRepo.save(review);
 
-      await logActivity(
-        id,
-        userId,
-        visibility === "PUBLIC" ? InstitutionActivityType.PUBLISHED_PUBLIC : InstitutionActivityType.PUBLISHED_PRIVATE,
-        `Published as ${visibility}`
-      );
-
-      // If PUBLIC — create a linked read-only ResearchProject for public discoverability
-      if (visibility === "PUBLIC") {
-        try {
-          const author = (project.students || [])[0];
-          if (author) {
-            const linked = researchRepo.create({
-              author,
-              title: project.title,
-              abstract: project.abstract,
-              full_description: project.full_description,
-              project_file_url: project.project_file_url,
-              cover_image_url: project.cover_image_url,
-              status: ProjectStatus.PUBLISHED,
-              visibility: Visibility.PUBLIC,
-              field_of_study: project.field_of_study,
-              doi: project.doi,
-              publication_date: new Date(),
-              research_type:
-                project.project_type === InstitutionProjectType.FUNDS
-                  ? ResearchType.PROJECT
-                  : ResearchType.THESIS,
-              academic_level:
-                project.project_type === InstitutionProjectType.BACHELORS
-                  ? AcademicLevel.UNDERGRADUATE
-                  : project.project_type === InstitutionProjectType.MASTERS_THESIS
-                  ? AcademicLevel.MASTERS
-                  : project.project_type === InstitutionProjectType.DISSERTATION
-                  ? AcademicLevel.PHD
-                  : AcademicLevel.INSTITUTION,
-            });
-            await researchRepo.save(linked);
-          }
-        } catch (e) {
-          console.error("Failed to create linked public ResearchProject:", e);
-        }
-      }
-
-      await projectRepo.save(project);
+      await logActivity(id, userId, InstitutionActivityType.ADMIN_REJECTED, `Institution admin rejected project`);
       await notifyUsers(
         [...(project.students || []), ...(project.instructors || []), ...(project.industrial_supervisors || [])],
-        visibility === "PUBLIC" ? "Project published publicly" : "Project published privately",
+        "Project rejected at final stage",
         buildEmail(
-          "Project published",
-          `Your research project '<b>${project.title}</b>' has been published as <b>${
-            visibility === "PUBLIC" ? "PUBLIC (visible across Bwenge)" : "PRIVATE (institution space only)"
-          }</b>.`
+          "Project rejected",
+          `'<b>${project.title}</b>' was rejected by the institution admin.<br/><br/><b>Notes:</b> ${notes || "—"}`
         )
       );
 
-      return res.json({ success: true, message: "Project published", data: project });
-    } catch (err: any) {
-      return res.status(500).json({ success: false, message: err.message });
+      await projectRepo.save(project);
+      return res.json({ success: true, message: "Project rejected", data: project });
     }
+
+    // PUBLISH
+    if (!visibility || !["INSTITUTION_ONLY", "PUBLIC"].includes(visibility)) {
+      return res.status(400).json({
+        success: false,
+        message: "visibility must be INSTITUTION_ONLY or PUBLIC",
+      });
+    }
+
+    project.status = InstitutionProjectStatus.PUBLISHED;
+    project.visibility_after_publish = visibility as InstitutionPublishVisibility;
+    project.publication_date = new Date();
+    project.final_approval_date = new Date();
+
+    const review = reviewRepo.create({
+      project,
+      reviewer: { id: userId } as any,
+      reviewer_role: InstitutionReviewerRole.INSTITUTION_ADMIN,
+      action:
+        visibility === "PUBLIC"
+          ? InstitutionReviewAction.PUBLISHED_PUBLIC
+          : InstitutionReviewAction.PUBLISHED_PRIVATE,
+      feedback: notes,
+      stage: InstitutionReviewStage.INSTITUTION_STAGE,
+      is_final: true,
+    });
+    await reviewRepo.save(review);
+
+    await logActivity(
+      id,
+      userId,
+      visibility === "PUBLIC" ? InstitutionActivityType.PUBLISHED_PUBLIC : InstitutionActivityType.PUBLISHED_PRIVATE,
+      `Published as ${visibility}`
+    );
+
+    if (visibility === "PUBLIC") {
+      try {
+        const author = (project.students || [])[0];
+        if (author) {
+          const linked = researchRepo.create({
+            author,
+            title: project.title,
+            abstract: project.abstract,
+            full_description: project.full_description,
+            project_file_url: project.project_file_url,
+            cover_image_url: project.cover_image_url,
+            status: ProjectStatus.PUBLISHED,
+            visibility: Visibility.PUBLIC,
+            field_of_study: project.field_of_study,
+            doi: project.doi,
+            publication_date: new Date(),
+            research_type:
+              project.project_type === InstitutionProjectType.FUNDS
+                ? ResearchType.PROJECT
+                : ResearchType.THESIS,
+            academic_level:
+              project.project_type === InstitutionProjectType.BACHELORS
+                ? AcademicLevel.UNDERGRADUATE
+                : project.project_type === InstitutionProjectType.MASTERS_THESIS
+                ? AcademicLevel.MASTERS
+                : project.project_type === InstitutionProjectType.DISSERTATION
+                ? AcademicLevel.PHD
+                : AcademicLevel.INSTITUTION,
+          });
+          await researchRepo.save(linked);
+        }
+      } catch (e) {
+        console.error("Failed to create linked public ResearchProject:", e);
+      }
+    }
+
+    await projectRepo.save(project);
+    await notifyUsers(
+      [...(project.students || []), ...(project.instructors || []), ...(project.industrial_supervisors || [])],
+      visibility === "PUBLIC" ? "Project published publicly" : "Project published privately",
+      buildEmail(
+        "Project published",
+        `Your research project '<b>${project.title}</b>' has been published as <b>${
+          visibility === "PUBLIC" ? "PUBLIC (visible across Bwenge)" : "PRIVATE (institution space only)"
+        }</b>.`
+      )
+    );
+
+    return res.json({ success: true, message: "Project published", data: project });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err.message });
   }
+}
 
   // --- ACTIVITY ---
   static async getActivity(req: Request, res: Response) {
@@ -1164,8 +1274,10 @@ static async dashboard(req: Request, res: Response) {
     }
 
     if (user.is_industrial_supervisor) {
+      // Item 3 philosophy: supervisor sees only EXPLICITLY assigned projects (M2M).
       const list = await projectRepo
         .createQueryBuilder("p")
+        .leftJoinAndSelect("p.institution", "institution")
         .leftJoinAndSelect("p.students", "students")
         .leftJoinAndSelect("p.industrial_supervisors", "supervisors")
         .where("supervisors.id = :uid", { uid: userId })
@@ -1174,8 +1286,11 @@ static async dashboard(req: Request, res: Response) {
         success: true,
         data: {
           role: "INDUSTRIAL_SUPERVISOR",
-          reviewQueue: list.filter((p) =>
-            [InstitutionProjectStatus.SUBMITTED, InstitutionProjectStatus.UNDER_SUPERVISOR_REVIEW].includes(p.status)
+          // Advisory queue: any non-final assigned project the supervisor may review
+          reviewQueue: list.filter(
+            (p) =>
+              p.status !== InstitutionProjectStatus.PUBLISHED &&
+              p.status !== InstitutionProjectStatus.REJECTED
           ),
           total: list.length,
         },

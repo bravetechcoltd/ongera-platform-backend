@@ -7,6 +7,7 @@ import { User } from "../database/models/User";
 import dbConnection from "../database/db";
 import { LessThan, Brackets } from "typeorm";
 import { UploadToCloud } from "../helpers/cloud";
+import { getOnlineUsersForCommunity } from "../socket/communityChatHandlers";
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -438,10 +439,12 @@ export class CommunityChatController {
         return;
       }
 
+      const onlineMembers = getOnlineUsersForCommunity(communityId);
+
       res.status(200).json({
         success: true,
         data: {
-          onlineMembers: [],
+          onlineMembers,
         },
       });
     } catch (error: any) {
@@ -452,6 +455,218 @@ export class CommunityChatController {
       });
     }
   };
+
+  /**
+   * PATCH /community-chat/:communityId/messages/read
+   * Marks all unread messages in this community (or in a specific direct
+   * conversation) as read for the requesting user. Returns the count.
+   */
+  static markMessagesAsRead = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const { communityId } = req.params;
+      const { chat_type, with_user_id } = req.body || {};
+      const userId = req.user?.id;
+
+      if (!userId) {
+        res.status(401).json({ success: false, message: "Not authenticated" });
+        return;
+      }
+
+      const messageRepository = dbConnection.getRepository(CommunityChatMessage);
+      const communityRepository = dbConnection.getRepository(Community);
+
+      const community = await communityRepository.findOne({
+        where: { id: communityId },
+        relations: ["members"],
+      });
+
+      if (!community) {
+        res.status(404).json({ success: false, message: "Community not found" });
+        return;
+      }
+
+      const isMember = community.members.some((m) => m.id === userId);
+      if (!isMember) {
+        res.status(403).json({ success: false, message: "Not a member of this community" });
+        return;
+      }
+
+      const chatType = chat_type === "direct" ? ChatType.DIRECT : ChatType.COMMUNITY;
+
+      const qb = messageRepository
+        .createQueryBuilder("message")
+        .where("message.community_id = :communityId", { communityId })
+        .andWhere("message.chat_type = :chatType", { chatType })
+        .andWhere("message.deleted_for_everyone = :deleted", { deleted: false })
+        .andWhere("message.sender_id != :userId", { userId })
+        .andWhere(
+          new Brackets((qb2) => {
+            qb2
+              .where("message.read_by IS NULL")
+              .orWhere("NOT (:userId = ANY(message.read_by))", { userId });
+          })
+        );
+
+      if (chatType === ChatType.DIRECT) {
+        if (!with_user_id) {
+          res.status(400).json({ success: false, message: "with_user_id required for direct chat" });
+          return;
+        }
+        qb.andWhere("CAST(message.sender_id AS TEXT) = :other", { other: with_user_id })
+          .andWhere("CAST(message.recipient_user_id AS TEXT) = :userId", { userId });
+      }
+
+      const unread = await qb.getMany();
+      const ids = unread.map((m) => m.id);
+
+      if (ids.length > 0) {
+        await messageRepository
+          .createQueryBuilder()
+          .update(CommunityChatMessage)
+          .set({
+            read_by: () => `array_append(COALESCE(read_by, ARRAY[]::text[]), '${userId}')`,
+          })
+          .where("id IN (:...ids)", { ids })
+          .andWhere("NOT (:userId = ANY(COALESCE(read_by, ARRAY[]::text[])))", { userId })
+          .execute();
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          markedCount: ids.length,
+          messageIds: ids,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to mark messages as read",
+        error: error.message,
+      });
+    }
+  };
+
+  /**
+   * GET /community-chat/:communityId/search?q=...&chat_type=community|direct&with_user_id=...
+   * Full-text-ish search across the entire conversation history (not just the
+   * already-loaded page). Used by the chat search panel.
+   */
+  static searchMessages = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const { communityId } = req.params;
+      const { q, chat_type, with_user_id, limit = 50 } = req.query;
+      const userId = req.user?.id;
+
+      if (!userId) {
+        res.status(401).json({ success: false, message: "Not authenticated" });
+        return;
+      }
+
+      if (!q || typeof q !== "string" || q.trim().length === 0) {
+        res.status(400).json({ success: false, message: "Search query is required" });
+        return;
+      }
+
+      const messageRepository = dbConnection.getRepository(CommunityChatMessage);
+      const communityRepository = dbConnection.getRepository(Community);
+
+      const community = await communityRepository.findOne({
+        where: { id: communityId },
+        relations: ["members"],
+      });
+
+      if (!community) {
+        res.status(404).json({ success: false, message: "Community not found" });
+        return;
+      }
+
+      const isMember = community.members.some((m) => m.id === userId);
+      if (!isMember) {
+        res.status(403).json({ success: false, message: "Not a member of this community" });
+        return;
+      }
+
+      const queryBuilder = messageRepository
+        .createQueryBuilder("message")
+        .leftJoinAndSelect("message.sender", "sender")
+        .leftJoinAndSelect("message.recipient_user", "recipient_user")
+        .where("message.community_id = :communityId", { communityId })
+        .andWhere("message.deleted_for_everyone = :deleted", { deleted: false })
+        .andWhere("LOWER(message.content) LIKE :q", { q: `%${q.toLowerCase()}%` });
+
+      if (chat_type === "community") {
+        queryBuilder.andWhere("message.chat_type = :ct", { ct: ChatType.COMMUNITY });
+      } else if (chat_type === "direct" && with_user_id) {
+        queryBuilder
+          .andWhere("message.chat_type = :ct", { ct: ChatType.DIRECT })
+          .andWhere(
+            new Brackets((qb) => {
+              qb.where(
+                new Brackets((s) => {
+                  s.where("CAST(message.sender_id AS TEXT) = :userId", { userId })
+                    .andWhere("CAST(message.recipient_user_id AS TEXT) = :other", { other: with_user_id });
+                })
+              ).orWhere(
+                new Brackets((s) => {
+                  s.where("CAST(message.sender_id AS TEXT) = :other", { other: with_user_id })
+                    .andWhere("CAST(message.recipient_user_id AS TEXT) = :userId", { userId });
+                })
+              );
+            })
+          );
+      }
+
+      const limitNum = Math.min(Number.parseInt(limit as string) || 50, 100);
+
+      const messages = await queryBuilder
+        .orderBy("message.created_at", "DESC")
+        .take(limitNum)
+        .getMany();
+
+      const filtered = messages.filter((m) => !m.deleted_by_users.includes(userId));
+
+      const results = filtered.map((m) => ({
+        id: m.id,
+        communityId: m.community_id,
+        content: m.content,
+        messageType: m.message_type,
+        fileUrl: m.file_url,
+        fileName: m.file_name,
+        fileType: m.file_type,
+        sender: m.sender
+          ? {
+              id: m.sender.id,
+              name:
+                `${m.sender.first_name || ""} ${m.sender.last_name || ""}`.trim() ||
+                m.sender.username,
+              profilePicture: m.sender.profile_picture_url,
+            }
+          : null,
+        chatType: m.chat_type,
+        recipientUserId: m.recipient_user_id,
+        edited: m.edited,
+        reactions: m.reactions,
+        createdAt: m.created_at,
+      }));
+
+      res.status(200).json({
+        success: true,
+        data: {
+          query: q,
+          count: results.length,
+          messages: results,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to search messages",
+        error: error.message,
+      });
+    }
+  };
+
 
   private static groupMessagesByDate(messages: CommunityChatMessage[]) {
     const grouped: { [key: string]: any[] } = {};

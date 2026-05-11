@@ -1198,8 +1198,8 @@ static async activateDeactivateProject(req: Request, res: Response) {
       );
 
       const emailSubject = isActivation 
-        ? `✅ Your Research Project "${project.title}" Has Been Published`
-        : `⚠️ Your Research Project "${project.title}" Has Been Archived`;
+        ? `Your Research Project "${project.title}" Has Been Published`
+        : `Your Research Project "${project.title}" Has Been Archived`;
 
       await sendEmail({
         to: project.author.email,

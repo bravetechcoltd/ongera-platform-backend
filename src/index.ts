@@ -11,6 +11,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { setupSocketHandlers } from './socket/socketHandlers';
 import { SessionCleanupService } from './services/SessionCleanupService'; // ✅ NEW
+import { EventReminderScheduler } from './services/EventReminderScheduler';
 
 const PORT = process.env.PORT || 3002;
 const httpServer = createServer(app);
@@ -40,6 +41,7 @@ const allowedOrigins = [
     const dbConnection = DbConnection.instance;
     await dbConnection.initializeDb();
     logger.info('Database connection established successfully');
+    EventReminderScheduler.start();
 
     // ==================== ✅ NEW: START SESSION CLEANUP SERVICE ====================
     SessionCleanupService.start();
@@ -101,7 +103,7 @@ const allowedOrigins = [
     const shutdown = async (signal: string) => {
       logger.info(`${signal} received, shutting down gracefully`);
       
-      // ✅ Stop session cleanup service
+      EventReminderScheduler.stop();
       SessionCleanupService.stop();
       logger.info('Session cleanup service stopped');
       

@@ -15,6 +15,7 @@ import { EventAgenda } from "./EventAgenda";
 import { User } from "./User";
 import { Community } from "./Community";
 import { ResearchProject } from "./ResearchProject";
+
 export enum EventType {
   WEBINAR = "Webinar",
   CONFERENCE = "Conference",
@@ -28,13 +29,15 @@ export enum EventMode {
   PHYSICAL = "Physical",
   HYBRID = "Hybrid",
 }
+
 export enum EventStatus {
   UPCOMING = "Upcoming",
   ONGOING = "Ongoing",
   COMPLETED = "Completed",
   CANCELLED = "Cancelled",
-  DELETED = "Deleted" 
+  DELETED = "Deleted"
 }
+
 @Entity("events")
 export class Event {
   @PrimaryGeneratedColumn("uuid")
@@ -111,6 +114,13 @@ export class Event {
 
   @Column({ default: false })
   requires_approval: boolean;
+
+  // ✅ NEW: Reminder timestamp columns for automated reminders
+  @Column({ type: "timestamp", nullable: true })
+  reminder_24h_sent_at: Date | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  reminder_1h_sent_at: Date | null;
 
   @CreateDateColumn()
   created_at: Date;

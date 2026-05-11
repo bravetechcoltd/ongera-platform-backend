@@ -42,6 +42,10 @@ export class BulkUserCreation {
     last_name: string;
     phone_number?: string;
     assigned_instructor_email: string;
+    academic_year?: string;
+    semester?: string;
+    department?: string;
+    registration_number?: string;
     user_id?: string;
     password?: string;
   }>;

@@ -26,3 +26,8 @@
 [2026-04-27T14:56:32.622Z] [ERROR] Port 3002 is already in use
 [2026-04-28T13:19:58.710Z] [ERROR] Port 3002 is already in use
 [2026-04-28T14:15:14.748Z] [ERROR] Port 3002 is already in use
+[2026-05-09T18:03:18.656Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {}
+[2026-05-09T18:03:18.657Z] [ERROR] Session cleanup error: | Meta: {}
+[2026-05-10T14:00:22.128Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-05-10T14:00:22.129Z] [ERROR] Session cleanup error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-05-11T19:03:19.652Z] [ERROR] Failed to send closure notification: | Meta: {}

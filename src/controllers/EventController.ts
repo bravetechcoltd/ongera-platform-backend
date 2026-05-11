@@ -1,5 +1,5 @@
-// @ts-nocheck
 
+// @ts-nocheck
 import { Request, Response } from "express";
 import dbConnection from '../database/db';
 import { Event, EventStatus } from "../database/models/Event";
@@ -19,7 +19,7 @@ export class EventController {
 static async createCommunityEvent(req: Request, res: Response) {
   try {
     const { community_id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
     const {
       title, description, event_type, event_mode,
       start_datetime, end_datetime, timezone,
@@ -30,7 +30,7 @@ static async createCommunityEvent(req: Request, res: Response) {
 
     const communityRepo = dbConnection.getRepository(Community);
     const community = await communityRepo.findOne({
-      where: { id: community_id },
+      where: { id: community_id as string },
       relations: ["members", "creator", "members.profile"]
     });
 
@@ -63,12 +63,12 @@ static async createCommunityEvent(req: Request, res: Response) {
       timezone,
       location_address,
       online_meeting_url,
-      max_attendees: max_attendees ? parseInt(max_attendees) : null,
+      max_attendees: max_attendees ? parseInt(max_attendees) : undefined,
       is_free: is_free === 'true' || is_free === true,
-      price_amount: price_amount ? parseFloat(price_amount) : null,
+      price_amount: price_amount ? parseFloat(price_amount) : undefined,
       requires_approval: requires_approval === 'true' || requires_approval === true,
-      organizer: { id: userId },
-      community: { id: community_id },
+      organizer: { id: userId } as any,
+      community: { id: community_id as string } as any,
     });
 
     if (req.file) {
@@ -79,7 +79,7 @@ static async createCommunityEvent(req: Request, res: Response) {
     await eventRepo.save(event);
 
     if (linked_project_ids && Array.isArray(linked_project_ids)) {
-      event.linked_projects = linked_project_ids.map(id => ({ id } as any));
+      event.linked_projects = linked_project_ids.map((id: string) => ({ id } as any));
       await eventRepo.save(event);
     }
 
@@ -258,7 +258,7 @@ static async createCommunityEvent(req: Request, res: Response) {
 
   static async createEvent(req: Request, res: Response) {
     try {
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       const {
         title, description, event_type, event_mode,
         start_datetime, end_datetime, timezone,
@@ -279,12 +279,12 @@ static async createCommunityEvent(req: Request, res: Response) {
         timezone,
         location_address,
         online_meeting_url,
-        max_attendees: max_attendees ? parseInt(max_attendees) : null,
+        max_attendees: max_attendees ? parseInt(max_attendees) : undefined,
         is_free: is_free === 'true' || is_free === true,
-        price_amount: price_amount ? parseFloat(price_amount) : null,
+        price_amount: price_amount ? parseFloat(price_amount) : undefined,
         requires_approval: requires_approval === 'true' || requires_approval === true,
-        organizer: { id: userId },
-        community: community_id ? { id: community_id } : null,
+        organizer: { id: userId } as any,
+        community: community_id ? { id: community_id } as any : undefined,
       });
 
       if (req.file) {
@@ -313,68 +313,138 @@ static async createCommunityEvent(req: Request, res: Response) {
     }
   }
   
-  static async getAllEvents(req: Request, res: Response) {
-    try {
-      const { page = 1, limit = 10, search, event_type, status, event_mode } = req.query;
 
-      const eventRepo = dbConnection.getRepository(Event);
-      const queryBuilder = eventRepo.createQueryBuilder("event")
-        .leftJoinAndSelect("event.organizer", "organizer")
-        .leftJoinAndSelect("event.community", "community")
-        .leftJoinAndSelect("event.attendees", "attendees")
-        .leftJoinAndSelect("attendees.user", "attendeeUser")
-        .leftJoinAndSelect("event.agenda_items", "agenda_items")
-        .where("event.status != :cancelled", { cancelled: "Cancelled" })
+static async getClosedEventsForAdmin(req: Request, res: Response) {
+  try {
+    const { page = 1, limit = 50, search } = req.query;
 
-      if (search) {
-        queryBuilder.andWhere(
-          "(event.title ILIKE :search OR event.description ILIKE :search)",
-          { search: `%${search}%` }
-        );
-      }
-
-      if (event_type) {
-        queryBuilder.andWhere("event.event_type = :event_type", { event_type });
-      }
-
-      if (status) {
-        queryBuilder.andWhere("event.status = :status", { status });
-      }
-
-      if (event_mode) {
-        queryBuilder.andWhere("event.event_mode = :event_mode", { event_mode });
-      }
-
-      const skip = (Number(page) - 1) * Number(limit);
-      queryBuilder.skip(skip).take(Number(limit));
-      queryBuilder.orderBy("event.start_datetime", "ASC");
-
-      const [events, total] = await queryBuilder.getManyAndCount();
-
-      res.json({
-        success: true,
-        data: {
-          events,
-          pagination: {
-            page: Number(page),
-            limit: Number(limit),
-            total,
-            totalPages: Math.ceil(total / Number(limit)),
-          },
-        },
+    const eventRepo = dbConnection.getRepository(Event);
+    const queryBuilder = eventRepo.createQueryBuilder("event")
+      .leftJoinAndSelect("event.organizer", "organizer")
+      .leftJoinAndSelect("organizer.profile", "profile")
+      .leftJoinAndSelect("event.community", "community")
+      .leftJoinAndSelect("event.attendees", "attendees")
+      .select([
+        "event",
+        "organizer.id",
+        "organizer.email",
+        "organizer.first_name",
+        "organizer.last_name",
+        "profile",
+        "community",
+        "attendees"
+      ])
+      .where("event.status IN (:...statuses)", { 
+        statuses: [EventStatus.COMPLETED, EventStatus.CANCELLED] 
       });
-    } catch (error: any) {
-      res.status(500).json({ 
-        success: false, 
-        message: "Failed to fetch events", 
-        error: error.message 
-      });
+
+    if (search) {
+      queryBuilder.andWhere(
+        "(event.title ILIKE :search OR organizer.first_name ILIKE :search)",
+        { search: `%${search}%` }
+      );
     }
+
+    const total = await queryBuilder.getCount();
+
+    const skip = (Number(page) - 1) * Number(limit);
+    queryBuilder.skip(skip).take(Number(limit));
+    queryBuilder.orderBy("event.updated_at", "DESC");
+
+    const events = await queryBuilder.getMany();
+
+    res.json({
+      success: true,
+      data: {
+        events,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total,
+          totalPages: Math.ceil(total / Number(limit))
+        }
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch closed events",
+      error: error.message
+    });
   }
+}
+
+static async getAllEvents(req: Request, res: Response) {
+  try {
+    const { page = 1, limit = 10, search, event_type, status, event_mode, include_closed = 'false' } = req.query;
+
+    const eventRepo = dbConnection.getRepository(Event);
+    const queryBuilder = eventRepo.createQueryBuilder("event")
+      .leftJoinAndSelect("event.organizer", "organizer")
+      .leftJoinAndSelect("event.community", "community")
+      .leftJoinAndSelect("event.attendees", "attendees")
+      .leftJoinAndSelect("attendees.user", "attendeeUser")
+      .leftJoinAndSelect("event.agenda_items", "agenda_items");
+
+    // ✅ ENHANCED: Filter out Completed/Cancelled by default unless include_closed is true
+    if (include_closed === 'false') {
+      queryBuilder.where("event.status NOT IN (:...excludedStatuses)", {
+        excludedStatuses: ['Completed', 'Cancelled']
+      });
+    } else {
+      // If include_closed is true, just exclude Deleted
+      queryBuilder.where("event.status != :deleted", { deleted: "Deleted" });
+    }
+
+    if (search) {
+      queryBuilder.andWhere(
+        "(event.title ILIKE :search OR event.description ILIKE :search)",
+        { search: `%${search}%` }
+      );
+    }
+
+    if (event_type) {
+      queryBuilder.andWhere("event.event_type = :event_type", { event_type });
+    }
+
+    if (status) {
+      queryBuilder.andWhere("event.status = :status", { status });
+    }
+
+    if (event_mode) {
+      queryBuilder.andWhere("event.event_mode = :event_mode", { event_mode });
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+    queryBuilder.skip(skip).take(Number(limit));
+    queryBuilder.orderBy("event.start_datetime", "ASC");
+
+    const [events, total] = await queryBuilder.getManyAndCount();
+
+    res.json({
+      success: true,
+      data: {
+        events,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total,
+          totalPages: Math.ceil(total / Number(limit)),
+        },
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to fetch events", 
+      error: error.message 
+    });
+  }
+}
 
   static async getMyEvents(req: Request, res: Response) {
     try {
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       const { page = 1, limit = 10, type = 'attending' } = req.query;
 
       const eventRepo = dbConnection.getRepository(Event);
@@ -480,7 +550,7 @@ static async createCommunityEvent(req: Request, res: Response) {
   static async updateEvent(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       const updateData = req.body;
 
       const eventRepo = dbConnection.getRepository(Event);
@@ -512,9 +582,9 @@ static async createCommunityEvent(req: Request, res: Response) {
       if (updateData.timezone) event.timezone = updateData.timezone;
       if (updateData.location_address !== undefined) event.location_address = updateData.location_address;
       if (updateData.online_meeting_url !== undefined) event.online_meeting_url = updateData.online_meeting_url;
-      if (updateData.max_attendees !== undefined) event.max_attendees = updateData.max_attendees ? parseInt(updateData.max_attendees) : null;
+      if (updateData.max_attendees !== undefined) event.max_attendees = updateData.max_attendees ? parseInt(updateData.max_attendees) : undefined as any;
       if (updateData.is_free !== undefined) event.is_free = updateData.is_free === 'true' || updateData.is_free === true;
-      if (updateData.price_amount !== undefined) event.price_amount = updateData.price_amount ? parseFloat(updateData.price_amount) : null;
+      if (updateData.price_amount !== undefined) event.price_amount = updateData.price_amount ? parseFloat(updateData.price_amount) : undefined as any;
       if (updateData.requires_approval !== undefined) event.requires_approval = updateData.requires_approval === 'true' || updateData.requires_approval === true;
       if (updateData.status) event.status = updateData.status;
 
@@ -549,7 +619,7 @@ static async createCommunityEvent(req: Request, res: Response) {
 static async deleteEvent(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
 
     const eventRepo = dbConnection.getRepository(Event);
     
@@ -923,7 +993,7 @@ static async registerForEvent(req: any, res: any) {
   static async getEventAttendees(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
       const { page = 1, limit = 20, status } = req.query;
 
       const eventRepo = dbConnection.getRepository(Event);
@@ -987,7 +1057,7 @@ static async registerForEvent(req: any, res: any) {
     try {
       const { id, userId } = req.params;
       const { status } = req.body;
-      const organizerId = req.user.userId;
+      const organizerId = req.user!.userId;
 
       const eventRepo = dbConnection.getRepository(Event);
       const attendeeRepo = dbConnection.getRepository(EventAttendee);
@@ -1053,7 +1123,7 @@ static async registerForEvent(req: any, res: any) {
   static async removeAttendee(req: Request, res: Response) {
     try {
       const { id, userId } = req.params;
-      const organizerId = req.user.userId;
+      const organizerId = req.user!.userId;
 
       const eventRepo = dbConnection.getRepository(Event);
       const attendeeRepo = dbConnection.getRepository(EventAttendee);
@@ -1220,8 +1290,8 @@ static async activateDeactivateEvent(req: Request, res: Response) {
       );
 
       const emailSubject = isActivation 
-        ? `✅ Your Event "${event.title}" Has Been Activated`
-        : `⚠️ Your Event "${event.title}" Has Been Cancelled`;
+        ? `Your Event "${event.title}" Has Been Activated`
+        : `Your Event "${event.title}" Has Been Cancelled`;
 
       await sendEmail({
         to: event.organizer.email,
@@ -1583,7 +1653,7 @@ static async extendEventDate(req: Request, res: Response) {
 
         await sendEmail({
           to: event.organizer.email,
-          subject: `✅ Event Closed: ${event.title}`,
+          subject: `Event Closed: ${event.title}`,
           html: emailHtml
         });
       } catch (emailError) {
@@ -2041,7 +2111,7 @@ static async extendEventDate(req: Request, res: Response) {
           : 0,
         capacity: event.max_attendees 
           ? Math.round((totalRegistrations / event.max_attendees) * 100 * 100) / 100 
-          : null,
+          : null as unknown as number,
         registrationTimeline: timelineData,
         recentActivity: event.attendees?.slice(0, 10).map(attendee => ({
           user: `${attendee.user.first_name} ${attendee.user.last_name}`,
@@ -2069,7 +2139,7 @@ static async extendEventDate(req: Request, res: Response) {
     try {
       const { id } = req.params;
       const { new_title, new_start_datetime, new_end_datetime } = req.body;
-      const userId = req.user.userId;
+      const userId = req.user!.userId;
 
       if (!new_title || !new_start_datetime || !new_end_datetime) {
         return res.status(400).json({
@@ -2102,12 +2172,12 @@ static async extendEventDate(req: Request, res: Response) {
         location_address: originalEvent.location_address,
         online_meeting_url: originalEvent.online_meeting_url,
         cover_image_url: originalEvent.cover_image_url,
-        max_attendees: originalEvent.max_attendees,
+        max_attendees: originalEvent.max_attendees ?? undefined,
         is_free: originalEvent.is_free,
-        price_amount: originalEvent.price_amount,
+        price_amount: originalEvent.price_amount ?? undefined,
         requires_approval: originalEvent.requires_approval,
         status: EventStatus.UPCOMING,
-        organizer: { id: userId },
+        organizer: { id: userId } as any,
         community: originalEvent.community,
         agenda_items: originalEvent.agenda_items?.map(agenda => ({
           session_title: agenda.session_title,
@@ -2137,4 +2207,75 @@ static async extendEventDate(req: Request, res: Response) {
       });
     }
   }
+
+
+static async getEventShareData(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const eventRepo = dbConnection.getRepository(Event);
+    const event = await eventRepo.findOne({
+      where: { id },
+      relations: ["organizer"],
+    });
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    const eventUrl = `${process.env.FRONTEND_URL}/dashboard/user/event/${event.id}`;
+    const shareDescription = event.description.substring(0, 160);
+    
+    const eventDate = new Date(event.start_datetime).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+
+    const eventTime = new Date(event.start_datetime).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+
+    const shareText = `${event.title} - ${eventDate} at ${eventTime}`;
+    const whatsappText = `Join me at *${event.title}*! 📅 ${eventDate} ⏰ ${eventTime} 🔗 ${eventUrl}`;
+    const twitterText = `Join me at "${event.title}" on ${eventDate} at ${eventTime} ${eventUrl}`;
+    const linkedInText = `Excited to announce: ${event.title} on ${eventDate} at ${eventTime} ${eventUrl}`;
+    const emailSubject = encodeURIComponent(`Invitation: ${event.title}`);
+    const emailBody = encodeURIComponent(`I'd like to invite you to this event:\n\n${event.title}\n${eventDate} at ${eventTime}\n\n${eventUrl}`);
+
+    res.json({
+      success: true,
+      data: {
+        eventId: event.id,
+        title: event.title,
+        description: shareDescription,
+        coverImageUrl: event.cover_image_url,
+        startDate: eventDate,
+        startTime: eventTime,
+        eventUrl: eventUrl,
+        shareText: shareText,
+        shareUrls: {
+          whatsapp: `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
+          twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(eventUrl)}`,
+          linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventUrl)}`,
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`,
+          email: `mailto:?subject=${emailSubject}&body=${emailBody}`,
+          copyLink: eventUrl
+        }
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get event share data",
+      error: error.message
+    });
+  }
+}
 }

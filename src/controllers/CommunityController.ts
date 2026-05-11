@@ -1862,7 +1862,7 @@ static async joinCommunity(req: Request, res: Response) {
 
         await sendEmail({
           to: requester.email,
-          subject: `✅ Thank You for Your Request to Join "${community.name}"`,
+          subject: `Thank You for Your Request to Join "${community.name}"`,
           html: requesterEmailHtml
         });
 

@@ -5,11 +5,17 @@ import upload from "../helpers/multer";
 
 const router = Router();
 
-// Event creation and listing
+
+router.get(
+  "/admin/closed",
+  authenticate,
+  EventController.getClosedEventsForAdmin
+);
+
 router.post("/", authenticate, upload.single("cover_image"), EventController.createEvent);
 router.get("/", EventController.getAllEvents);
 router.get("/my-events", authenticate, EventController.getMyEvents);
-
+router.get("/:id/share-data", EventController.getEventShareData);
 // Single event operations
 router.get("/:id", EventController.getEventById);
 router.put("/:id", authenticate, upload.single("cover_image"), EventController.updateEvent);

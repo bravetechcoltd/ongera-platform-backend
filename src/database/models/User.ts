@@ -22,6 +22,7 @@ import { Event } from "./Event";
 import { EventAttendee } from "./EventAttendee";
 import { InstructorStudent } from "./InstructorStudent";
 import { UserSession } from "./UserSession";
+import { UserFollow } from "./UserFollow";
 
 export enum AccountType {
   STUDENT = "Student",
@@ -171,6 +172,15 @@ export class User {
 
   @ManyToMany(() => User, (user) => user.followers)
   following: User[];
+
+  // ==================== EXPLICIT FOLLOW RELATIONS (preferred path) ====================
+  // follower_relations: rows where THIS user is being followed (i.e. their followers)
+  @OneToMany(() => UserFollow, (uf) => uf.following)
+  follower_relations: UserFollow[];
+
+  // following_relations: rows where THIS user is the follower (i.e. people they follow)
+  @OneToMany(() => UserFollow, (uf) => uf.follower)
+  following_relations: UserFollow[];
 
   @OneToMany(() => EventAttendee, (attendee) => attendee.user)
   eventAttendances: EventAttendee[];

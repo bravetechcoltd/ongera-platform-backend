@@ -7,6 +7,7 @@ import { ResearchProject, ProjectStatus } from "../database/models/ResearchProje
 import { BlogPost } from "../database/models/BlogPost";
 import { EventAttendee } from "../database/models/EventAttendee";
 import { Community } from "../database/models/Community";
+import { UserFollow } from "../database/models/UserFollow";
 import { UploadToCloud } from "../helpers/cloud";
 import { sendEmail } from "../helpers/utils";
 import { MonthlyStarCongratulationsTemplate } from "../helpers/MonthlyStarCongratulationsTemplate";
@@ -17,6 +18,76 @@ const SCORE_WEIGHTS = {
   EVENT_ATTENDED: 2,
   NEW_FOLLOWER: 1
 };
+
+/**
+ * Resolve accurate lifetime counts for a list of user ids in batched queries.
+ * Uses explicit relation joins (innerJoin "p.author") so column name resolution
+ * doesn't depend on TypeORM's foreign-key shorthand — the previous version
+ * sometimes returned 0 because `p.author_id` wasn't a declared entity property.
+ */
+async function fetchLifetimeStats(userIds: string[]) {
+  if (!userIds.length) {
+    return new Map<string, { projects: number; blogs: number; events: number; followers: number; following: number }>();
+  }
+  const followRepo = dbConnection.getRepository(UserFollow);
+  const projectRepo = dbConnection.getRepository(ResearchProject);
+  const blogRepo = dbConnection.getRepository(BlogPost);
+  const attendeeRepo = dbConnection.getRepository(EventAttendee);
+
+  const [projectRows, blogRows, eventRows, followerRows, followingRows] = await Promise.all([
+    projectRepo
+      .createQueryBuilder("p")
+      .innerJoin("p.author", "author")
+      .select("author.id", "uid")
+      .addSelect("COUNT(p.id)", "cnt")
+      .where("author.id IN (:...ids)", { ids: userIds })
+      .groupBy("author.id")
+      .getRawMany(),
+    blogRepo
+      .createQueryBuilder("b")
+      .innerJoin("b.author", "author")
+      .select("author.id", "uid")
+      .addSelect("COUNT(b.id)", "cnt")
+      .where("author.id IN (:...ids)", { ids: userIds })
+      .groupBy("author.id")
+      .getRawMany(),
+    attendeeRepo
+      .createQueryBuilder("a")
+      .innerJoin("a.user", "u")
+      .select("u.id", "uid")
+      .addSelect("COUNT(a.id)", "cnt")
+      .where("u.id IN (:...ids)", { ids: userIds })
+      .groupBy("u.id")
+      .getRawMany(),
+    followRepo
+      .createQueryBuilder("f")
+      .innerJoin("f.following", "target")
+      .select("target.id", "uid")
+      .addSelect("COUNT(f.id)", "cnt")
+      .where("target.id IN (:...ids)", { ids: userIds })
+      .groupBy("target.id")
+      .getRawMany(),
+    followRepo
+      .createQueryBuilder("f")
+      .innerJoin("f.follower", "actor")
+      .select("actor.id", "uid")
+      .addSelect("COUNT(f.id)", "cnt")
+      .where("actor.id IN (:...ids)", { ids: userIds })
+      .groupBy("actor.id")
+      .getRawMany(),
+  ]);
+
+  const map = new Map<string, { projects: number; blogs: number; events: number; followers: number; following: number }>();
+  userIds.forEach((id) =>
+    map.set(id, { projects: 0, blogs: 0, events: 0, followers: 0, following: 0 })
+  );
+  projectRows.forEach((r) => { const s = map.get(r.uid); if (s) s.projects = parseInt(r.cnt, 10) || 0; });
+  blogRows.forEach((r) => { const s = map.get(r.uid); if (s) s.blogs = parseInt(r.cnt, 10) || 0; });
+  eventRows.forEach((r) => { const s = map.get(r.uid); if (s) s.events = parseInt(r.cnt, 10) || 0; });
+  followerRows.forEach((r) => { const s = map.get(r.uid); if (s) s.followers = parseInt(r.cnt, 10) || 0; });
+  followingRows.forEach((r) => { const s = map.get(r.uid); if (s) s.following = parseInt(r.cnt, 10) || 0; });
+  return map;
+}
 
 export class MonthlyStarTrackerController {
   
@@ -68,23 +139,29 @@ export class MonthlyStarTrackerController {
       const year = now.getFullYear();
 
       const userRepo = dbConnection.getRepository(User);
-      
+
+      // We still load each user's projects/blogs/events to compute the MONTHLY
+      // score, but we no longer rely on `user.followers` (legacy ManyToMany,
+      // empty since the UserFollow migration). Real counts are batch-fetched
+      // below with accurate aggregation queries.
       const users = await userRepo
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.projects", "projects")
         .leftJoinAndSelect("user.blog_posts", "blogs")
         .leftJoinAndSelect("user.eventAttendances", "attendances")
-        .leftJoinAndSelect("user.followers", "followers")
         .leftJoinAndSelect("user.profile", "profile")
         .where("user.is_active = :active", { active: true })
         .getMany();
 
+      const lifetime = await fetchLifetimeStats(users.map((u) => u.id));
+
       const userScores = users.map(user => {
-        const score = MonthlyStarTrackerController.calculateUserScore(
+        const live = lifetime.get(user.id) || { projects: 0, blogs: 0, events: 0, followers: 0, following: 0 };
+        const monthly = MonthlyStarTrackerController.calculateUserScore(
           user.projects || [],
           user.blog_posts || [],
           user.eventAttendances || [],
-          user.followers?.length || 0,
+          live.followers,
           month,
           year
         );
@@ -99,25 +176,32 @@ export class MonthlyStarTrackerController {
             account_type: user.account_type,
             profile: user.profile
           },
+          // Card stats are LIFETIME totals so cards no longer show 0.
+          // total_score still reflects monthly contribution for ranking.
           statistics: {
-            projects_count: score.projects_count,
-            blogs_count: score.blogs_count,
-            events_attended: score.events_attended,
-            followers_count: score.followers_count,
-            total_score: score.total_score
+            projects_count: live.projects,
+            blogs_count: live.blogs,
+            events_attended: live.events,
+            followers_count: live.followers,
+            following_count: live.following,
+            // monthly contribution snapshot (for transparency)
+            monthly_projects: monthly.projects_count,
+            monthly_blogs: monthly.blogs_count,
+            monthly_events: monthly.events_attended,
+            total_score: monthly.total_score
           },
           details: {
-            projects: score.projects.map(p => ({
+            projects: monthly.projects.map(p => ({
               id: p.id,
               title: p.title,
               created_at: p.created_at
             })),
-            blogs: score.blogs.map(b => ({
+            blogs: monthly.blogs.map(b => ({
               id: b.id,
               title: b.title,
               created_at: b.created_at
             })),
-            events: score.events.map(e => ({
+            events: monthly.events.map(e => ({
               id: e.id,
               registered_at: e.registered_at
             }))
@@ -129,7 +213,7 @@ export class MonthlyStarTrackerController {
         .sort((a, b) => b.statistics.total_score - a.statistics.total_score)
         .slice(0, 3);
 
-      const monthNames = ["January", "February", "March", "April", "May", "June", 
+      const monthNames = ["January", "February", "March", "April", "May", "June",
                          "July", "August", "September", "October", "November", "December"];
 
       res.json({
@@ -175,9 +259,14 @@ export class MonthlyStarTrackerController {
       const blogRepo = dbConnection.getRepository(BlogPost);
       const attendeeRepo = dbConnection.getRepository(EventAttendee);
 
+      // Batch lifetime counts for all members in one round-trip.
+      const memberIds = community.members.map((m: any) => m.id);
+      const lifetime = await fetchLifetimeStats(memberIds);
+
       const userScores = [];
 
       for (const member of community.members) {
+        // Per-community monthly contributions for the SCORE.
         const projects = await projectRepo.find({
           where: {
             author: { id: member.id },
@@ -199,16 +288,18 @@ export class MonthlyStarTrackerController {
 
         const user = await userRepo.findOne({
           where: { id: member.id },
-          relations: ["followers", "profile"]
+          relations: ["profile"]
         });
 
         if (!user) continue;
 
-        const score = MonthlyStarTrackerController.calculateUserScore(
+        const live = lifetime.get(member.id) || { projects: 0, blogs: 0, events: 0, followers: 0, following: 0 };
+
+        const monthly = MonthlyStarTrackerController.calculateUserScore(
           projects,
           blogs,
           events,
-          user.followers?.length || 0,
+          live.followers,
           month,
           year
         );
@@ -224,24 +315,28 @@ export class MonthlyStarTrackerController {
             profile: user.profile
           },
           statistics: {
-            projects_count: score.projects_count,
-            blogs_count: score.blogs_count,
-            events_attended: score.events_attended,
-            followers_count: score.followers_count,
-            total_score: score.total_score
+            projects_count: live.projects,
+            blogs_count: live.blogs,
+            events_attended: live.events,
+            followers_count: live.followers,
+            following_count: live.following,
+            monthly_projects: monthly.projects_count,
+            monthly_blogs: monthly.blogs_count,
+            monthly_events: monthly.events_attended,
+            total_score: monthly.total_score
           },
           details: {
-            projects: score.projects.map(p => ({
+            projects: monthly.projects.map(p => ({
               id: p.id,
               title: p.title,
               created_at: p.created_at
             })),
-            blogs: score.blogs.map(b => ({
+            blogs: monthly.blogs.map(b => ({
               id: b.id,
               title: b.title,
               created_at: b.created_at
             })),
-            events: score.events.map(e => ({
+            events: monthly.events.map(e => ({
               id: e.id,
               registered_at: e.registered_at
             }))

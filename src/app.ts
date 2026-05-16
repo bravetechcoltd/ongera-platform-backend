@@ -24,6 +24,7 @@ import institutionWorkRoutes from "./routes/institutionWorkRoutes";
 import institutionResearchRoutes from "./routes/institutionResearchRoutes";
 import institutionResearchAdminRoutes from "./routes/institutionResearchAdminRoutes";
 import heroSlideRoutes from "./routes/heroSlideRoutes";
+import userRoutes from "./routes/userRoutes";
 
 
 const app: Application = express();
@@ -109,6 +110,7 @@ app.use("/api/institution-work", institutionWorkRoutes);
 app.use("/api/institution-research-projects", institutionResearchRoutes);
 app.use("/api/admin/institution-research", institutionResearchAdminRoutes);
 app.use("/api/hero-slides", heroSlideRoutes);
+app.use("/api/users", userRoutes);
 app.get("/", (req, res) => {
   res.json({ 
     message: "Welcome to Bwenge Platform API",

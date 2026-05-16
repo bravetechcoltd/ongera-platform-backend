@@ -1,8 +1,12 @@
 import type { Server, Socket } from "socket.io";
 import { setupCommunityChatHandlers } from "./communityChatHandlers";
 import { socketAuthMiddleware } from "../helpers/socketAuth";
+import { setSocketIO } from "./socketRegistry";
 
 export const setupSocketHandlers = (io: Server) => {
+  // Register globally for cross-module use (notifications, etc.)
+  setSocketIO(io);
+
   // Apply authentication middleware
   io.use(socketAuthMiddleware);
 
@@ -14,6 +18,11 @@ export const setupSocketHandlers = (io: Server) => {
   });
 
   io.on("connection", (socket: Socket) => {
+    // Join personal room for direct notifications (follow, new-project alerts, etc.)
+    const userId = socket.data.user?.id;
+    if (userId) {
+      socket.join(`user_${userId}`);
+    }
 
     socket.emit("connection_success", {
       message: "Socket connected successfully",
@@ -31,7 +40,5 @@ export const setupSocketHandlers = (io: Server) => {
         timestamp: new Date().toISOString(),
       });
     });
-
-
   });
 };

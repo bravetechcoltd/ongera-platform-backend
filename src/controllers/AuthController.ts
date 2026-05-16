@@ -1340,6 +1340,29 @@ static async googleLogin(req: Request, res: Response) {
       (userData as any).pending_supervisor_invitations =
         await loadPendingSupervisorInvitations(user.id);
 
+      // === Inject live counts so the frontend ProfilePage displays accurate
+      // followers/following/research-projects without a second round-trip. ===
+      try {
+        const { UserAggregateService } = require("../services/UserAggregateService");
+        const enriched = await UserAggregateService.getEnrichedUser(user.id, user.id);
+        if (enriched) {
+          const existingProfile = (userData as any).profile || {};
+          (userData as any).profile = {
+            ...existingProfile,
+            total_projects_count: enriched.projects_count,
+            total_followers_count: enriched.followers_count,
+            total_following_count: enriched.following_count,
+            total_communities_count: enriched.communities_count,
+          };
+          (userData as any).projects_count = enriched.projects_count;
+          (userData as any).followers_count = enriched.followers_count;
+          (userData as any).following_count = enriched.following_count;
+          (userData as any).communities_count = enriched.communities_count;
+        }
+      } catch (e) {
+        // counts are an enrichment - don't break the endpoint if it fails
+      }
+
       res.json({
         success: true,
         data: userData,

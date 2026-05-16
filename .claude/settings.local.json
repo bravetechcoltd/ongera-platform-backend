@@ -13,7 +13,11 @@
       "Bash(\"/c/Program Files/nodejs/npx.cmd\" --prefix \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend\" tsc --noEmit -p \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/tsconfig.json\")",
       "Bash(\"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/node_modules/.bin/tsc\" --noEmit -p \"/c/Users/Dell/Desktop/MyProject/ongera-platform-frontend/tsconfig.json\")",
       "Bash(echo \"EXIT_BACKEND=$?\")",
-      "Bash(echo \"EXIT_FRONTEND=$?\")"
+      "Bash(echo \"EXIT_FRONTEND=$?\")",
+      "Bash(echo \"exitcode=$?\")",
+      "Bash(echo \"exit=$?\")",
+      "Bash(echo \"backend=$?\")",
+      "Bash(echo \"frontend=$?\")"
     ]
   }
 }

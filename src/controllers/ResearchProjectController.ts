@@ -15,6 +15,7 @@ import { In } from "typeorm";
 import { CollaborationRequest, CollaborationRequestStatus } from "../database/models/CollaborationRequest";
 import { ProjectContribution } from "../database/models/ProjectContribution";
 import { CommunityPost } from "../database/models/CommunityPost";
+import { SocialNotificationService } from "../services/SocialNotificationService";
 import { ProjectApproval } from "../database/models/ProjectApproval";
 
 export class ResearchProjectController {
@@ -414,16 +415,19 @@ static async createProject(req: Request, res: Response) {
       relations: ["author", "author.profile", "tags", "files"]
     });
 
+    // Fan-out: notify the author's followers about the new project (fire & forget)
+    SocialNotificationService.notifyFollowersOfNewProject(userId, project.id).catch(() => {});
+
     res.status(201).json({
       success: true,
       message: "Project created successfully",
       data: { project: completeProject },
     });
   } catch (error: any) {
-    res.status(500).json({ 
-      success: false, 
-      message: "Failed to create project", 
-      error: error.message 
+    res.status(500).json({
+      success: false,
+      message: "Failed to create project",
+      error: error.message
     });
   }
 }

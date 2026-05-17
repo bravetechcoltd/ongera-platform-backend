@@ -17,7 +17,8 @@
       "Bash(echo \"exitcode=$?\")",
       "Bash(echo \"exit=$?\")",
       "Bash(echo \"backend=$?\")",
-      "Bash(echo \"frontend=$?\")"
+      "Bash(echo \"frontend=$?\")",
+      "Bash(node *)"
     ]
   }
 }

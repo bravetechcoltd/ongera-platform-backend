@@ -122,6 +122,24 @@ export class Event {
   @Column({ type: "timestamp", nullable: true })
   reminder_1h_sent_at: Date | null;
 
+  // ==================== POST-EVENT RECAP / HISTORY ====================
+  // Populated by admins once an event has ended so researchers/students
+  // can review what happened. All optional — empty until the recap is added.
+  @Column({ type: "text", nullable: true })
+  recording_url: string | null;
+
+  @Column({ type: "text", nullable: true })
+  recap_audio_url: string | null;
+
+  @Column({ type: "text", nullable: true })
+  recap_file_url: string | null;
+
+  @Column({ type: "text", nullable: true })
+  external_resource_url: string | null;
+
+  @Column({ type: "text", nullable: true })
+  recap_summary: string | null;
+
   @CreateDateColumn()
   created_at: Date;
 

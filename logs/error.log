@@ -31,3 +31,5 @@
 [2026-05-10T14:00:22.128Z] [ERROR] ❌ [SESSION CLEANUP] Error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
 [2026-05-10T14:00:22.129Z] [ERROR] Session cleanup error: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
 [2026-05-11T19:03:19.652Z] [ERROR] Failed to send closure notification: | Meta: {}
+[2026-05-16T20:17:09.258Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-05-17T07:01:34.509Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}

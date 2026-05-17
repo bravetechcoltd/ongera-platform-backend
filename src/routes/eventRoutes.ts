@@ -60,6 +60,7 @@ router.patch("/admin/:id/extend-date", authenticate, EventController.extendEvent
 router.patch("/admin/:id/close", authenticate, EventController.closeEvent);
 router.patch("/admin/:id/postpone", authenticate, EventController.postponeEvent);
 router.patch("/admin/:id/transfer-ownership", authenticate, EventController.transferOwnership);
+router.patch("/admin/:id/history", authenticate, EventController.updateEventHistory);
 router.post("/:id/attendees/bulk-action", authenticate, EventController.bulkAttendeeAction);
 router.get("/:id/attendees/export", authenticate, EventController.exportAttendees);
 router.get("/:id/statistics", authenticate, EventController.getEventStatistics);

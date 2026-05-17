@@ -376,7 +376,7 @@ static async getClosedEventsForAdmin(req: Request, res: Response) {
 
 static async getAllEvents(req: Request, res: Response) {
   try {
-    const { page = 1, limit = 10, search, event_type, status, event_mode, include_closed = 'false' } = req.query;
+    const { page = 1, limit = 10, search, event_type, status, event_mode, include_closed = 'false', lifecycle } = req.query;
 
     const eventRepo = dbConnection.getRepository(Event);
     const queryBuilder = eventRepo.createQueryBuilder("event")
@@ -386,14 +386,27 @@ static async getAllEvents(req: Request, res: Response) {
       .leftJoinAndSelect("attendees.user", "attendeeUser")
       .leftJoinAndSelect("event.agenda_items", "agenda_items");
 
-    // ✅ ENHANCED: Filter out Completed/Cancelled by default unless include_closed is true
-    if (include_closed === 'false') {
-      queryBuilder.where("event.status NOT IN (:...excludedStatuses)", {
-        excludedStatuses: ['Completed', 'Cancelled']
-      });
-    } else {
-      // If include_closed is true, just exclude Deleted
-      queryBuilder.where("event.status != :deleted", { deleted: "Deleted" });
+    // Always exclude soft-deleted rows
+    queryBuilder.where("event.status != :deleted", { deleted: "Deleted" });
+
+    // Preferred filter: ?lifecycle=active|closed|all (treats end_datetime as authoritative)
+    if (lifecycle === 'active') {
+      queryBuilder.andWhere(
+        "(event.status NOT IN (:...closedStatuses) AND event.end_datetime >= :now)",
+        { closedStatuses: ['Completed', 'Cancelled'], now: new Date() }
+      );
+    } else if (lifecycle === 'closed') {
+      queryBuilder.andWhere(
+        "(event.status IN (:...closedStatuses) OR event.end_datetime < :now)",
+        { closedStatuses: ['Completed', 'Cancelled'], now: new Date() }
+      );
+    } else if (!lifecycle) {
+      // Legacy behaviour preserved when no lifecycle param is supplied
+      if (include_closed === 'false') {
+        queryBuilder.andWhere("event.status NOT IN (:...excludedStatuses)", {
+          excludedStatuses: ['Completed', 'Cancelled']
+        });
+      }
     }
 
     if (search) {
@@ -2212,6 +2225,7 @@ static async extendEventDate(req: Request, res: Response) {
 static async getEventShareData(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    const { sanitizeShareText, truncateForShare, buildEmailBody } = require("../helpers/shareText");
 
     const eventRepo = dbConnection.getRepository(Event);
     const event = await eventRepo.findOne({
@@ -2226,46 +2240,83 @@ static async getEventShareData(req: Request, res: Response) {
       });
     }
 
-    const eventUrl = `${process.env.FRONTEND_URL}/dashboard/user/event/${event.id}`;
-    const shareDescription = event.description.substring(0, 160);
-    
+    // ✅ Always share the PUBLIC URL so logged-out recipients (Facebook/LinkedIn/
+    //    WhatsApp click-throughs) reach a valid page with OG metadata.
+    const frontendBase = (process.env.FRONTEND_URL || process.env.CLIENT_URL || "https://bwenge.com").replace(/\/+$/, "");
+    const eventUrl = `${frontendBase}/events/${event.id}`;
+
+    const cleanTitle = sanitizeShareText(event.title);
+    const cleanDescription = truncateForShare(event.description || "", 160);
+
     const eventDate = new Date(event.start_datetime).toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
       year: "numeric"
     });
-
     const eventTime = new Date(event.start_datetime).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true
     });
+    const mode = event.event_mode || "Online";
 
-    const shareText = `${event.title} - ${eventDate} at ${eventTime}`;
-    const whatsappText = `Join me at *${event.title}*! 📅 ${eventDate} ⏰ ${eventTime} 🔗 ${eventUrl}`;
-    const twitterText = `Join me at "${event.title}" on ${eventDate} at ${eventTime} ${eventUrl}`;
-    const linkedInText = `Excited to announce: ${event.title} on ${eventDate} at ${eventTime} ${eventUrl}`;
-    const emailSubject = encodeURIComponent(`Invitation: ${event.title}`);
-    const emailBody = encodeURIComponent(`I'd like to invite you to this event:\n\n${event.title}\n${eventDate} at ${eventTime}\n\n${eventUrl}`);
+    // Display text shown next to the share button (no encoding).
+    const shareText = `${cleanTitle} — ${eventDate} at ${eventTime}`;
+
+    // WhatsApp keeps a curated emoji set (renders cleanly across all clients).
+    const whatsappText = sanitizeShareText(
+      `Join me at *${cleanTitle}*\n` +
+      `📅 ${eventDate}  ⏰ ${eventTime}\n` +
+      `📍 ${mode}\n` +
+      `🔗 ${eventUrl}`
+    );
+
+    // Twitter / X — plain ASCII, no emojis (avoids unicode-stripping mid-tweet).
+    const twitterText = sanitizeShareText(
+      `Join "${cleanTitle}" on ${eventDate} at ${eventTime}.`
+    );
+
+    // LinkedIn share URL ignores custom text - Open Graph tags on /events/[id]
+    // provide the title/description/image preview. We still emit the URL.
+
+    // Facebook supports a `quote=` param that pre-fills the post body.
+    const facebookQuote = sanitizeShareText(
+      `${cleanTitle} — ${eventDate} at ${eventTime}. ${cleanDescription}`
+    );
+
+    // Email subject + body
+    const emailSubjectPlain = sanitizeShareText(`You're invited: ${cleanTitle}`);
+    const emailBodyPlain = buildEmailBody([
+      `Hi,`,
+      `I'd like to invite you to this event:`,
+      `${cleanTitle}`,
+      `When: ${eventDate} at ${eventTime}`,
+      `Mode: ${mode}`,
+      cleanDescription ? `About: ${cleanDescription}` : "",
+      `RSVP / details: ${eventUrl}`,
+      `See you there!`,
+    ]);
 
     res.json({
       success: true,
       data: {
         eventId: event.id,
-        title: event.title,
-        description: shareDescription,
+        title: cleanTitle,
+        description: cleanDescription,
         coverImageUrl: event.cover_image_url,
         startDate: eventDate,
         startTime: eventTime,
         eventUrl: eventUrl,
         shareText: shareText,
+        emailSubject: emailSubjectPlain,
+        emailBody: emailBodyPlain,
         shareUrls: {
           whatsapp: `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
           twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(eventUrl)}`,
           linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventUrl)}`,
-          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`,
-          email: `mailto:?subject=${emailSubject}&body=${emailBody}`,
+          facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}&quote=${encodeURIComponent(facebookQuote)}`,
+          email: `mailto:?subject=${encodeURIComponent(emailSubjectPlain)}&body=${encodeURIComponent(emailBodyPlain)}`,
           copyLink: eventUrl
         }
       }
@@ -2275,6 +2326,42 @@ static async getEventShareData(req: Request, res: Response) {
       success: false,
       message: "Failed to get event share data",
       error: error.message
+    });
+  }
+}
+
+// ==================== ADMIN: UPDATE EVENT HISTORY / RECAP ====================
+// PATCH /api/events/:id/history
+// Allows admins (or organizer) to attach post-event resources:
+// recording, audio, file, external link, plus a short recap summary.
+static async updateEventHistory(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const eventRepo = dbConnection.getRepository(Event);
+    const event = await eventRepo.findOne({ where: { id }, relations: ["organizer"] });
+    if (!event) return res.status(404).json({ success: false, message: "Event not found" });
+
+    const {
+      recording_url,
+      recap_audio_url,
+      recap_file_url,
+      external_resource_url,
+      recap_summary,
+    } = req.body || {};
+
+    if (recording_url !== undefined) event.recording_url = recording_url || null;
+    if (recap_audio_url !== undefined) event.recap_audio_url = recap_audio_url || null;
+    if (recap_file_url !== undefined) event.recap_file_url = recap_file_url || null;
+    if (external_resource_url !== undefined) event.external_resource_url = external_resource_url || null;
+    if (recap_summary !== undefined) event.recap_summary = recap_summary || null;
+
+    await eventRepo.save(event);
+    return res.json({ success: true, message: "Event history updated", data: event });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update event history",
+      error: error.message,
     });
   }
 }

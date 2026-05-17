@@ -627,16 +627,16 @@ export const sendApplicationReceivedEmail = async (
   const html = `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Application Received - BwengePlus</title></head>
+<head><meta charset="UTF-8"><title>Application Received - Bwenge</title></head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:white;">
     <div style="background:#0158B7;padding:25px 30px;text-align:center;">
-      <div style="color:white;font-size:26px;font-weight:bold;letter-spacing:1px;">BWENGEPLUS</div>
+      <div style="color:white;font-size:26px;font-weight:bold;letter-spacing:1px;">Bwenge</div>
     </div>
     <div style="padding:30px;">
       <div style="font-size:18px;color:#1a1a1a;margin-bottom:20px;font-weight:600;">Hello ${firstName} ${lastName},</div>
       <div style="color:#4a4a4a;font-size:15px;line-height:1.6;margin-bottom:15px;">
-        Thank you for applying to join <strong>BwengePlus</strong>! Your application has been received and is now under review by our admin team.
+        Thank you for applying to join <strong>Bwenge</strong>! Your application has been received and is now under review by our admin team.
       </div>
       <span style="display:inline-block;background:#FFA500;color:white;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;margin:10px 0;">
         ⏳ APPLICATION PENDING REVIEW
@@ -653,7 +653,7 @@ export const sendApplicationReceivedEmail = async (
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
       <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
-      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus. All rights reserved.</div>
+      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} Bwenge. All rights reserved.</div>
     </div>
   </div>
 </body>
@@ -662,7 +662,7 @@ export const sendApplicationReceivedEmail = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '⏳ Your BwengePlus Application Has Been Received',
+      subject: '⏳ Your Bwenge Application Has Been Received',
       html,
     });
     return true;
@@ -699,14 +699,14 @@ export const sendAdminNewApplicationEmail = async (
   const html = `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>New BwengePlus Application</title></head>
+<head><meta charset="UTF-8"><title>New Bwenge Application</title></head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:white;">
     <div style="background:#0158B7;padding:25px 30px;text-align:center;">
       <div style="color:white;font-size:24px;font-weight:bold;">📬 NEW APPLICATION</div>
     </div>
     <div style="padding:30px;">
-      <div style="font-size:18px;color:#1a1a1a;margin-bottom:15px;font-weight:600;">A new user has applied to join BwengePlus</div>
+      <div style="font-size:18px;color:#1a1a1a;margin-bottom:15px;font-weight:600;">A new user has applied to join Bwenge</div>
       <div style="background:#E3F2FD;padding:18px;border-radius:8px;border-left:4px solid #0158B7;margin:15px 0;">
         <table style="width:100%;border-collapse:collapse;">
           ${row("Name", `${applicant.first_name} ${applicant.last_name}`)}
@@ -730,7 +730,7 @@ export const sendAdminNewApplicationEmail = async (
       </div>
     </div>
     <div style="background:#f8f9fa;padding:18px 30px;text-align:center;border-top:2px solid #e9ecef;">
-      <div style="color:#94a3b8;font-size:12px;">© ${new Date().getFullYear()} BwengePlus Admin Notification.</div>
+      <div style="color:#94a3b8;font-size:12px;">© ${new Date().getFullYear()} Bwenge Admin Notification.</div>
     </div>
   </div>
 </body>
@@ -739,7 +739,7 @@ export const sendAdminNewApplicationEmail = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: adminEmail,
-      subject: `📬 New BwengePlus Application — ${applicant.first_name} ${applicant.last_name}`,
+      subject: `📬 New Bwenge Application — ${applicant.first_name} ${applicant.last_name}`,
       html,
     });
     return true;
@@ -759,7 +759,7 @@ export const sendAccountActivatedEmail = async (
   const html = `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Application Approved - BwengePlus</title></head>
+<head><meta charset="UTF-8"><title>Application Approved - Bwenge</title></head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:white;">
     <div style="background:#16a34a;padding:25px 30px;text-align:center;">
@@ -768,18 +768,18 @@ export const sendAccountActivatedEmail = async (
     <div style="padding:30px;">
       <div style="font-size:18px;color:#1a1a1a;margin-bottom:20px;font-weight:600;">Congratulations ${firstName} ${lastName}!</div>
       <div style="color:#4a4a4a;font-size:15px;line-height:1.6;margin-bottom:15px;">
-        Your application to join <strong>BwengePlus</strong> has been <strong>approved</strong>. You can now log in with your email and password and start exploring the platform.
+        Your application to join <strong>Bwenge</strong> has been <strong>approved</strong>. You can now log in with your email and password and start exploring the platform.
       </div>
       <div style="text-align:center;margin:28px 0;">
         <a href="${process.env.FRONTEND_URL || '#'}/login" style="display:inline-block;background:#0158B7;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;">Log In Now</a>
       </div>
       <div style="background:#E8F5E9;border-left:4px solid #16a34a;padding:16px;border-radius:6px;color:#1b5e20;font-size:14px;line-height:1.6;">
-        Welcome to the BwengePlus learning community. We're excited to have you onboard!
+        Welcome to the Bwenge learning community. We're excited to have you onboard!
       </div>
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
       <div style="color:#6c757d;font-size:13px;">Need help? Contact <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
-      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus.</div>
+      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} Bwenge.</div>
     </div>
   </div>
 </body>
@@ -788,7 +788,7 @@ export const sendAccountActivatedEmail = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: '✅ Your BwengePlus Application Has Been Approved',
+      subject: '✅ Your Bwenge Application Has Been Approved',
       html,
     });
     return true;
@@ -809,7 +809,7 @@ export const sendAccountRejectedEmail = async (
   const html = `
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>Application Update - BwengePlus</title></head>
+<head><meta charset="UTF-8"><title>Application Update - Bwenge</title></head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:white;">
     <div style="background:#dc2626;padding:25px 30px;text-align:center;">
@@ -818,7 +818,7 @@ export const sendAccountRejectedEmail = async (
     <div style="padding:30px;">
       <div style="font-size:18px;color:#1a1a1a;margin-bottom:20px;font-weight:600;">Dear ${firstName} ${lastName},</div>
       <div style="color:#4a4a4a;font-size:15px;line-height:1.6;margin-bottom:15px;">
-        Thank you for your interest in joining <strong>BwengePlus</strong>. After careful review, we regret to inform you that your application was <strong>not approved</strong> at this time.
+        Thank you for your interest in joining <strong>Bwenge</strong>. After careful review, we regret to inform you that your application was <strong>not approved</strong> at this time.
       </div>
       ${reason ? `
       <div style="background:#fef2f2;border-left:4px solid #dc2626;padding:16px;border-radius:6px;margin:20px 0;">
@@ -831,7 +831,7 @@ export const sendAccountRejectedEmail = async (
     </div>
     <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
       <div style="color:#6c757d;font-size:13px;">Contact us: <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;">bwengeorg@gmail.com</a></div>
-      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} BwengePlus.</div>
+      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">© ${new Date().getFullYear()} Bwenge.</div>
     </div>
   </div>
 </body>
@@ -840,7 +840,7 @@ export const sendAccountRejectedEmail = async (
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'BwengePlus Application Update',
+      subject: 'Bwenge Application Update',
       html,
     });
     return true;

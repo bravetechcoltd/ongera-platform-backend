@@ -1,3 +1,4 @@
+
 // @ts-nocheck
 import { Request, Response } from "express";
 import { Community } from "../database/models/Community";
@@ -16,6 +17,7 @@ import { CommunityJoinRequest, JoinRequestStatus } from "../database/models/Comm
 import { ApproveUserRequestToJoinCommunityTemplate } from '../helpers/ApproveUserRequestToJoinCommunityTemplate';
 import {DeleteCommunityTemplate }from '../helpers/DeleteCommunityTemplate';
 import { BlogPost } from "../database/models/BlogPost";
+import { QAThread } from "../database/models/QAThread";
 
 export class CommunityController {
  
@@ -963,6 +965,7 @@ static async getCommunityById(req: Request, res: Response) {
     }
   }
   
+
 static async deleteCommunity(req: Request, res: Response) {
   try {
     const { id } = req.params;
@@ -972,122 +975,132 @@ static async deleteCommunity(req: Request, res: Response) {
     if (!reason || reason.trim().length < 20) {
       return res.status(400).json({
         success: false,
-        message: "A detailed reason (minimum 20 characters) is required for community deletion"
+        message: "A detailed reason (minimum 20 characters) is required for community deletion",
       });
     }
 
-    await dbConnection.transaction(async (transactionalEntityManager) => {
-      const communityRepo = transactionalEntityManager.getRepository(Community);
-      const postRepo = transactionalEntityManager.getRepository(CommunityPost);
-      const joinRequestRepo = transactionalEntityManager.getRepository(CommunityJoinRequest);
-      const eventRepo = transactionalEntityManager.getRepository(Event);
-      const projectRepo = transactionalEntityManager.getRepository(ResearchProject);
-      const userRepo = transactionalEntityManager.getRepository(User);
-      const blogPostRepo = transactionalEntityManager.getRepository(BlogPost);
+    await dbConnection.transaction(async (em) => {
+      const communityRepo    = em.getRepository(Community);
+      const postRepo         = em.getRepository(CommunityPost);
+      const joinRequestRepo  = em.getRepository(CommunityJoinRequest);
+      const eventRepo        = em.getRepository(Event);
+      const projectRepo      = em.getRepository(ResearchProject);
+      const userRepo         = em.getRepository(User);
+      const blogPostRepo     = em.getRepository(BlogPost);
+      const qaThreadRepo     = em.getRepository(QAThread);   // ← NEW
 
+      // ── 1. Load community with all relations ──────────────────────────────
       const community = await communityRepo.findOne({
         where: { id },
         relations: [
-          "creator", 
-          "creator.profile", 
-          "members", 
-          "members.profile", 
-          "posts", 
-          "events", 
-          "projects"
-        ]
+          "creator",
+          "creator.profile",
+          "members",
+          "members.profile",
+          "posts",
+          "events",
+          "projects",
+        ],
       });
 
-      if (!community) {
-        throw new Error("Community not found");
-      }
+      if (!community) throw new Error("Community not found");
 
       const admin = await userRepo.findOne({
         where: { id: adminId },
-        relations: ["profile"]
+        relations: ["profile"],
       });
 
-      if (!admin) {
-        throw new Error("Admin not found");
-      }
+      if (!admin) throw new Error("Admin not found");
 
+      // Snapshot data for the notification email before anything is deleted
       const communityData = {
-        name: community.name,
-        description: community.description,
-        category: community.category,
-        community_type: community.community_type,
+        name:            community.name,
+        description:     community.description,
+        category:        community.category,
+        community_type:  community.community_type,
         cover_image_url: community.cover_image_url,
-        community_id: community.id,
-        member_count: community.member_count,
-        post_count: community.post_count,
-        created_at: community.created_at
+        community_id:    community.id,
+        member_count:    community.member_count,
+        post_count:      community.post_count,
+        created_at:      community.created_at,
       };
 
       const creatorData = {
         first_name: community.creator.first_name,
-        last_name: community.creator.last_name,
-        email: community.creator.email
+        last_name:  community.creator.last_name,
+        email:      community.creator.email,
       };
 
       const adminInfo = `${admin.first_name} ${admin.last_name} (${admin.email})`;
 
-      const blogPostsResult = await blogPostRepo
+      // ── 2. Null-out blog_posts.community_id ───────────────────────────────
+      await blogPostRepo
         .createQueryBuilder()
         .update(BlogPost)
         .set({ community: null })
-        .where("community_id = :communityId", { communityId: community.id })
+        .where("community_id = :cid", { cid: id })
         .execute();
 
-      if (community.id) {
-        await joinRequestRepo.delete({ community: { id: community.id } });
-      }
+      // ── 3. Null-out qa_threads.community_id  ← THE MISSING STEP ──────────
+      //   This resolves: FK_d0b34acde7517df6e35b9284646 on table "qa_threads"
+      await qaThreadRepo
+        .createQueryBuilder()
+        .update(QAThread)
+        .set({ community: null })
+        .where("community_id = :cid", { cid: id })
+        .execute();
 
-      if (community.posts && community.posts.length > 0) {
-        await postRepo
-          .createQueryBuilder()
-          .delete()
-          .from(CommunityPost)
-          .where("community_id = :communityId", { communityId: community.id })
-          .execute();
-      }
+      // ── 4. Delete join requests ───────────────────────────────────────────
+      await joinRequestRepo.delete({ community: { id } });
 
+      // ── 5. Delete community posts ─────────────────────────────────────────
+      await postRepo
+        .createQueryBuilder()
+        .delete()
+        .from(CommunityPost)
+        .where("community_id = :cid", { cid: id })
+        .execute();
+
+      // ── 6. Null-out events.community_id ──────────────────────────────────
       if (community.events && community.events.length > 0) {
         await eventRepo
           .createQueryBuilder()
           .update(Event)
           .set({ community: null })
-          .where("community_id = :communityId", { communityId: community.id })
+          .where("community_id = :cid", { cid: id })
           .execute();
       }
 
+      // ── 7. Null-out research_projects.community_id ────────────────────────
       if (community.projects && community.projects.length > 0) {
         await projectRepo
           .createQueryBuilder()
           .update(ResearchProject)
           .set({ community: null })
-          .where("community_id = :communityId", { communityId: community.id })
+          .where("community_id = :cid", { cid: id })
           .execute();
       }
 
-      if (community.members && community.members.length > 0) {
-        await transactionalEntityManager
-          .createQueryBuilder()
-          .delete()
-          .from("community_members")
-          .where("community_id = :communityId", { communityId: community.id })
-          .execute();
-      }
+      // ── 8. Delete community_members join table rows ───────────────────────
+      await em
+        .createQueryBuilder()
+        .delete()
+        .from("community_members")
+        .where("community_id = :cid", { cid: id })
+        .execute();
 
+      // ── 9. Delete the community row itself ────────────────────────────────
       await communityRepo
         .createQueryBuilder()
         .delete()
         .from(Community)
-        .where("id = :id", { id: community.id })
+        .where("id = :id", { id })
         .execute();
 
+      // ── 10. Notify creator by email (non-blocking — errors are swallowed) ─
       try {
-        const { DeleteCommunityTemplate } = require('../helpers/DeleteCommunityTemplate');
-        
+        const { DeleteCommunityTemplate } = require("../helpers/DeleteCommunityTemplate");
+
         const emailHtml = DeleteCommunityTemplate.getDeletionTemplate(
           communityData,
           creatorData,
@@ -1096,45 +1109,33 @@ static async deleteCommunity(req: Request, res: Response) {
         );
 
         await sendEmail({
-          to: creatorData.email,
+          to:      creatorData.email,
           subject: `⚠️ Community Deleted: "${communityData.name}"`,
-          html: emailHtml
+          html:    emailHtml,
         });
-
-      } catch (emailError: any) {
+      } catch (_emailErr) {
+        // Email failure must never roll back the transaction
       }
 
       res.json({
         success: true,
         message: "Community permanently deleted successfully and creator notified",
-        data: {
-          id: community.id,
-          name: community.name
-        }
+        data: { id: community.id, name: community.name },
       });
-
     });
 
   } catch (error: any) {
     if (error.message === "Community not found") {
-      return res.status(404).json({
-        success: false,
-        message: "Community not found"
-      });
+      return res.status(404).json({ success: false, message: "Community not found" });
     }
-    
     if (error.message === "Admin not found") {
-      return res.status(404).json({
-        success: false,
-        message: "Admin user not found"
-      });
+      return res.status(404).json({ success: false, message: "Admin user not found" });
     }
-    
     if (!res.headersSent) {
-      res.status(500).json({ 
-        success: false, 
-        message: "Failed to delete community", 
-        error: error.message 
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete community",
+        error:   error.message,
       });
     }
   }

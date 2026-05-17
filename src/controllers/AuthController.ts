@@ -96,7 +96,7 @@ static async register(req: Request, res: Response) {
       institution_website,
       institution_description,
       IsForWhichSystem = SystemType.ONGERA,
-      // BwengePlus application fields (additive — ignored for Ongera flow)
+      // Bwenge application fields (additive — ignored for Ongera flow)
       country,
       date_of_birth,
       gender,
@@ -112,7 +112,7 @@ static async register(req: Request, res: Response) {
       });
     }
 
-    // Route: BwengePlus → application flow, Ongera → original registration flow
+    // Route: Bwenge → application flow, Ongera → original registration flow
     const isBwengeApplication = IsForWhichSystem === SystemType.BWENGE_PLUS;
 
     const userRepo = dbConnection.getRepository(User);
@@ -130,7 +130,7 @@ static async register(req: Request, res: Response) {
 
     if (isBwengeApplication) {
       // ============================================================
-      // BWENGEPLUS APPLICATION FLOW — pending admin approval
+      // Bwenge APPLICATION FLOW — pending admin approval
       // ============================================================
       if (!first_name || !last_name || !email || !password || !confirm_password) {
         return res.status(400).json({
@@ -142,7 +142,7 @@ static async register(req: Request, res: Response) {
       if (!motivation || !motivation.trim()) {
         return res.status(400).json({
           success: false,
-          message: "Please tell us why you want to join BwengePlus",
+          message: "Please tell us why you want to join Bwenge",
         });
       }
 
@@ -551,7 +551,7 @@ static async login(req: Request, res: Response) {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "No account found with this email. If you don't have an account, please apply to join BwengePlus first.",
+        message: "No account found with this email. If you don't have an account, please apply to join Bwenge first.",
         code: "NO_ACCOUNT"
       });
     }
@@ -562,7 +562,7 @@ static async login(req: Request, res: Response) {
     }
 
     // ============================================================
-    // APPLICATION STATUS GATE (BwengePlus applications only)
+    // APPLICATION STATUS GATE (Bwenge applications only)
     // ============================================================
     if (user.application_status === ApplicationStatus.PENDING) {
       return res.status(403).json({
@@ -1106,7 +1106,7 @@ static async googleLogin(req: Request, res: Response) {
     if (!existingUser) {
       return res.status(404).json({
         success: false,
-        message: "No account found with this Google email. Please apply to join BwengePlus first.",
+        message: "No account found with this Google email. Please apply to join Bwenge first.",
         code: "NO_ACCOUNT"
       });
     }

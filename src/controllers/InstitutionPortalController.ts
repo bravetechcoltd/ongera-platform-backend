@@ -15,6 +15,7 @@ import {
   SupervisorInvitationStatus,
 } from "../database/models/IndustrialSupervisor";
 import { InstitutionProjectActivity, InstitutionActivityType } from "../database/models/InstitutionProjectActivity";
+import { UserProfile } from "../database/models/UserProfile";
 import { sendEmail } from "../helpers/utils";
 
 // ---------- Shared portal email template ----------
@@ -798,7 +799,7 @@ export class InstitutionPortalController {
   static async addInstructorToInstitutionPortal(req: Request, res: Response) {
     try {
       const institutionId = req.user.userId;
-      const { instructor_email } = req.body;
+      const { instructor_email, department } = req.body;
 
       if (!instructor_email) {
         return res.status(400).json({
@@ -808,6 +809,8 @@ export class InstitutionPortalController {
       }
 
       const userRepo = dbConnection.getRepository(User);
+      const profileRepo = dbConnection.getRepository(UserProfile);
+
       const institution = await userRepo.findOne({
         where: { id: institutionId, account_type: AccountType.INSTITUTION },
         relations: ["profile"],
@@ -819,7 +822,10 @@ export class InstitutionPortalController {
         });
       }
 
-      const instructor = await userRepo.findOne({ where: { email: instructor_email } });
+      const instructor = await userRepo.findOne({
+        where: { email: instructor_email },
+        relations: ["profile"],
+      });
       if (!instructor) {
         return res.status(404).json({
           success: false,
@@ -857,10 +863,27 @@ export class InstitutionPortalController {
       }
       await userRepo.save(instructor);
 
+      // Persist the department to the instructor's UserProfile so it appears
+      // on the instructors list (which reads profile.department).
+      const trimmedDept = typeof department === "string" ? department.trim() : "";
+      if (trimmedDept) {
+        let profile = instructor.profile;
+        if (!profile) {
+          profile = profileRepo.create({ user: { id: instructor.id } as any, department: trimmedDept });
+        } else {
+          profile.department = trimmedDept;
+        }
+        await profileRepo.save(profile);
+        instructor.profile = profile;
+      }
+
       // Email the instructor about being added to this institution's portal
       try {
         const instName = institutionDisplayName(institution);
         const name = instructor.first_name || "there";
+        const deptLine = trimmedDept
+          ? `<p><b>Department:</b> ${trimmedDept}</p>`
+          : "";
         await sendEmail({
           to: instructor.email,
           subject: `You've been added as an instructor at ${instName} on Bwenge`,
@@ -868,6 +891,7 @@ export class InstitutionPortalController {
             `Welcome to ${instName}'s portal`,
             `<p>Hi ${name},</p>
              <p><b>${instName}</b> has added you as an instructor in their institution portal. You can now supervise students and review their research projects.</p>
+             ${deptLine}
              <p>Sign in to your Bwenge dashboard to access your institution portal.</p>`
           ),
         });
@@ -883,7 +907,8 @@ export class InstitutionPortalController {
             id: instructor.id,
             email: instructor.email,
             first_name: instructor.first_name,
-            last_name: instructor.last_name
+            last_name: instructor.last_name,
+            department: instructor.profile?.department || null,
           }
         }
       });

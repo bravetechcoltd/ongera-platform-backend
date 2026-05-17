@@ -2375,3 +2375,279 @@
 [2026-05-17T08:33:53.919Z] [INFO] ============================================================
 [2026-05-17T09:00:00.589Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
 [2026-05-17T09:00:01.905Z] [INFO] ✅ [SESSION CLEANUP] No expired sessions found
+[2026-05-17T10:00:00.845Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-05-17T10:00:01.787Z] [INFO] 🗑️ [SESSION CLEANUP] Found 2 expired sessions
+[2026-05-17T10:00:02.589Z] [INFO] ✅ [SESSION CLEANUP] Deleted 2 expired sessions
+[2026-05-17T10:00:02.987Z] [INFO] ✅ [SESSION CLEANUP] User 6faf15bb-7c06-4f95-b509-9e4b161f9580 - isUserLogin set to false (no active sessions)
+[2026-05-17T10:00:02.988Z] [INFO] ✅ [SESSION CLEANUP] Cleanup complete
+[2026-05-17T11:00:00.614Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-05-17T11:00:01.557Z] [INFO] ✅ [SESSION CLEANUP] No expired sessions found
+[2026-05-17T11:07:45.494Z] [INFO] Database connection established successfully
+[2026-05-17T11:07:45.501Z] [INFO] Starting EventReminderScheduler...
+[2026-05-17T11:07:45.512Z] [INFO] EventReminderScheduler started successfully
+[2026-05-17T11:07:45.515Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-17T11:07:45.515Z] [INFO] Session cleanup service initialized
+[2026-05-17T11:07:45.519Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-17T11:07:45.524Z] [INFO] ============================================================
+[2026-05-17T11:07:45.524Z] [INFO] 🚀 Server Running
+[2026-05-17T11:07:45.525Z] [INFO] ============================================================
+[2026-05-17T11:07:45.525Z] [INFO] Environment: development
+[2026-05-17T11:07:45.526Z] [INFO] Port: 3002
+[2026-05-17T11:07:45.526Z] [INFO] API URL: http://localhost:3002
+[2026-05-17T11:07:45.526Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-17T11:07:45.527Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-17T11:07:45.527Z] [INFO] SSO Enabled: Yes
+[2026-05-17T11:07:45.528Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-17T11:07:45.528Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-17T11:07:45.528Z] [INFO] ============================================================
+[2026-05-17T11:08:13.230Z] [INFO] Database connection established successfully
+[2026-05-17T11:08:13.238Z] [INFO] Starting EventReminderScheduler...
+[2026-05-17T11:08:13.251Z] [INFO] EventReminderScheduler started successfully
+[2026-05-17T11:08:13.254Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-17T11:08:13.254Z] [INFO] Session cleanup service initialized
+[2026-05-17T11:08:13.258Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-17T11:08:13.264Z] [INFO] ============================================================
+[2026-05-17T11:08:13.265Z] [INFO] 🚀 Server Running
+[2026-05-17T11:08:13.265Z] [INFO] ============================================================
+[2026-05-17T11:08:13.266Z] [INFO] Environment: development
+[2026-05-17T11:08:13.266Z] [INFO] Port: 3002
+[2026-05-17T11:08:13.267Z] [INFO] API URL: http://localhost:3002
+[2026-05-17T11:08:13.267Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-17T11:08:13.267Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-17T11:08:13.268Z] [INFO] SSO Enabled: Yes
+[2026-05-17T11:08:13.268Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-17T11:08:13.268Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-17T11:08:13.268Z] [INFO] ============================================================
+[2026-05-18T19:57:27.553Z] [INFO] Database connection established successfully
+[2026-05-18T19:57:27.594Z] [INFO] Starting EventReminderScheduler...
+[2026-05-18T19:57:27.683Z] [INFO] EventReminderScheduler started successfully
+[2026-05-18T19:57:27.709Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-18T19:57:27.710Z] [INFO] Session cleanup service initialized
+[2026-05-18T19:57:27.726Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-18T19:57:27.752Z] [INFO] ============================================================
+[2026-05-18T19:57:27.753Z] [INFO] 🚀 Server Running
+[2026-05-18T19:57:27.754Z] [INFO] ============================================================
+[2026-05-18T19:57:27.755Z] [INFO] Environment: development
+[2026-05-18T19:57:27.756Z] [INFO] Port: 3002
+[2026-05-18T19:57:27.758Z] [INFO] API URL: http://localhost:3002
+[2026-05-18T19:57:27.759Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-18T19:57:27.762Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-18T19:57:27.762Z] [INFO] SSO Enabled: Yes
+[2026-05-18T19:57:27.763Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-18T19:57:27.764Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-18T19:57:27.764Z] [INFO] ============================================================
+[2026-05-18T20:00:00.056Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-05-18T20:00:00.321Z] [INFO] 🗑️ [SESSION CLEANUP] Found 16 expired sessions
+[2026-05-18T20:00:01.720Z] [INFO] ✅ [SESSION CLEANUP] Deleted 16 expired sessions
+[2026-05-18T20:00:02.342Z] [INFO] ✅ [SESSION CLEANUP] User ee8c6da9-5719-4b66-bfce-37ff9b674677 - isUserLogin set to false (no active sessions)
+[2026-05-18T20:00:03.004Z] [INFO] ✅ [SESSION CLEANUP] User 8ee5077c-f859-4dcf-891e-0777fb2b849b - isUserLogin set to false (no active sessions)
+[2026-05-18T20:00:03.637Z] [INFO] ✅ [SESSION CLEANUP] User ace38197-2e96-4b8d-a9ef-cb7fc782ee38 - isUserLogin set to false (no active sessions)
+[2026-05-18T20:00:04.235Z] [INFO] ✅ [SESSION CLEANUP] User 54ea65e7-280f-48a2-835c-8d017c1be3e9 - isUserLogin set to false (no active sessions)
+[2026-05-18T20:00:04.663Z] [INFO] ✅ [SESSION CLEANUP] User ba2790bc-6bd9-4871-8c76-81094db1f619 - isUserLogin set to false (no active sessions)
+[2026-05-18T20:00:04.664Z] [INFO] ✅ [SESSION CLEANUP] Cleanup complete
+[2026-05-18T20:01:58.658Z] [INFO] SIGINT received, shutting down gracefully
+[2026-05-18T20:01:58.660Z] [INFO] EventReminderScheduler stopped
+[2026-05-18T20:02:38.616Z] [INFO] Database connection established successfully
+[2026-05-18T20:02:38.618Z] [INFO] Starting EventReminderScheduler...
+[2026-05-18T20:02:38.639Z] [INFO] EventReminderScheduler started successfully
+[2026-05-18T20:02:38.645Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-18T20:02:38.646Z] [INFO] Session cleanup service initialized
+[2026-05-18T20:02:38.650Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-18T20:02:38.659Z] [INFO] ============================================================
+[2026-05-18T20:02:38.660Z] [INFO] 🚀 Server Running
+[2026-05-18T20:02:38.660Z] [INFO] ============================================================
+[2026-05-18T20:02:38.661Z] [INFO] Environment: development
+[2026-05-18T20:02:38.662Z] [INFO] Port: 3002
+[2026-05-18T20:02:38.662Z] [INFO] API URL: http://localhost:3002
+[2026-05-18T20:02:38.663Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-18T20:02:38.664Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-18T20:02:38.664Z] [INFO] SSO Enabled: Yes
+[2026-05-18T20:02:38.665Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-18T20:02:38.665Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-18T20:02:38.666Z] [INFO] ============================================================
+[2026-05-18T20:03:48.679Z] [INFO] SIGINT received, shutting down gracefully
+[2026-05-18T20:03:48.682Z] [INFO] EventReminderScheduler stopped
+[2026-05-18T20:04:28.922Z] [INFO] Database connection established successfully
+[2026-05-18T20:04:28.924Z] [INFO] Starting EventReminderScheduler...
+[2026-05-18T20:04:28.934Z] [INFO] EventReminderScheduler started successfully
+[2026-05-18T20:04:28.937Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-18T20:04:28.937Z] [INFO] Session cleanup service initialized
+[2026-05-18T20:04:28.940Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-18T20:04:28.944Z] [INFO] ============================================================
+[2026-05-18T20:04:28.944Z] [INFO] 🚀 Server Running
+[2026-05-18T20:04:28.945Z] [INFO] ============================================================
+[2026-05-18T20:04:28.945Z] [INFO] Environment: development
+[2026-05-18T20:04:28.946Z] [INFO] Port: 3002
+[2026-05-18T20:04:28.946Z] [INFO] API URL: http://localhost:3002
+[2026-05-18T20:04:28.947Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-18T20:04:28.947Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-18T20:04:28.948Z] [INFO] SSO Enabled: Yes
+[2026-05-18T20:04:28.948Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-18T20:04:28.949Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-18T20:04:28.949Z] [INFO] ============================================================
+[2026-05-18T20:22:15.036Z] [INFO] SIGINT received, shutting down gracefully
+[2026-05-18T20:22:15.039Z] [INFO] EventReminderScheduler stopped
+[2026-05-18T20:22:53.447Z] [INFO] Database connection established successfully
+[2026-05-18T20:22:53.448Z] [INFO] Starting EventReminderScheduler...
+[2026-05-18T20:22:53.475Z] [INFO] EventReminderScheduler started successfully
+[2026-05-18T20:22:53.484Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-18T20:22:53.485Z] [INFO] Session cleanup service initialized
+[2026-05-18T20:22:53.499Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-18T20:22:53.510Z] [INFO] ============================================================
+[2026-05-18T20:22:53.511Z] [INFO] 🚀 Server Running
+[2026-05-18T20:22:53.512Z] [INFO] ============================================================
+[2026-05-18T20:22:53.515Z] [INFO] Environment: development
+[2026-05-18T20:22:53.517Z] [INFO] Port: 3002
+[2026-05-18T20:22:53.517Z] [INFO] API URL: http://localhost:3002
+[2026-05-18T20:22:53.518Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-18T20:22:53.519Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-18T20:22:53.521Z] [INFO] SSO Enabled: Yes
+[2026-05-18T20:22:53.525Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-18T20:22:53.527Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-18T20:22:53.529Z] [INFO] ============================================================
+[2026-05-20T18:29:38.494Z] [INFO] Database connection established successfully
+[2026-05-20T18:29:38.543Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T18:29:38.626Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T18:29:38.666Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T18:29:38.667Z] [INFO] Session cleanup service initialized
+[2026-05-20T18:29:38.702Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T18:29:38.743Z] [INFO] ============================================================
+[2026-05-20T18:29:38.745Z] [INFO] 🚀 Server Running
+[2026-05-20T18:29:38.746Z] [INFO] ============================================================
+[2026-05-20T18:29:38.747Z] [INFO] Environment: development
+[2026-05-20T18:29:38.749Z] [INFO] Port: 3002
+[2026-05-20T18:29:38.750Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T18:29:38.751Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T18:29:38.751Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T18:29:38.752Z] [INFO] SSO Enabled: Yes
+[2026-05-20T18:29:38.753Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T18:29:38.754Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T18:29:38.755Z] [INFO] ============================================================
+[2026-05-20T18:34:53.303Z] [INFO] Database connection established successfully
+[2026-05-20T18:34:53.323Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T18:34:53.364Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T18:34:53.373Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T18:34:53.373Z] [INFO] Session cleanup service initialized
+[2026-05-20T18:34:53.379Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T18:34:53.387Z] [INFO] ============================================================
+[2026-05-20T18:34:53.388Z] [INFO] 🚀 Server Running
+[2026-05-20T18:34:53.389Z] [INFO] ============================================================
+[2026-05-20T18:34:53.390Z] [INFO] Environment: development
+[2026-05-20T18:34:53.391Z] [INFO] Port: 3002
+[2026-05-20T18:34:53.391Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T18:34:53.392Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T18:34:53.392Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T18:34:53.393Z] [INFO] SSO Enabled: Yes
+[2026-05-20T18:34:53.394Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T18:34:53.394Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T18:34:53.395Z] [INFO] ============================================================
+[2026-05-20T18:35:45.473Z] [INFO] Database connection established successfully
+[2026-05-20T18:35:45.477Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T18:35:45.511Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T18:35:45.522Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T18:35:45.523Z] [INFO] Session cleanup service initialized
+[2026-05-20T18:35:45.533Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T18:35:45.542Z] [INFO] ============================================================
+[2026-05-20T18:35:45.544Z] [INFO] 🚀 Server Running
+[2026-05-20T18:35:45.545Z] [INFO] ============================================================
+[2026-05-20T18:35:45.546Z] [INFO] Environment: development
+[2026-05-20T18:35:45.547Z] [INFO] Port: 3002
+[2026-05-20T18:35:45.548Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T18:35:45.549Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T18:35:45.550Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T18:35:45.551Z] [INFO] SSO Enabled: Yes
+[2026-05-20T18:35:45.553Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T18:35:45.554Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T18:35:45.555Z] [INFO] ============================================================
+[2026-05-20T19:00:00.873Z] [INFO] 🧹 [SESSION CLEANUP] Starting...
+[2026-05-20T19:00:02.323Z] [INFO] ✅ [SESSION CLEANUP] No expired sessions found
+[2026-05-20T19:04:25.494Z] [INFO] Database connection established successfully
+[2026-05-20T19:04:25.501Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T19:04:25.522Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T19:04:25.528Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T19:04:25.529Z] [INFO] Session cleanup service initialized
+[2026-05-20T19:04:25.535Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T19:04:25.597Z] [INFO] ============================================================
+[2026-05-20T19:04:25.598Z] [INFO] 🚀 Server Running
+[2026-05-20T19:04:25.599Z] [INFO] ============================================================
+[2026-05-20T19:04:25.600Z] [INFO] Environment: development
+[2026-05-20T19:04:25.601Z] [INFO] Port: 3002
+[2026-05-20T19:04:25.602Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T19:04:25.603Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T19:04:25.606Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T19:04:25.607Z] [INFO] SSO Enabled: Yes
+[2026-05-20T19:04:25.609Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T19:04:25.609Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T19:04:25.610Z] [INFO] ============================================================
+[2026-05-20T19:05:13.518Z] [INFO] Database connection established successfully
+[2026-05-20T19:05:13.520Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T19:05:13.551Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T19:05:13.560Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T19:05:13.561Z] [INFO] Session cleanup service initialized
+[2026-05-20T19:05:13.569Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T19:05:13.577Z] [INFO] ============================================================
+[2026-05-20T19:05:13.578Z] [INFO] 🚀 Server Running
+[2026-05-20T19:05:13.579Z] [INFO] ============================================================
+[2026-05-20T19:05:13.580Z] [INFO] Environment: development
+[2026-05-20T19:05:13.580Z] [INFO] Port: 3002
+[2026-05-20T19:05:13.581Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T19:05:13.582Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T19:05:13.583Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T19:05:13.584Z] [INFO] SSO Enabled: Yes
+[2026-05-20T19:05:13.585Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T19:05:13.586Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T19:05:13.586Z] [INFO] ============================================================
+[2026-05-20T19:05:54.781Z] [INFO] Database connection established successfully
+[2026-05-20T19:05:54.784Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T19:05:54.823Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T19:05:54.833Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T19:05:54.835Z] [INFO] Session cleanup service initialized
+[2026-05-20T19:05:54.847Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T19:05:54.858Z] [INFO] ============================================================
+[2026-05-20T19:05:54.859Z] [INFO] 🚀 Server Running
+[2026-05-20T19:05:54.861Z] [INFO] ============================================================
+[2026-05-20T19:05:54.862Z] [INFO] Environment: development
+[2026-05-20T19:05:54.863Z] [INFO] Port: 3002
+[2026-05-20T19:05:54.865Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T19:05:54.866Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T19:05:54.867Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T19:05:54.868Z] [INFO] SSO Enabled: Yes
+[2026-05-20T19:05:54.869Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T19:05:54.870Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T19:05:54.872Z] [INFO] ============================================================
+[2026-05-20T19:07:34.830Z] [INFO] Database connection established successfully
+[2026-05-20T19:07:34.835Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T19:07:34.882Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T19:07:34.890Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T19:07:34.892Z] [INFO] Session cleanup service initialized
+[2026-05-20T19:07:34.899Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T19:07:34.905Z] [INFO] ============================================================
+[2026-05-20T19:07:34.905Z] [INFO] 🚀 Server Running
+[2026-05-20T19:07:34.906Z] [INFO] ============================================================
+[2026-05-20T19:07:34.907Z] [INFO] Environment: development
+[2026-05-20T19:07:34.908Z] [INFO] Port: 3002
+[2026-05-20T19:07:34.909Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T19:07:34.910Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T19:07:34.911Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T19:07:34.912Z] [INFO] SSO Enabled: Yes
+[2026-05-20T19:07:34.913Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T19:07:34.913Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T19:07:34.914Z] [INFO] ============================================================
+[2026-05-20T19:23:11.235Z] [INFO] Database connection established successfully
+[2026-05-20T19:23:11.249Z] [INFO] Starting EventReminderScheduler...
+[2026-05-20T19:23:11.306Z] [INFO] EventReminderScheduler started successfully
+[2026-05-20T19:23:11.318Z] [INFO] ✅ Session cleanup service started (runs every hour)
+[2026-05-20T19:23:11.320Z] [INFO] Session cleanup service initialized
+[2026-05-20T19:23:11.329Z] [INFO] Socket.IO handlers initialized successfully
+[2026-05-20T19:23:11.343Z] [INFO] ============================================================
+[2026-05-20T19:23:11.344Z] [INFO] 🚀 Server Running
+[2026-05-20T19:23:11.345Z] [INFO] ============================================================
+[2026-05-20T19:23:11.346Z] [INFO] Environment: development
+[2026-05-20T19:23:11.347Z] [INFO] Port: 3002
+[2026-05-20T19:23:11.348Z] [INFO] API URL: http://localhost:3002
+[2026-05-20T19:23:11.349Z] [INFO] Socket.IO URL: http://localhost:3002
+[2026-05-20T19:23:11.350Z] [INFO] Socket.IO Path: /socket.io/
+[2026-05-20T19:23:11.351Z] [INFO] SSO Enabled: Yes
+[2026-05-20T19:23:11.353Z] [INFO] BwengePlus URL: http://localhost:3001
+[2026-05-20T19:23:11.355Z] [INFO] Allowed Origins: http://localhost:3000, http://localhost:3001, https://bwenge.com, https://www.bwenge.com, https://api.bwenge.com, http://localhost:3000, http://localhost:3001, http://localhost:3002
+[2026-05-20T19:23:11.358Z] [INFO] ============================================================

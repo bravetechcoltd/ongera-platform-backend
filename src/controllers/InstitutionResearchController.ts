@@ -497,7 +497,11 @@ static async listProjects(req: Request, res: Response) {
       const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
       const userRepo = dbConnection.getRepository(User);
 
-      // Load project and caller in parallel
+      // Only load the relations the detail page actually renders.
+      // reviews, comments and activities are served by dedicated endpoints
+      // (/activity, /comments) — including them here triggers a cartesian-product
+      // join across all child collections and was the dominant cause of the
+      // multi-second response time.
       const [project, caller] = await Promise.all([
         projectRepo.findOne({
           where: { id },
@@ -508,12 +512,6 @@ static async listProjects(req: Request, res: Response) {
             "industrial_supervisors",
             "files",
             "files.uploaded_by",
-            "reviews",
-            "reviews.reviewer",
-            "comments",
-            "comments.author",
-            "activities",
-            "activities.actor",
           ],
         }),
         userRepo.findOne({ where: { id: userId } }),
@@ -526,9 +524,17 @@ static async listProjects(req: Request, res: Response) {
         return res.status(403).json({ success: false, message: "You do not have access to this project" });
       }
 
-      project.view_count += 1;
-      await projectRepo.save(project);
+      // Fire-and-forget atomic increment — never block the response on it,
+      // and never round-trip the full entity tree via save().
+      projectRepo
+        .createQueryBuilder()
+        .update(InstitutionResearchProject)
+        .set({ view_count: () => "view_count + 1" })
+        .where("id = :id", { id })
+        .execute()
+        .catch(() => {});
 
+      project.view_count += 1; // reflect new value in the response without waiting
       return res.json({ success: true, data: project });
     } catch (err: any) {
       return res.status(500).json({ success: false, message: err.message });
@@ -858,19 +864,22 @@ static async instructorReview(req: Request, res: Response) {
 }
 
 
+// Individual industrial supervisor — advisory only.
+// They can ONLY post a review (text comment + optional recommendation file).
+// They do NOT approve, request rework, or reject. They never mutate project status.
+// They may post a review at any time while the project is not finalized,
+// regardless of pipeline stage — they are not gated by the instructor's flow.
 static async supervisorReview(req: Request, res: Response) {
   try {
     const userId = req.user.userId;
     const { id } = req.params;
-    const { action, feedback } = req.body;
-    const revisedDocument = (req.files as any)?.revised_document?.[0];
+    const { feedback } = req.body;
+    const recommendationFile =
+      (req.files as any)?.recommendation_file?.[0] ||
+      (req.files as any)?.revised_document?.[0];
+
     const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
     const reviewRepo = dbConnection.getRepository(InstitutionProjectReview);
-    const userRepo = dbConnection.getRepository(User);
-
-    if (!["APPROVED", "REWORK_REQUESTED", "REJECTED"].includes(action)) {
-      return res.status(400).json({ success: false, message: "Invalid action" });
-    }
 
     const project = await projectRepo.findOne({
       where: { id },
@@ -890,24 +899,26 @@ static async supervisorReview(req: Request, res: Response) {
       return res.status(400).json({ success: false, message: "Project is already finalized" });
     }
 
-    if ((action === "REWORK_REQUESTED" || action === "REJECTED") && (!feedback || feedback.trim().length < 10)) {
-      return res.status(400).json({ success: false, message: "Detailed feedback required" });
+    if (!feedback || String(feedback).trim().length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: "A review comment of at least 10 characters is required",
+      });
     }
 
-    // Upload revised document if provided
-    let revisedDocumentData = null;
-    if (revisedDocument && action === "REWORK_REQUESTED") {
+    let recommendationData = null;
+    if (recommendationFile) {
       try {
-        const uploaded = await UploadToCloud(revisedDocument);
-        revisedDocumentData = {
+        const uploaded = await UploadToCloud(recommendationFile);
+        recommendationData = {
           file_url: uploaded.secure_url,
-          file_name: revisedDocument.originalname,
-          file_type: revisedDocument.mimetype,
-          file_size: revisedDocument.size,
+          file_name: recommendationFile.originalname,
+          file_type: recommendationFile.mimetype,
+          file_size: recommendationFile.size,
           uploaded_at: new Date(),
         };
       } catch (err) {
-        console.error("Revised document upload failed:", err);
+        console.error("Recommendation file upload failed:", err);
       }
     }
 
@@ -915,48 +926,39 @@ static async supervisorReview(req: Request, res: Response) {
       project,
       reviewer: { id: userId } as any,
       reviewer_role: InstitutionReviewerRole.INDUSTRIAL_SUPERVISOR,
-      action: action as InstitutionReviewAction,
+      action: InstitutionReviewAction.ADD_REVIEW,
       feedback,
       stage: InstitutionReviewStage.SUPERVISOR_STAGE,
       is_final: false,
-      revised_document: revisedDocumentData,
+      revised_document: recommendationData,
     });
     await reviewRepo.save(review);
 
-    if (action === "APPROVED") {
-      await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_APPROVED, `Supervisor recorded an approval (advisory)`);
-      await notifyUsers(
-        [...(project.instructors || []), ...(project.students || [])],
-        "Industrial supervisor approved your project (advisory)",
-        buildEmail(
-          "Supervisor approval (advisory)",
-          `The industrial supervisor approved '<b>${project.title}</b>'. The instructor review continues independently.`
-        )
-      );
-    } else if (action === "REWORK_REQUESTED") {
-      await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REWORK, `Supervisor recorded a rework request (advisory)${revisedDocumentData ? " with revised document" : ""}`);
-      await notifyUsers(
-        project.students || [],
-        "Industrial supervisor requested rework (advisory)",
-        buildEmail(
-          "Rework recommendation",
-          `The industrial supervisor has recommended rework on '<b>${project.title}</b>'.<br/><br/><b>Reason:</b> ${feedback}${revisedDocumentData ? `<br/><br/><b>Revised document attached:</b> <a href="${revisedDocumentData.file_url}" style="color:#0158B7;">${revisedDocumentData.file_name}</a>` : ""}<br/><br/>This is advisory; your instructor's review continues separately.`
-        )
-      );
-    } else {
-      await logActivity(id, userId, InstitutionActivityType.SUPERVISOR_REJECTED, `Supervisor recorded a rejection (advisory)`);
-      await notifyUsers(
-        [...(project.students || []), ...(project.instructors || [])],
-        "Industrial supervisor rejected your project (advisory)",
-        buildEmail(
-          "Supervisor rejection (advisory)",
-          `The industrial supervisor rejected '<b>${project.title}</b>'.<br/><br/><b>Reason:</b> ${feedback}<br/><br/>This is advisory; your instructor and the institution retain final decision.`
-        )
-      );
-    }
+    await logActivity(
+      id,
+      userId,
+      InstitutionActivityType.SUPERVISOR_REVIEWED,
+      `Industrial supervisor posted a review${recommendationData ? " with recommendation file" : ""} (advisory)`
+    );
 
-    await projectRepo.save(project);
-    return res.json({ success: true, message: "Supervisor review recorded", data: { project, review } });
+    await notifyUsers(
+      [...(project.students || []), ...(project.instructors || [])],
+      "Industrial supervisor added a review",
+      buildEmail(
+        "Supervisor review available",
+        `The industrial supervisor posted a review on '<b>${project.title}</b>'.<br/><br/><b>Comment:</b> ${feedback}${
+          recommendationData
+            ? `<br/><br/><b>Recommendation file:</b> <a href="${recommendationData.file_url}" style="color:#0158B7;">${recommendationData.file_name}</a>`
+            : ""
+        }<br/><br/>This is advisory; the instructor and institution retain decision authority.`
+      )
+    );
+
+    return res.json({
+      success: true,
+      message: "Review added",
+      data: { project, review },
+    });
   } catch (err: any) {
     return res.status(500).json({ success: false, message: err.message });
   }

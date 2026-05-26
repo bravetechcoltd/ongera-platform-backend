@@ -749,6 +749,126 @@ export const sendAdminNewApplicationEmail = async (
 };
 
 // ============================================
+// INSTITUTION ACCOUNT CREATED BY ADMIN (credentials)
+// ============================================
+export const sendInstitutionCredentials = async (
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string,
+  institutionName: string
+): Promise<boolean> => {
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to BWENGE - Institution Portal Account</title>
+</head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;background:white;">
+
+    <div style="background:#0158B7;padding:25px 30px;text-align:center;">
+      <div style="color:white;font-size:26px;font-weight:bold;letter-spacing:1px;">BWENGE</div>
+    </div>
+
+    <div style="padding:30px;background:white;">
+      <div style="font-size:18px;color:#1a1a1a;margin-bottom:20px;font-weight:600;">
+        Welcome, ${firstName} ${lastName}!
+      </div>
+
+      <div style="color:#4a4a4a;font-size:15px;line-height:1.6;margin-bottom:15px;">
+        A BWENGE <strong>Institution Portal</strong> account has been created for
+        <strong>${institutionName}</strong> by the platform administrator. You can sign in
+        and start managing your institution's portal — instructors, students, supervisors
+        and research projects — right away.
+      </div>
+
+      <span style="display:inline-block;background:#0158B7;color:white;padding:8px 20px;border-radius:20px;font-size:12px;font-weight:600;margin:10px 0;">
+        🏛️ INSTITUTION ADMIN ACCOUNT
+      </span>
+
+      <div style="background:#E3F2FD;padding:25px;border-radius:8px;margin:20px 0;border-left:4px solid #0158B7;">
+        <div style="color:#0158B7;font-weight:600;font-size:14px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">
+          YOUR LOGIN CREDENTIALS
+        </div>
+
+        <div style="background:white;padding:15px;border-radius:6px;margin:10px 0;">
+          <div style="color:#6B7280;font-size:12px;margin-bottom:5px;">Email Address:</div>
+          <div style="font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:#0158B7;">
+            ${email}
+          </div>
+        </div>
+
+        <div style="background:white;padding:15px;border-radius:6px;margin:10px 0;">
+          <div style="color:#6B7280;font-size:12px;margin-bottom:5px;">Temporary Password:</div>
+          <div style="font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:#0158B7;">
+            ${password}
+          </div>
+        </div>
+
+        <div style="color:#5E96D2;font-size:13px;margin-top:12px;">
+          ⚠️ Please change your password after first login.
+        </div>
+      </div>
+
+      <div style="background:#f8f9fa;padding:18px;border-radius:6px;margin:20px 0;">
+        <div style="color:#0158B7;font-weight:600;font-size:14px;margin-bottom:12px;">
+          📋 What you can do as an Institution Admin:
+        </div>
+        <ul style="color:#4a4a4a;font-size:14px;line-height:1.8;margin:0;padding-left:20px;">
+          <li>Invite and manage instructors and students</li>
+          <li>Invite industrial supervisors</li>
+          <li>Oversee research projects and publish them</li>
+          <li>Track your institution's research footprint</li>
+        </ul>
+      </div>
+
+      <div style="text-align:center;margin:25px 0;">
+        <a href="${process.env.FRONTEND_URL}/login"
+           style="display:inline-block;background:#0158B7;color:white;text-decoration:none;padding:14px 32px;border-radius:6px;font-weight:600;font-size:15px;">
+          🚀 Login to Institution Portal
+        </a>
+      </div>
+
+      <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:16px;border-radius:6px;margin:20px 0;">
+        <div style="color:#856404;font-size:14px;margin:0;line-height:1.6;">
+          <strong>🔒 Security Notice:</strong> Your password is temporary and should be changed immediately after logging in. Never share your credentials with anyone.
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#f8f9fa;padding:25px 30px;text-align:center;border-top:2px solid #e9ecef;">
+      <div style="color:#6c757d;font-size:13px;line-height:1.5;margin-bottom:8px;">
+        <strong>Rwanda Research Hub</strong><br>
+        Building Rwanda's Academic Community Together
+      </div>
+      <div style="color:#6c757d;font-size:13px;">
+        Need help? Contact us at <a href="mailto:bwengeorg@gmail.com" style="color:#0158B7;text-decoration:none;font-weight:600;">bwengeorg@gmail.com</a>
+      </div>
+      <div style="color:#94a3b8;font-size:12px;margin-top:8px;">
+        © ${new Date().getFullYear()} BWENGE Research Platform. All rights reserved.
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>`;
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: '🏛️ Welcome to BWENGE — Your Institution Portal Credentials',
+      html,
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// ============================================
 // ACCOUNT APPROVED / ACTIVATED
 // ============================================
 export const sendAccountActivatedEmail = async (

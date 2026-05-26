@@ -22,6 +22,7 @@ export enum InstitutionReviewAction {
   REWORK_REQUESTED = "REWORK_REQUESTED",
   PUBLISHED_PRIVATE = "PUBLISHED_PRIVATE",
   PUBLISHED_PUBLIC = "PUBLISHED_PUBLIC",
+  ADD_REVIEW = "ADD_REVIEW",
 }
 
 export enum InstitutionReviewStage {

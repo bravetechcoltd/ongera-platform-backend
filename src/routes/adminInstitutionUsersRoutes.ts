@@ -5,6 +5,12 @@ import { AdminInstitutionUsersController } from "../controllers/AdminInstitution
 const router = Router();
 
 router.get("/", authenticate, requireAdmin, AdminInstitutionUsersController.list);
+router.post(
+  "/",
+  authenticate,
+  requireAdmin,
+  AdminInstitutionUsersController.createInstitution
+);
 router.get(
   "/stats/overview",
   authenticate,

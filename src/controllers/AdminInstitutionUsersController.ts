@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
 import dbConnection from "../database/db";
 import {
   User,
@@ -9,6 +10,7 @@ import {
   InstitutionPortalRole,
   ApplicationStatus,
 } from "../database/models/User";
+import { UserProfile } from "../database/models/UserProfile";
 import { ResearchProject } from "../database/models/ResearchProject";
 import { InstitutionResearchProject } from "../database/models/InstitutionResearchProject";
 import {
@@ -19,7 +21,18 @@ import { InstructorStudent } from "../database/models/InstructorStudent";
 import {
   sendAccountActivatedEmail,
   sendAccountRejectedEmail,
+  sendInstitutionCredentials,
 } from "../services/emailTemplates";
+
+function generateTemporaryPassword(length: number = 12): string {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
+}
 
 // Shape a User row + its profile + footprint counts for the admin list.
 async function shapeInstitution(u: User, counts?: any) {
@@ -47,9 +60,8 @@ async function shapeInstitution(u: User, counts?: any) {
       !!u.is_industrial_supervisor ||
       !!u.is_institution_member ||
       u.account_type === AccountType.INSTITUTION,
-    drives_portal:
-      u.institution_portal_role === InstitutionPortalRole.INSTITUTION_ADMIN ||
-      (u.account_type === AccountType.INSTITUTION && u.is_active),
+    is_portal_admin:
+      u.institution_portal_role === InstitutionPortalRole.INSTITUTION_ADMIN,
     profile: u.profile
       ? {
           institution_name: (u.profile as any).institution_name,
@@ -465,7 +477,7 @@ export class AdminInstitutionUsersController {
           .createQueryBuilder("u")
           .where("u.account_type = :a", { a: AccountType.INSTITUTION });
 
-      const [total, pending, approved, rejected, active, suspended, drivingPortal] =
+      const [total, pending, approved, rejected, active, suspended, portalAdmins] =
         await Promise.all([
           base().getCount(),
           base().andWhere("u.application_status = :s", { s: ApplicationStatus.PENDING }).getCount(),
@@ -489,13 +501,136 @@ export class AdminInstitutionUsersController {
           rejected,
           active,
           suspended,
-          driving_portal: drivingPortal,
+          portal_admins: portalAdmins,
         },
       });
     } catch (error: any) {
       return res.status(500).json({
         success: false,
         message: "Failed to load stats",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * POST /api/admin/institutions
+   * Admin creates a brand-new Institution Portal account.
+   * - Generates a temporary password and emails the credentials.
+   * - Account is born APPROVED and ready to drive its portal
+   *   (institution_portal_role = INSTITUTION_ADMIN).
+   */
+  static async createInstitution(req: Request, res: Response) {
+    try {
+      const {
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        institution_name,
+        institution_type,
+        institution_address,
+        institution_phone,
+        institution_website,
+        institution_description,
+      } = req.body || {};
+
+      if (!first_name || !last_name || !email || !institution_name) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "first_name, last_name, email and institution_name are required",
+        });
+      }
+
+      const normalizedEmail = String(email).trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid email format" });
+      }
+
+      const userRepo = dbConnection.getRepository(User);
+      const profileRepo = dbConnection.getRepository(UserProfile);
+
+      const exists = await userRepo.findOne({ where: { email: normalizedEmail } });
+      if (exists) {
+        return res.status(409).json({
+          success: false,
+          message: "An account with this email already exists",
+        });
+      }
+
+      const tempPassword = generateTemporaryPassword(12);
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+      const user = userRepo.create({
+        first_name: String(first_name).trim(),
+        last_name: String(last_name).trim(),
+        email: normalizedEmail,
+        phone_number: phone_number || null,
+        password_hash: passwordHash,
+        account_type: AccountType.INSTITUTION,
+        is_active: true,
+        is_verified: true,
+        application_status: ApplicationStatus.APPROVED,
+        applied_at: new Date(),
+        bwenge_role: BwengeRole.INSTITUTION_ADMIN,
+        institution_role: InstitutionRole.ADMIN,
+        institution_portal_role: InstitutionPortalRole.INSTITUTION_ADMIN,
+        is_institution_member: true,
+      } as Partial<User>);
+
+      const savedUser = await userRepo.save(user);
+      // Now that the id exists, wire the self-membership pointers.
+      savedUser.institution_ids = [savedUser.id];
+      savedUser.primary_institution_id = savedUser.id;
+      await userRepo.save(savedUser);
+
+      const profile = profileRepo.create({
+        user: { id: savedUser.id } as any,
+        institution_name: String(institution_name).trim(),
+        institution_type: institution_type || null,
+        institution_address: institution_address || null,
+        institution_phone: institution_phone || phone_number || null,
+        institution_website: institution_website || null,
+        institution_description: institution_description || null,
+      } as Partial<UserProfile>);
+      await profileRepo.save(profile);
+
+      try {
+        await sendInstitutionCredentials(
+          savedUser.email,
+          savedUser.first_name,
+          savedUser.last_name,
+          tempPassword,
+          String(institution_name).trim()
+        );
+      } catch (_) {
+        // Email failure must not break account creation; admin can resend.
+      }
+
+      const reloaded = await userRepo.findOne({
+        where: { id: savedUser.id },
+        relations: ["profile"],
+      });
+
+      return res.status(201).json({
+        success: true,
+        message:
+          "Institution account created. Login credentials have been emailed.",
+        data: await shapeInstitution(reloaded!, {
+          instructors: 0,
+          students: 0,
+          industrial_supervisors: 0,
+          institution_projects: 0,
+          community_projects: 0,
+        }),
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to create institution account",
         error: error.message,
       });
     }

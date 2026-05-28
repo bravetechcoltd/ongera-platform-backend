@@ -638,9 +638,11 @@ static async listProjects(req: Request, res: Response) {
       if (wasRework) {
         const hasSupervisors = (project.industrial_supervisors || []).length > 0;
 
-        project.status = hasSupervisors
-          ? InstitutionProjectStatus.SUBMITTED
-          : InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
+        // Always route resubmissions straight to instructor review. Supervisors
+        // are advisory (parallel lane) and never gate the pipeline — this keeps
+        // the rework path identical to submitProject() so a resubmitted project
+        // is always in the instructor's decision stage.
+        project.status = InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
         project.submission_date = new Date();
         project.rework_count += 1;
         await logActivity(
@@ -771,17 +773,21 @@ static async instructorReview(req: Request, res: Response) {
     const isInstructor = (project.instructors || []).some((i) => i.id === userId);
     if (!isInstructor) return res.status(403).json({ success: false, message: "You are not an assigned instructor" });
 
-    const hasSupervisors = (project.industrial_supervisors || []).length > 0;
+    // Supervisors are advisory (parallel lane) and never block the instructor.
+    // The instructor's decision stage is SUBMITTED or UNDER_INSTRUCTOR_REVIEW,
+    // regardless of whether supervisors are assigned. This mirrors the frontend
+    // ActionPanel's `inInstructorStage` exactly so the buttons shown always match
+    // what the API accepts.
+    const inInstructorStage =
+      project.status === InstitutionProjectStatus.SUBMITTED ||
+      project.status === InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
 
-    const inInstructorStage = project.status === InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
-    const submittedWithoutSupervisor =
-      project.status === InstitutionProjectStatus.SUBMITTED && !hasSupervisors;
-
-    if (!inInstructorStage && !submittedWithoutSupervisor) {
+    if (!inInstructorStage) {
       return res.status(400).json({ success: false, message: "Project not in instructor review stage" });
     }
 
-    if (submittedWithoutSupervisor) {
+    // Normalize SUBMITTED → UNDER_INSTRUCTOR_REVIEW so the persisted status is canonical.
+    if (project.status === InstitutionProjectStatus.SUBMITTED) {
       project.status = InstitutionProjectStatus.UNDER_INSTRUCTOR_REVIEW;
     }
 

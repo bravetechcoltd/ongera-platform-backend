@@ -36,3 +36,5 @@
 [2026-05-18T23:41:34.077Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4062,"code":"ENETUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
 [2026-05-19T07:22:01.520Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
 [2026-05-20T19:35:57.871Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4077,"code":"ECONNRESET","syscall":"read"}
+[2026-05-20T23:57:04.831Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-05-26T20:54:31.831Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}

@@ -18,7 +18,29 @@
       "Bash(echo \"exit=$?\")",
       "Bash(echo \"backend=$?\")",
       "Bash(echo \"frontend=$?\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-backend\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-backend\" diff --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-backend\" log --oneline -5)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\" diff --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\" log --oneline -5)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-backend\" add src/controllers/InstitutionResearchController.ts)",
+      "Bash(git -C 'C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-backend' commit -m ' *)",
+      "Bash(git -C \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\" add \"src/app/dashboard/user/institution-portal/projects/[id]/page.tsx\")",
+      "Bash(git -C 'C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend' commit -m ' *)",
+      "Bash(git *)",
+      "Bash(npm audit *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(npm view *)",
+      "Bash(npm install *)",
+      "Bash(npm rm *)",
+      "Bash(npm run *)",
+      "Bash(echo \"rm --cached exit: $?\")",
+      "Bash(curl -s http://localhost:3000 -o \"C:\\\\Users\\\\Dell\\\\AppData\\\\Local\\\\Temp\\\\ongera-home.html\" -w \"HTTP %{http_code}\\\\n\")",
+      "Read(//c/Users/Dell/AppData/Local/Temp/**)",
+      "Bash(powershell -NoProfile -Command \"Get-ChildItem src/app/layout.tsx,src/components/providers.tsx | Select-Object LastWriteTime,Name | Format-Table -HideTableHeaders\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

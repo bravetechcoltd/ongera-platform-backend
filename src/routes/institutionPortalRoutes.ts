@@ -172,6 +172,11 @@ router.delete(
   InstitutionPortalController.unassignProjectFromSupervisor
 );
 
+// ==================== Multiple institution admins ====================
+router.get("/admins", authenticate, InstitutionPortalController.getInstitutionAdmins);
+router.post("/admins", authenticate, InstitutionPortalController.addInstitutionAdmin);
+router.delete("/admins/:userId", authenticate, InstitutionPortalController.removeInstitutionAdmin);
+
 // ==================== ITEM 5: Multi-student collaborator picker ====================
 router.get(
   "/portal/all-students",

@@ -280,7 +280,7 @@ static async createProject(req: Request, res: Response) {
     const { 
       title, abstract, full_description, research_type, 
       visibility, collaboration_status, tags, field_of_study,
-      publication_date, doi,
+      publication_date, doi, citation,
       academic_level
     } = req.body;
 
@@ -306,6 +306,7 @@ static async createProject(req: Request, res: Response) {
 
     if (field_of_study) project.field_of_study = field_of_study;
     if (doi) project.doi = doi;
+    if (citation) project.citation = citation;
     if (academic_level) project.academic_level = academic_level;
 
     if (req.files && (req.files as any).project_file) {
@@ -876,7 +877,7 @@ static async getAllProjects(req: Request, res: Response) {
       const allowedUpdates = [
         'title', 'abstract', 'full_description', 'research_type',
         'visibility', 'collaboration_status', 'field_of_study',
-        'publication_date', 'doi',
+        'publication_date', 'doi', 'citation',
         'academic_level'
       ];
 

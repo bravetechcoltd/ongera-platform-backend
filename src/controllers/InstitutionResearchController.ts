@@ -1202,6 +1202,45 @@ static async publishProject(req: Request, res: Response) {
     }
   }
 
+  /**
+   * GET /:id/reviews
+   * Returns the project's reviews (incl. advisory industrial-supervisor reviews).
+   * Served by its own endpoint so getProject can stay lean. This is what makes a
+   * saved industrial review actually visible in the UI.
+   */
+  static async getReviews(req: Request, res: Response) {
+    try {
+      const userId = req.user.userId;
+      const { id } = req.params;
+      const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
+      const reviewRepo = dbConnection.getRepository(InstitutionProjectReview);
+      const userRepo = dbConnection.getRepository(User);
+
+      const [project, caller] = await Promise.all([
+        projectRepo.findOne({
+          where: { id },
+          relations: ["students", "instructors", "industrial_supervisors", "institution"],
+        }),
+        userRepo.findOne({ where: { id: userId } }),
+      ]);
+
+      if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+
+      const allowed = await canUserSeeProject(userId, project, caller);
+      if (!allowed) return res.status(403).json({ success: false, message: "No access" });
+
+      const reviews = await reviewRepo.find({
+        where: { project: { id } as any },
+        relations: ["reviewer"],
+        order: { reviewed_at: "DESC" },
+      });
+
+      return res.json({ success: true, data: reviews });
+    } catch (err: any) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+  }
+
 static async dashboard(req: Request, res: Response) {
   try {
     const userId = req.user.userId;

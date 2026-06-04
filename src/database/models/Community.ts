@@ -75,6 +75,15 @@ export class Community {
   })
   members: User[];
 
+  // Additional administrators (beyond the creator). Creator is the implicit root admin.
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: "community_admins",
+    joinColumn: { name: "community_id" },
+    inverseJoinColumn: { name: "user_id" },
+  })
+  admins: User[];
+
   @OneToMany(() => CommunityPost, (post) => post.community)
   posts: CommunityPost[];
 

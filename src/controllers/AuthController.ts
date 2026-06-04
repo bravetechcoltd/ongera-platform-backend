@@ -542,7 +542,8 @@ static async login(req: Request, res: Response) {
         "user.social_auth_provider", "user.social_auth_id",
         "user.IsForWhichSystem", "user.bwenge_role",
         "user.primary_institution_id", "user.is_institution_member", 
-        "user.institution_ids", "user.institution_role", 
+        "user.institution_ids", "user.institution_role",
+        "user.is_excellence_member", "user.excellence_tier",
         "profile", "assignedStudents", "student", "assignedInstructor", "instructor"
       ])
       .where("user.email = :email", { email })
@@ -695,6 +696,8 @@ static async login(req: Request, res: Response) {
       institution_portal_role: user.institution_portal_role || null,
       is_industrial_supervisor: user.is_industrial_supervisor || false,
       industrial_supervisor_institutions: user.industrial_supervisor_institutions || [],
+      is_excellence_member: user.is_excellence_member || false,
+      excellence_tier: user.excellence_tier || null,
       has_institution_portal_access: !!(
         user.institution_portal_role ||
         user.is_industrial_supervisor ||
@@ -1195,6 +1198,7 @@ static async googleLogin(req: Request, res: Response) {
         "user.IsForWhichSystem", "user.bwenge_role",
         "user.primary_institution_id", "user.is_institution_member",
         "user.institution_ids", "user.institution_role",
+        "user.is_excellence_member", "user.excellence_tier",
         "profile", "assignedStudents", "student", "assignedInstructor", "instructor"
       ])
       .where("user.id = :id", { id: existingUser.id })
@@ -1274,6 +1278,8 @@ static async googleLogin(req: Request, res: Response) {
       institution_portal_role: user.institution_portal_role || null,
       is_industrial_supervisor: user.is_industrial_supervisor || false,
       industrial_supervisor_institutions: user.industrial_supervisor_institutions || [],
+      is_excellence_member: user.is_excellence_member || false,
+      excellence_tier: user.excellence_tier || null,
       has_institution_portal_access: !!(
         user.institution_portal_role ||
         user.is_industrial_supervisor ||

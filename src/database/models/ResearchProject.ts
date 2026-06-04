@@ -33,6 +33,9 @@ export enum AcademicLevel {
   UNDERGRADUATE = "Undergraduate",
   MASTERS = "Masters",
   PHD = "PhD",
+  DISSERTATION = "Dissertation",
+  // RESEARCHER kept (now shown in UI as "Research"); DIASPORA/INSTITUTION retained
+  // for backward compatibility with existing rows but no longer offered in forms.
   RESEARCHER = "Researcher",
   DIASPORA = "Diaspora",
   INSTITUTION = "Institution",
@@ -172,6 +175,10 @@ export class ResearchProject {
 
   @Column({ nullable: true })
   doi: string;
+
+  // Formatted academic citation reference for this work (additive).
+  @Column({ type: "text", nullable: true })
+  citation: string;
 
   @Column({ default: 0 })
   view_count: number;

@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 import { IsNull, In } from "typeorm";
 import dbConnection from '../database/db';
-import { User, AccountType, BwengeRole, InstitutionRole } from "../database/models/User";
+import { User, AccountType, BwengeRole, InstitutionRole, InstitutionPortalRole } from "../database/models/User";
 import { ResearchProject, ProjectApprovalStatus } from "../database/models/ResearchProject";
 import { InstructorStudent } from "../database/models/InstructorStudent";
 import { ProjectApproval, ApprovalStatus } from "../database/models/ProjectApproval";
@@ -999,6 +999,101 @@ export class InstitutionPortalController {
    * GET /api/institution-portal/portal/instructors
    * List all instructors registered in this institution's portal (FK-based)
    */
+  // ==================== MULTIPLE INSTITUTION ADMINS ====================
+  /**
+   * GET /api/institution-portal/admins
+   * Lists every portal admin for the caller's institution (members promoted to
+   * INSTITUTION_ADMIN). The institution account owner is the implicit root admin.
+   */
+  static async getInstitutionAdmins(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const userRepo = dbConnection.getRepository(User);
+
+      const admins = await userRepo
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.profile", "profile")
+        .where("user.institution_ids LIKE :id", { id: `%${institutionId}%` })
+        .andWhere("user.institution_portal_role = :role", { role: InstitutionPortalRole.INSTITUTION_ADMIN })
+        .orderBy("user.date_joined", "DESC")
+        .getMany();
+
+      const data = admins.map((u) => ({
+        id: u.id,
+        email: u.email,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        name: `${u.first_name || ""} ${u.last_name || ""}`.trim(),
+        is_root: u.id === institutionId,
+        profile: u.profile || null,
+      }));
+
+      return res.json({ success: true, data });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to load admins", error: error.message });
+    }
+  }
+
+  /**
+   * POST /api/institution-portal/admins   Body: { user_id }
+   * Promotes an existing institution member to INSTITUTION_ADMIN.
+   */
+  static async addInstitutionAdmin(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const { user_id } = req.body || {};
+      if (!user_id) return res.status(400).json({ success: false, message: "user_id is required" });
+
+      const userRepo = dbConnection.getRepository(User);
+      const target = await userRepo.findOne({ where: { id: user_id } });
+      if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+      const belongs = Array.isArray(target.institution_ids) && target.institution_ids.includes(institutionId);
+      if (!belongs) {
+        return res.status(403).json({ success: false, message: "This user is not a member of your institution" });
+      }
+
+      target.institution_portal_role = InstitutionPortalRole.INSTITUTION_ADMIN;
+      target.is_institution_member = true;
+      if (!target.bwenge_role) target.bwenge_role = BwengeRole.INSTITUTION_ADMIN;
+      await userRepo.save(target);
+
+      return res.json({
+        success: true,
+        message: `${target.first_name} ${target.last_name} is now an institution admin.`,
+        data: { id: target.id },
+      });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to add admin", error: error.message });
+    }
+  }
+
+  /**
+   * DELETE /api/institution-portal/admins/:userId
+   * Demotes a portal admin back to instructor. The root institution account
+   * cannot be demoted.
+   */
+  static async removeInstitutionAdmin(req: Request, res: Response) {
+    try {
+      const institutionId = req.user.userId;
+      const { userId } = req.params;
+      if (userId === institutionId) {
+        return res.status(400).json({ success: false, message: "The root institution account cannot be demoted." });
+      }
+
+      const userRepo = dbConnection.getRepository(User);
+      const target = await userRepo.findOne({ where: { id: userId } });
+      if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+      target.institution_portal_role = InstitutionPortalRole.INSTRUCTOR;
+      await userRepo.save(target);
+
+      return res.json({ success: true, message: "Admin access revoked.", data: { id: target.id } });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to remove admin", error: error.message });
+    }
+  }
+
   static async getInstitutionPortalInstructors(req: Request, res: Response) {
     try {
       const institutionId = req.user.userId;

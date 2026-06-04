@@ -2519,4 +2519,176 @@ static async getUserCommunities(req: Request, res: Response) {
     });
   }
 }
+
+// ==================== MULTIPLE COMMUNITY ADMINS ====================
+/**
+ * GET /api/communities/:id/admins
+ * Lists the creator (root admin) plus any additional admins.
+ */
+static async getCommunityAdmins(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const repo = dbConnection.getRepository(Community);
+    const community = await repo.findOne({
+      where: { id },
+      relations: ["creator", "creator.profile", "admins", "admins.profile"],
+    });
+    if (!community) return res.status(404).json({ success: false, message: "Community not found" });
+
+    const shape = (u: User, isRoot = false) => ({
+      id: u.id,
+      first_name: u.first_name,
+      last_name: u.last_name,
+      email: u.email,
+      profile_picture_url: u.profile_picture_url,
+      is_root: isRoot,
+    });
+
+    const data = [shape(community.creator, true), ...(community.admins || []).map((a) => shape(a))];
+    return res.json({ success: true, data });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: "Failed to load admins", error: error.message });
+  }
+}
+
+/**
+ * POST /api/communities/:id/admins   Body: { user_id }
+ * Adds a member as a community admin. Only the creator or an existing admin can do this.
+ */
+static async addCommunityAdmin(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId;
+    const { id } = req.params;
+    const { user_id } = req.body || {};
+    if (!user_id) return res.status(400).json({ success: false, message: "user_id is required" });
+
+    const repo = dbConnection.getRepository(Community);
+    const userRepo = dbConnection.getRepository(User);
+    const community = await repo.findOne({ where: { id }, relations: ["creator", "admins", "members"] });
+    if (!community) return res.status(404).json({ success: false, message: "Community not found" });
+
+    const isAuthorized =
+      community.creator.id === userId || (community.admins || []).some((a) => a.id === userId);
+    if (!isAuthorized) return res.status(403).json({ success: false, message: "Only an admin can manage admins" });
+
+    const target = await userRepo.findOne({ where: { id: user_id } });
+    if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+    community.admins = community.admins || [];
+    if (community.creator.id === user_id || community.admins.some((a) => a.id === user_id)) {
+      return res.status(409).json({ success: false, message: "User is already an admin" });
+    }
+    community.admins.push(target);
+    await repo.save(community);
+
+    return res.json({
+      success: true,
+      message: `${target.first_name} ${target.last_name} is now a community admin.`,
+      data: { id: target.id },
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: "Failed to add admin", error: error.message });
+  }
+}
+
+/**
+ * DELETE /api/communities/:id/admins/:userId
+ * Removes an additional admin. The creator (root) cannot be removed.
+ */
+static async removeCommunityAdmin(req: Request, res: Response) {
+  try {
+    const callerId = req.user.userId;
+    const { id, userId } = req.params;
+
+    const repo = dbConnection.getRepository(Community);
+    const community = await repo.findOne({ where: { id }, relations: ["creator", "admins"] });
+    if (!community) return res.status(404).json({ success: false, message: "Community not found" });
+
+    const isAuthorized =
+      community.creator.id === callerId || (community.admins || []).some((a) => a.id === callerId);
+    if (!isAuthorized) return res.status(403).json({ success: false, message: "Only an admin can manage admins" });
+
+    if (userId === community.creator.id) {
+      return res.status(400).json({ success: false, message: "The community creator cannot be removed." });
+    }
+
+    community.admins = (community.admins || []).filter((a) => a.id !== userId);
+    await repo.save(community);
+
+    return res.json({ success: true, message: "Admin access revoked.", data: { id: userId } });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: "Failed to remove admin", error: error.message });
+  }
+}
+
+// ==================== COMMUNITY POST EDIT / DELETE ====================
+/** Returns true if the caller may manage (edit/delete) the given post. */
+static async _canManagePost(userId: string, post: any): Promise<boolean> {
+  if (!post) return false;
+  if (post.author?.id === userId) return true;
+  const repo = dbConnection.getRepository(Community);
+  const community = await repo.findOne({
+    where: { id: post.community?.id },
+    relations: ["creator", "admins"],
+  });
+  if (!community) return false;
+  return community.creator.id === userId || (community.admins || []).some((a: any) => a.id === userId);
+}
+
+/** PATCH /api/communities/posts/:postId  Body: { title?, content?, post_type? } */
+static async editCommunityPost(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId;
+    const { postId } = req.params;
+    const { title, content, post_type } = req.body || {};
+
+    const postRepo = dbConnection.getRepository(CommunityPost);
+    const post = await postRepo.findOne({ where: { id: postId }, relations: ["author", "community"] });
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+    const allowed = await CommunityController._canManagePost(userId, post);
+    if (!allowed) return res.status(403).json({ success: false, message: "Not allowed to edit this post" });
+
+    if (title !== undefined) post.title = title;
+    if (content !== undefined) post.content = content;
+    if (post_type !== undefined) post.post_type = post_type;
+    await postRepo.save(post);
+
+    return res.json({ success: true, message: "Post updated.", data: { id: post.id } });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: "Failed to edit post", error: error.message });
+  }
+}
+
+/** DELETE /api/communities/posts/:postId */
+static async deleteCommunityPost(req: Request, res: Response) {
+  try {
+    const userId = req.user.userId;
+    const { postId } = req.params;
+
+    const postRepo = dbConnection.getRepository(CommunityPost);
+    const post = await postRepo.findOne({ where: { id: postId }, relations: ["author", "community"] });
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+    const allowed = await CommunityController._canManagePost(userId, post);
+    if (!allowed) return res.status(403).json({ success: false, message: "Not allowed to delete this post" });
+
+    const communityId = post.community?.id;
+    await postRepo.remove(post);
+
+    // Keep the denormalised counter honest.
+    if (communityId) {
+      const communityRepo = dbConnection.getRepository(Community);
+      const community = await communityRepo.findOne({ where: { id: communityId } });
+      if (community && community.post_count > 0) {
+        community.post_count -= 1;
+        await communityRepo.save(community);
+      }
+    }
+
+    return res.json({ success: true, message: "Post deleted.", data: { id: postId } });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: "Failed to delete post", error: error.message });
+  }
+}
 }

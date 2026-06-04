@@ -968,3 +968,112 @@ export const sendAccountRejectedEmail = async (
     return false;
   }
 };
+
+// ============================================
+// EXCELLENCE DASHBOARD EMAILS
+// ============================================
+
+/** Shared BWENGE-branded shell to keep Excellence emails consistent & compact. */
+const excellenceShell = (
+  accent: string,
+  badge: string,
+  heading: string,
+  bodyHtml: string,
+  ctaLabel?: string,
+  ctaHref?: string
+): string => `
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BWENGE Excellence</title></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f4f6fb;">
+  <div style="max-width:600px;margin:0 auto;background:white;">
+    <div style="background:${accent};padding:26px 30px;text-align:center;">
+      <div style="color:white;font-size:24px;font-weight:bold;letter-spacing:1px;">BWENGE</div>
+      <div style="color:rgba(255,255,255,.85);font-size:12px;letter-spacing:2px;margin-top:4px;">EXCELLENCE DASHBOARD</div>
+    </div>
+    <div style="padding:30px;">
+      <span style="display:inline-block;background:${accent};color:white;padding:7px 18px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:16px;">${badge}</span>
+      <div style="font-size:19px;color:#111827;margin-bottom:14px;font-weight:700;">${heading}</div>
+      <div style="color:#4a4a4a;font-size:15px;line-height:1.65;">${bodyHtml}</div>
+      ${ctaLabel && ctaHref ? `<div style="text-align:center;margin:26px 0 6px;">
+        <a href="${ctaHref}" style="display:inline-block;background:${accent};color:white;text-decoration:none;padding:13px 30px;border-radius:8px;font-weight:600;font-size:15px;">${ctaLabel}</a>
+      </div>` : ""}
+    </div>
+    <div style="background:#f8f9fa;padding:22px 30px;text-align:center;border-top:2px solid #eef0f4;">
+      <div style="color:#6c757d;font-size:13px;">BWENGE — Turning Challenges into Opportunities, Talent into Excellence.</div>
+      <div style="color:#94a3b8;font-size:12px;margin-top:6px;">© ${new Date().getFullYear()} BWENGE Research Platform.</div>
+    </div>
+  </div>
+</body></html>`;
+
+const sendExcellenceMail = async (to: string, subject: string, html: string): Promise<boolean> => {
+  try {
+    await transporter.sendMail({ from: process.env.EMAIL_USER, to, subject, html });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/** Sent when an admin enrolls a user into the Excellence space. */
+export const sendExcellenceEnrollment = async (
+  email: string,
+  firstName: string,
+  tier: string
+): Promise<boolean> => {
+  const html = excellenceShell(
+    "#7C3AED",
+    "🏆 EXCELLENCE MEMBER",
+    `Congratulations, ${firstName}!`,
+    `You have been recognised as a <strong>BWENGE Excellence Member</strong> (<strong>${tier}</strong> tier) for your
+     outstanding contribution and performance. Your profile is now visible to partner companies looking for talent.
+     <br/><br/>From your dashboard you can browse industrial challenges (bounties), submit solutions, win cash prizes,
+     and connect with companies. <em>Never stop learning. Never stop innovating. Never stop growing.</em>`,
+    "🚀 Open Excellence Dashboard",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence`
+  );
+  return sendExcellenceMail(email, "🏆 You've been recognised — BWENGE Excellence", html);
+};
+
+/** Sent to a company when admin activates their talent-pool subscription. */
+export const sendCompanyAccessGranted = async (
+  email: string,
+  firstName: string,
+  institutionName: string
+): Promise<boolean> => {
+  const html = excellenceShell(
+    "#0158B7",
+    "✅ ACCESS GRANTED",
+    `Welcome aboard, ${institutionName}!`,
+    `Your access to the <strong>BWENGE Excellence talent pool</strong> is now active. You can discover outstanding
+     participants, post industrial challenges (bounties) with cash prizes, review submissions, and hire the best talent.`,
+    "🔎 Browse Talent & Post a Bounty",
+    `${process.env.FRONTEND_URL}/dashboard/user/institution-portal/excellence`
+  );
+  return sendExcellenceMail(email, "✅ Your BWENGE Excellence access is active", html);
+};
+
+/** Sent to the winning member when a company awards them a bounty. */
+export const sendBountyAwardWinner = async (
+  email: string,
+  firstName: string,
+  bountyTitle: string,
+  grossAmount: string,
+  netAmount: string,
+  currency: string
+): Promise<boolean> => {
+  const html = excellenceShell(
+    "#059669",
+    "🎉 BOUNTY WON",
+    `You won, ${firstName}!`,
+    `Your solution to <strong>"${bountyTitle}"</strong> has been selected as the winning entry.
+     <br/><br/>
+     <div style="background:#ecfdf5;border-left:4px solid #059669;padding:16px;border-radius:8px;margin-top:8px;">
+       <div style="font-size:13px;color:#065f46;">Prize pool: <strong>${currency} ${grossAmount}</strong></div>
+       <div style="font-size:13px;color:#065f46;margin-top:4px;">Your net payout (after platform fee): <strong>${currency} ${netAmount}</strong></div>
+     </div>
+     <br/>The platform is processing your payout — you'll be notified once it is released.`,
+    "View My Submission",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence/submissions`
+  );
+  return sendExcellenceMail(email, `🎉 You won the bounty: ${bountyTitle}`, html);
+};

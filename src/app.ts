@@ -26,6 +26,9 @@ import institutionResearchAdminRoutes from "./routes/institutionResearchAdminRou
 import heroSlideRoutes from "./routes/heroSlideRoutes";
 import userRoutes from "./routes/userRoutes";
 import adminInstitutionUsersRoutes from "./routes/adminInstitutionUsersRoutes";
+import excellenceRoutes from "./routes/excellenceRoutes";
+import excellenceAdminRoutes from "./routes/excellenceAdminRoutes";
+import adminEmailRoutes from "./routes/adminEmailRoutes";
 
 
 const app: Application = express();
@@ -111,6 +114,9 @@ app.use("/api/institution-work", institutionWorkRoutes);
 app.use("/api/institution-research-projects", institutionResearchRoutes);
 app.use("/api/admin/institution-research", institutionResearchAdminRoutes);
 app.use("/api/admin/institutions", adminInstitutionUsersRoutes);
+app.use("/api/excellence", excellenceRoutes);
+app.use("/api/admin/excellence", excellenceAdminRoutes);
+app.use("/api/admin/email", adminEmailRoutes);
 app.use("/api/hero-slides", heroSlideRoutes);
 app.use("/api/users", userRoutes);
 app.get("/", (req, res) => {

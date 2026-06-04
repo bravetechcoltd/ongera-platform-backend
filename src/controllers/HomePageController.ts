@@ -3,9 +3,36 @@ import dbConnection from '../database/db';
 import { ResearchProject, ProjectStatus } from "../database/models/ResearchProject";
 import { Event, EventStatus } from "../database/models/Event";
 import { Community } from "../database/models/Community";
-import { User } from "../database/models/User";
+import { User, AccountType, ApplicationStatus } from "../database/models/User";
 
 export class HomePageController {
+  /**
+   * GET /api/homepage/institutions
+   * Public list of joined institutions for the homepage research sidebar.
+   */
+  static async getInstitutions(_req: Request, res: Response) {
+    try {
+      const userRepo = dbConnection.getRepository(User);
+      const rows = await userRepo
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.profile", "profile")
+        .where("user.account_type = :acc", { acc: AccountType.INSTITUTION })
+        .andWhere("user.is_active = TRUE")
+        .orderBy("user.date_joined", "DESC")
+        .take(100)
+        .getMany();
+
+      const data = rows.map((u) => ({
+        id: u.id,
+        name: (u.profile as any)?.institution_name || `${u.first_name} ${u.last_name}`,
+        logo_url: (u.profile as any)?.logo_url || null,
+        type: (u.profile as any)?.institution_type || null,
+      }));
+      return res.json({ success: true, data });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to load institutions", error: error.message });
+    }
+  }
   /**
    * Get homepage summary statistics
    * Returns counts for projects, researchers, communities, and events

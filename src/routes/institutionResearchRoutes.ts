@@ -21,6 +21,9 @@ router.post("/:id/publish", authenticate, InstitutionResearchController.publishP
 // Activity
 router.get("/:id/activity", authenticate, InstitutionResearchController.getActivity);
 
+// Reviews (incl. advisory industrial-supervisor reviews)
+router.get("/:id/reviews", authenticate, InstitutionResearchController.getReviews);
+
 // Comments
 router.post("/:id/comments", authenticate, uploadFields, handleMulterError, InstitutionProjectCommentController.create);
 router.get("/:id/comments", authenticate, InstitutionProjectCommentController.list);

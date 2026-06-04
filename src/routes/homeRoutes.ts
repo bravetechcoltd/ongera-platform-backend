@@ -5,5 +5,6 @@ const router = Router();
 
 router.get("/homepage/summary", HomePageController.getHomePageSummary);
 router.get("/homepage/content", HomePageController.getHomePageContent);
+router.get("/homepage/institutions", HomePageController.getInstitutions);
 
 export default router;

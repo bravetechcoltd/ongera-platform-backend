@@ -24,6 +24,15 @@ router.get("/:community_id/posts", CommunityController.getCommunityPosts);
 router.get("/suggestions/:projectId", authenticate, CommunityController.getSuggestedCommunities);
 router.get("/:community_id/members", CommunityController.getCommunityMembers);
 
+// Multiple community admins
+router.get("/:id/admins", authenticate, CommunityController.getCommunityAdmins);
+router.post("/:id/admins", authenticate, CommunityController.addCommunityAdmin);
+router.delete("/:id/admins/:userId", authenticate, CommunityController.removeCommunityAdmin);
+
+// Community post management (edit/delete) — author, creator, or admins
+router.patch("/posts/:postId", authenticate, CommunityController.editCommunityPost);
+router.delete("/posts/:postId", authenticate, CommunityController.deleteCommunityPost);
+
 router.get("/", CommunityController.getAllCommunities);
 
 router.get("/:id", CommunityController.getCommunityById);

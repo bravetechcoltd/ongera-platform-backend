@@ -231,6 +231,17 @@ export class User {
   })
   institution_portal_role: InstitutionPortalRole;
 
+  // ==================== EXCELLENCE DASHBOARD — ADDITIVE COLUMNS ====================
+  // Overlay flag (not a new account type): set true when an admin enrolls this
+  // outstanding user into the Excellence space. Gates the Excellence Dashboard tab.
+  @Column({ default: false })
+  is_excellence_member: boolean;
+
+  // RISING | OUTSTANDING | ELITE (stored as plain string to avoid a circular
+  // import between User and ExcellenceMember).
+  @Column({ type: "varchar", length: 20, nullable: true })
+  excellence_tier: string;
+
   // ==================== APPLICATION LIFECYCLE — ADDITIVE COLUMNS ====================
   @Column({
     type: "enum",

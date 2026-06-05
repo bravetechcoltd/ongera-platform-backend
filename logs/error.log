@@ -38,3 +38,11 @@
 [2026-05-20T19:35:57.871Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4077,"code":"ECONNRESET","syscall":"read"}
 [2026-05-20T23:57:04.831Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
 [2026-05-26T20:54:31.831Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-02T18:01:23.122Z] [ERROR] Error starting server: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-04T18:03:07.283Z] [ERROR] Error starting server: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-04T20:52:58.769Z] [ERROR] Error starting server: | Meta: {"query":"SELECT \"e\".\"enumlabel\" AS \"value\" FROM \"pg_enum\" \"e\" INNER JOIN \"pg_type\" \"t\" ON \"t\".\"oid\" = \"e\".\"enumtypid\" INNER JOIN \"pg_namespace\" \"n\" ON \"n\".\"oid\" = \"t\".\"typnamespace\" WHERE \"n\".\"nspname\" = 'public' AND \"t\".\"typname\" = 'blog_posts_status_enum'","driverError":{"errno":-4077,"code":"ECONNRESET","syscall":"read"},"errno":-4077,"code":"ECONNRESET","syscall":"read"}
+[2026-06-05T07:22:52.952Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-05T20:16:41.386Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-06T09:14:04.908Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4073,"code":"EHOSTUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-06T09:18:55.844Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4039,"code":"ETIMEDOUT","syscall":"connect","address":"168.231.79.158","port":5432}
+[2026-06-06T09:28:34.789Z] [ERROR] Error in checkAndSendReminders: | Meta: {"errno":-4062,"code":"ENETUNREACH","syscall":"connect","address":"168.231.79.158","port":5432}

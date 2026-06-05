@@ -40,7 +40,9 @@
       "Bash(curl -s http://localhost:3000 -o \"C:\\\\Users\\\\Dell\\\\AppData\\\\Local\\\\Temp\\\\ongera-home.html\" -w \"HTTP %{http_code}\\\\n\")",
       "Read(//c/Users/Dell/AppData/Local/Temp/**)",
       "Bash(powershell -NoProfile -Command \"Get-ChildItem src/app/layout.tsx,src/components/providers.tsx | Select-Object LastWriteTime,Name | Format-Table -HideTableHeaders\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(npx --prefix \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\" tsc --noEmit --project \"C:\\\\Users\\\\Dell\\\\Desktop\\\\MyProject\\\\ongera-platform-frontend\\\\tsconfig.json\")",
+      "Bash(xargs wc -l)"
     ]
   }
 }

@@ -277,6 +277,9 @@ export const uploadResearchFiles = upload.fields([
 export const uploadBountyFiles = upload.fields([
   { name: "submission_files", maxCount: 10 },
 ])
+export const uploadAssessmentFiles = upload.fields([
+  { name: "submission_files", maxCount: 10 },
+])
 export const getAllowedExtensions = () => ({ ...allowedExtensions })
 export const isExtensionAllowed = (ext: string) => allAllowedExtensions.includes(ext.toLowerCase())
 export const uploadContractDocument = upload.single("contractDocument");

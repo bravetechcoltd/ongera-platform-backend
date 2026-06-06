@@ -1077,3 +1077,119 @@ export const sendBountyAwardWinner = async (
   );
   return sendExcellenceMail(email, `🎉 You won the bounty: ${bountyTitle}`, html);
 };
+
+// ===================== OFFICIAL TALENT ASSESSMENTS =====================
+
+/** Sent to a selected talent when an institution invites them to a timed assessment. */
+export const sendAssessmentInvitation = async (
+  email: string,
+  firstName: string,
+  assessmentTitle: string,
+  institutionName: string,
+  durationMinutes: number,
+  closesAt?: Date | null
+): Promise<boolean> => {
+  const timing =
+    durationMinutes > 0
+      ? `Once you start, you will have <strong>${durationMinutes} minute(s)</strong> to complete and submit your work — the timer cannot be paused, and your work is auto-submitted when it runs out.`
+      : `Please complete and submit your work before the closing date.`;
+  const close = closesAt ? `<br/><br/>Closes: <strong>${new Date(closesAt).toLocaleString()}</strong>.` : "";
+  const html = excellenceShell(
+    "#0158B7",
+    "📋 SELECTION ASSESSMENT",
+    `You've been invited, ${firstName}`,
+    `<strong>${institutionName}</strong> has invited you to an official selection assessment:
+     <br/><br/><div style="background:#eef5ff;border-left:4px solid #0158B7;padding:14px;border-radius:8px;">
+       <strong>${assessmentTitle}</strong></div><br/>${timing}${close}`,
+    "Open Assessment",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence/assessments`
+  );
+  return sendExcellenceMail(email, `📋 Assessment invitation: ${assessmentTitle}`, html);
+};
+
+/** Sent to the talent confirming their submission (manual or auto). */
+export const sendAssessmentSubmitted = async (
+  email: string,
+  firstName: string,
+  assessmentTitle: string,
+  auto: boolean
+): Promise<boolean> => {
+  const html = excellenceShell(
+    "#7C3AED",
+    auto ? "⏱️ AUTO-SUBMITTED" : "✅ SUBMITTED",
+    `Submission received, ${firstName}`,
+    `Your work for <strong>"${assessmentTitle}"</strong> has been ${auto ? "<strong>automatically submitted</strong> because the time limit was reached" : "submitted successfully"}.
+     <br/><br/>The institution will review and grade your submission. You'll be notified of the outcome.`,
+    "View My Assessments",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence/assessments`
+  );
+  return sendExcellenceMail(email, `${auto ? "⏱️" : "✅"} Submission received: ${assessmentTitle}`, html);
+};
+
+/** Sent to the talent when the institution grades their submission. */
+export const sendAssessmentGraded = async (
+  email: string,
+  firstName: string,
+  assessmentTitle: string,
+  score: number,
+  maxScore: number,
+  feedback?: string | null
+): Promise<boolean> => {
+  const fb = feedback
+    ? `<br/><br/><div style="background:#f8f9fa;border:1px solid #eef0f4;padding:14px;border-radius:8px;"><div style="font-size:12px;color:#6b7280;margin-bottom:4px;">Reviewer feedback</div>${feedback}</div>`
+    : "";
+  const html = excellenceShell(
+    "#059669",
+    "📝 GRADED",
+    `Your result is in, ${firstName}`,
+    `Your submission for <strong>"${assessmentTitle}"</strong> has been graded.
+     <br/><br/><div style="background:#ecfdf5;border-left:4px solid #059669;padding:16px;border-radius:8px;">
+       <div style="font-size:22px;font-weight:700;color:#065f46;">${score} / ${maxScore}</div></div>${fb}`,
+    "View My Assessments",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence/assessments`
+  );
+  return sendExcellenceMail(email, `📝 Your assessment was graded: ${assessmentTitle}`, html);
+};
+
+/** Sent to the talent when the institution makes a final offer. */
+export const sendAssessmentOffer = async (
+  email: string,
+  firstName: string,
+  assessmentTitle: string,
+  institutionName: string,
+  message?: string | null
+): Promise<boolean> => {
+  const msg = message
+    ? `<br/><br/><div style="background:#f8f9fa;border:1px solid #eef0f4;padding:14px;border-radius:8px;">${message}</div>`
+    : "";
+  const html = excellenceShell(
+    "#0158B7",
+    "🎯 OFFER EXTENDED",
+    `Congratulations, ${firstName}!`,
+    `Based on your performance in <strong>"${assessmentTitle}"</strong>, <strong>${institutionName}</strong>
+     would like to officially offer you a place in their talent programme.${msg}
+     <br/><br/>Open your dashboard to accept or decline this offer.`,
+    "Review Offer",
+    `${process.env.FRONTEND_URL}/dashboard/user/excellence/assessments`
+  );
+  return sendExcellenceMail(email, `🎯 You've received an offer: ${assessmentTitle}`, html);
+};
+
+/** Sent to the institution when a talent submits (manual or auto). */
+export const sendAssessmentSubmissionNotice = async (
+  email: string,
+  talentName: string,
+  assessmentTitle: string,
+  auto: boolean
+): Promise<boolean> => {
+  const html = excellenceShell(
+    "#0158B7",
+    "📥 NEW SUBMISSION",
+    `New submission to review`,
+    `<strong>${talentName}</strong> has ${auto ? "auto-submitted (time elapsed)" : "submitted"} their work for
+     <strong>"${assessmentTitle}"</strong>. Review and grade it from your assessment dashboard.`,
+    "Review Submissions",
+    `${process.env.FRONTEND_URL}/dashboard/user/institution-portal/excellence/assessments`
+  );
+  return sendExcellenceMail(email, `📥 New submission: ${assessmentTitle}`, html);
+};

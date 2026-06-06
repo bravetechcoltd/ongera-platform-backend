@@ -1,9 +1,38 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/authMiddleware";
 import { ExcellenceController } from "../controllers/ExcellenceController";
-import { uploadBountyFiles, handleMulterError } from "../helpers/multer";
+import { AssessmentController } from "../controllers/AssessmentController";
+import { uploadBountyFiles, uploadAssessmentFiles, handleMulterError } from "../helpers/multer";
 
 const router = Router();
+
+// ---- Official Talent Assessments (institution-prepared, timed) ----
+// Talent (member) side
+router.get("/my-assessments", authenticate, AssessmentController.talentAssessments);
+router.get("/my-assessments/:pid", authenticate, AssessmentController.getTalentAssessment);
+router.post("/my-assessments/:pid/start", authenticate, AssessmentController.startAssessment);
+router.patch("/my-assessments/:pid/save", authenticate, AssessmentController.saveDraft);
+router.post(
+  "/my-assessments/:pid/submit",
+  authenticate,
+  uploadAssessmentFiles,
+  handleMulterError,
+  AssessmentController.submitAssessment
+);
+router.post("/my-assessments/:pid/offer-response", authenticate, AssessmentController.respondOffer);
+
+// Institution side
+router.get("/assessments", authenticate, AssessmentController.myAssessments);
+router.post("/assessments", authenticate, AssessmentController.createAssessment);
+router.get("/assessments/:id", authenticate, AssessmentController.getAssessment);
+router.patch("/assessments/:id", authenticate, AssessmentController.updateAssessment);
+router.delete("/assessments/:id", authenticate, AssessmentController.deleteAssessment);
+router.post("/assessments/:id/invite", authenticate, AssessmentController.inviteTalent);
+router.post("/assessments/:id/publish", authenticate, AssessmentController.publishAssessment);
+router.post("/assessments/:id/close", authenticate, AssessmentController.closeAssessment);
+router.patch("/assessments/:id/participants/:pid/grade", authenticate, AssessmentController.gradeParticipant);
+router.post("/assessments/:id/participants/:pid/offer", authenticate, AssessmentController.offerParticipant);
+router.post("/assessments/:id/participants/:pid/reject", authenticate, AssessmentController.rejectParticipant);
 
 // ---- Member ----
 router.get("/me", authenticate, ExcellenceController.me);

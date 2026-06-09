@@ -20,6 +20,7 @@ import {
 import { BountySubmissionFile } from "../database/models/BountySubmissionFile";
 import { BountyPayout, PayoutStatus } from "../database/models/BountyPayout";
 import { BountyActivity, BountyActivityType } from "../database/models/BountyActivity";
+import { ExcellenceBookmark } from "../database/models/ExcellenceBookmark";
 import { UploadToCloud } from "../helpers/cloud";
 
 // ---------- Helpers ----------
@@ -776,6 +777,43 @@ export class ExcellenceController {
       return res.json({ success: true, message: "Submission updated.", data: { id: submission.id, status: submission.status } });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to review submission", error: error.message });
+    }
+  }
+
+  /** GET /api/excellence/bookmarks — returns the talent's saved bounty ids. */
+  static async listBookmarks(req: Request, res: Response) {
+    try {
+      const user = await loadUser(req);
+      if (!user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const rows = await dbConnection
+        .getRepository(ExcellenceBookmark)
+        .find({ where: { user_id: user.id }, select: ["bounty_id"] });
+      return res.json({ success: true, data: rows.map((r) => r.bounty_id) });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to load bookmarks", error: error.message });
+    }
+  }
+
+  /** POST /api/excellence/bookmarks/:bountyId/toggle — add/remove a saved bounty. */
+  static async toggleBookmark(req: Request, res: Response) {
+    try {
+      const user = await loadUser(req);
+      if (!user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const { bountyId } = req.params;
+
+      const bounty = await dbConnection.getRepository(Bounty).findOne({ where: { id: bountyId } });
+      if (!bounty) return res.status(404).json({ success: false, message: "Bounty not found" });
+
+      const repo = dbConnection.getRepository(ExcellenceBookmark);
+      const existing = await repo.findOne({ where: { user_id: user.id, bounty_id: bountyId } });
+      if (existing) {
+        await repo.remove(existing);
+        return res.json({ success: true, data: { saved: false } });
+      }
+      await repo.save(repo.create({ user_id: user.id, bounty_id: bountyId }));
+      return res.json({ success: true, data: { saved: true } });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to update bookmark", error: error.message });
     }
   }
 }

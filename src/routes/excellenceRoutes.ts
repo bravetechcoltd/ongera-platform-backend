@@ -41,6 +41,8 @@ router.post("/assessments/:id/participants/:pid/reject", authenticate, Assessmen
 router.get("/me", authenticate, ExcellenceController.me);
 router.get("/bounties", authenticate, ExcellenceController.listOpenBounties);
 router.get("/submissions", authenticate, ExcellenceController.mySubmissions);
+router.get("/bookmarks", authenticate, ExcellenceController.listBookmarks);
+router.post("/bookmarks/:bountyId/toggle", authenticate, ExcellenceController.toggleBookmark);
 
 // ---- Company (Institution) ----
 router.get("/subscription", authenticate, ExcellenceController.mySubscription);

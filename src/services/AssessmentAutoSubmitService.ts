@@ -8,6 +8,7 @@ import { logger } from "../helpers/logger";
 import { sendAssessmentSubmitted, sendAssessmentSubmissionNotice, sendAssessmentGraded } from "../services/emailTemplates";
 import { autoGradeParticipant } from "./assessmentGrading";
 import { notifyUser } from "./excellenceNotify";
+import { emitParticipantChanged } from "./excellenceEvents";
 import { NotificationType, RecipientRole } from "../database/models/Notification";
 
 /**
@@ -78,6 +79,12 @@ export class AssessmentAutoSubmitService {
 
       const title = p.assessment?.title || "Assessment";
       const talentName = `${p.talent?.first_name || ""} ${p.talent?.last_name || ""}`.trim() || (p.talent?.email || "A talent");
+      if (p.assessment?.institution_id) {
+        emitParticipantChanged({
+          assessmentId: p.assessment_id, institutionId: p.assessment.institution_id, participantId: p.id,
+          talentUserId: p.talent_user_id, action: "submitted", status: p.status,
+        });
+      }
       if (p.status === ParticipantStatus.GRADED) {
         if (p.talent?.email) {
           sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", title, p.score, p.max_score, null).catch(() => {});

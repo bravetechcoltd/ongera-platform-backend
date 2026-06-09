@@ -1,5 +1,6 @@
 import type { Server, Socket } from "socket.io";
 import { setupCommunityChatHandlers } from "./communityChatHandlers";
+import { setupExcellenceHandlers } from "./excellenceHandlers";
 import { socketAuthMiddleware } from "../helpers/socketAuth";
 import { setSocketIO } from "./socketRegistry";
 
@@ -31,6 +32,9 @@ export const setupSocketHandlers = (io: Server) => {
 
     // Setup community chat handlers for this socket
     setupCommunityChatHandlers(io, socket);
+
+    // Setup Excellence dashboard live-room handlers for this socket
+    setupExcellenceHandlers(io, socket);
 
     // Test event for debugging
     socket.on("test_event", (data) => {

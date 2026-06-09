@@ -22,6 +22,7 @@ import { BountyPayout, PayoutStatus } from "../database/models/BountyPayout";
 import { BountyActivity, BountyActivityType } from "../database/models/BountyActivity";
 import { ExcellenceBookmark } from "../database/models/ExcellenceBookmark";
 import { notifyUser } from "../services/excellenceNotify";
+import { emitBountyChanged } from "../services/excellenceEvents";
 import { NotificationType, NotificationEntityType, RecipientRole } from "../database/models/Notification";
 import { UploadToCloud } from "../helpers/cloud";
 
@@ -355,6 +356,10 @@ export class ExcellenceController {
         entityType: NotificationEntityType.BOUNTY,
         actorId: user.id,
         institutionId: bounty.institution_id,
+      });
+      emitBountyChanged({
+        bountyId: bounty.id, institutionId: bounty.institution_id,
+        submitterUserId: user.id, submissionId: submission.id, action: "submission",
       });
 
       return res.status(201).json({
@@ -741,6 +746,10 @@ export class ExcellenceController {
           actorId: user.id,
           institutionId: bounty.institution_id,
         });
+        emitBountyChanged({
+          bountyId: bounty.id, institutionId: bounty.institution_id,
+          submitterUserId: submission.submitter_id, submissionId: submission.id, action: "shortlisted",
+        });
         return res.json({ success: true, message: "Submission shortlisted.", data: { id: submission.id, status: submission.status } });
       }
 
@@ -801,6 +810,10 @@ export class ExcellenceController {
           entityType: NotificationEntityType.BOUNTY,
           actorId: user.id,
           institutionId: bounty.institution_id,
+        });
+        emitBountyChanged({
+          bountyId: bounty.id, institutionId: bounty.institution_id,
+          submitterUserId: submission.submitter_id, submissionId: submission.id, action: "winner",
         });
 
         return res.json({

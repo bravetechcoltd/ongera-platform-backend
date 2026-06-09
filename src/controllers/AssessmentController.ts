@@ -11,6 +11,7 @@ import { AssessmentQuestion, QuestionType, isObjectiveType } from "../database/m
 import { AssessmentAnswer } from "../database/models/AssessmentAnswer";
 import { upsertAnswers, autoGradeParticipant, recomputeAfterManualGrading } from "../services/assessmentGrading";
 import { notifyUser } from "../services/excellenceNotify";
+import { emitAssessmentChanged, emitParticipantChanged } from "../services/excellenceEvents";
 import { NotificationType, NotificationEntityType, RecipientRole } from "../database/models/Notification";
 import { UploadToCloud } from "../helpers/cloud";
 import {
@@ -265,6 +266,7 @@ export class AssessmentController {
         const qRepo = dbConnection.getRepository(AssessmentQuestion);
         await qRepo.save(built.rows.map((r) => qRepo.create({ ...r, assessment_id: a.id })));
       }
+      emitAssessmentChanged({ assessmentId: a.id, institutionId: a.institution_id, action: "created" });
       return res.status(201).json({ success: true, message: "Assessment created.", data: shapeAssessment(a) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to create assessment", error: error.message });
@@ -407,6 +409,7 @@ export class AssessmentController {
       }
 
       await repo.save(a);
+      emitAssessmentChanged({ assessmentId: a.id, institutionId: a.institution_id, action: "updated" });
       return res.json({ success: true, message: "Assessment updated.", data: shapeAssessment(a) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to update assessment", error: error.message });
@@ -470,6 +473,17 @@ export class AssessmentController {
       if (a.status === AssessmentStatus.DRAFT) a.status = AssessmentStatus.PUBLISHED;
       await repo.save(a);
 
+      if (invited > 0) {
+        emitAssessmentChanged({ assessmentId: a.id, institutionId: a.institution_id, action: "updated" });
+        for (const m of members) {
+          if (existingIds.has(m.user_id)) continue;
+          emitParticipantChanged({
+            assessmentId: a.id, institutionId: a.institution_id, participantId: "",
+            talentUserId: m.user_id, action: "invited", status: ParticipantStatus.INVITED,
+          });
+        }
+      }
+
       return res.json({ success: true, message: `Invited ${invited} talent.`, data: { invited } });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to invite talent", error: error.message });
@@ -489,6 +503,7 @@ export class AssessmentController {
       if (count === 0) return res.status(400).json({ success: false, message: "Invite at least one talent before publishing." });
       a.status = AssessmentStatus.PUBLISHED;
       await repo.save(a);
+      emitAssessmentChanged({ assessmentId: a.id, institutionId: a.institution_id, action: "published" });
       return res.json({ success: true, message: "Assessment published.", data: shapeAssessment(a) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to publish", error: error.message });
@@ -530,6 +545,10 @@ export class AssessmentController {
         recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_GRADED,
         title: "Assessment graded", body: `Your result for "${a.title}" is ready: ${s} / ${a.max_score}.`,
         entityId: a.id, actorId: user.id, institutionId: a.institution_id,
+      });
+      emitParticipantChanged({
+        assessmentId: a.id, institutionId: a.institution_id, participantId: p.id,
+        talentUserId: p.talent_user_id, action: "graded", status: p.status,
       });
       return res.json({ success: true, message: "Submission graded.", data: shapeParticipant(p) });
     } catch (error: any) {
@@ -584,6 +603,11 @@ export class AssessmentController {
       const { fullyGraded } = await recomputeAfterManualGrading(p);
       if (fullyGraded) p.graded_by_id = user.id;
       await partRepo.save(p);
+
+      emitParticipantChanged({
+        assessmentId: a.id, institutionId: a.institution_id, participantId: p.id,
+        talentUserId: p.talent_user_id, action: "graded", status: p.status,
+      });
 
       if (fullyGraded && p.talent?.email) {
         sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", a.title, p.score, p.max_score, null).catch(() => {});
@@ -702,6 +726,10 @@ export class AssessmentController {
         title: "You received an offer", body: `Based on "${a.title}", ${await institutionName(user.id)} extended you an offer.`,
         entityId: a.id, actorId: user.id, institutionId: a.institution_id,
       });
+      emitParticipantChanged({
+        assessmentId: a.id, institutionId: a.institution_id, participantId: p.id,
+        talentUserId: p.talent_user_id, action: "offered", status: p.status,
+      });
       return res.json({ success: true, message: "Offer sent.", data: shapeParticipant(p) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to send offer", error: error.message });
@@ -722,6 +750,10 @@ export class AssessmentController {
       p.status = ParticipantStatus.REJECTED;
       p.decision_at = new Date();
       await repo.save(p);
+      emitParticipantChanged({
+        assessmentId: a.id, institutionId: a.institution_id, participantId: p.id,
+        talentUserId: p.talent_user_id, action: "rejected", status: p.status,
+      });
       return res.json({ success: true, message: "Talent marked as not selected.", data: shapeParticipant(p) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to update", error: error.message });
@@ -738,6 +770,7 @@ export class AssessmentController {
       if (!a || a.institution_id !== user.id) return res.status(403).json({ success: false, message: "Not allowed." });
       a.status = AssessmentStatus.CLOSED;
       await repo.save(a);
+      emitAssessmentChanged({ assessmentId: a.id, institutionId: a.institution_id, action: "closed" });
       return res.json({ success: true, message: "Assessment closed.", data: shapeAssessment(a) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to close", error: error.message });
@@ -755,7 +788,10 @@ export class AssessmentController {
       if (a.status !== AssessmentStatus.DRAFT) {
         return res.status(400).json({ success: false, message: "Only draft assessments can be deleted." });
       }
+      const deletedId = a.id;
+      const institutionId = a.institution_id;
       await repo.remove(a);
+      emitAssessmentChanged({ assessmentId: deletedId, institutionId, action: "deleted" });
       return res.json({ success: true, message: "Assessment deleted." });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to delete", error: error.message });
@@ -998,6 +1034,11 @@ export class AssessmentController {
         });
       }
 
+      emitParticipantChanged({
+        assessmentId: a.id, institutionId: a.institution_id, participantId: p.id,
+        talentUserId: p.talent_user_id, action: "submitted", status: p.status,
+      });
+
       return res.json({
         success: true,
         message: p.status === ParticipantStatus.GRADED ? "Submitted and graded." : "Submitted successfully.",
@@ -1014,7 +1055,7 @@ export class AssessmentController {
       const user = await loadUser(req);
       if (!user) return res.status(401).json({ success: false, message: "Unauthorized" });
       const repo = dbConnection.getRepository(AssessmentParticipant);
-      const p = await repo.findOne({ where: { id: req.params.pid } });
+      const p = await repo.findOne({ where: { id: req.params.pid }, relations: ["assessment"] });
       if (!p || p.talent_user_id !== user.id) return res.status(403).json({ success: false, message: "Not allowed." });
       if (p.status !== ParticipantStatus.OFFERED) {
         return res.status(400).json({ success: false, message: "There is no pending offer." });
@@ -1026,6 +1067,12 @@ export class AssessmentController {
       p.status = decision === "accept" ? ParticipantStatus.ACCEPTED : ParticipantStatus.DECLINED;
       p.decision_at = new Date();
       await repo.save(p);
+      if (p.assessment?.institution_id) {
+        emitParticipantChanged({
+          assessmentId: p.assessment_id, institutionId: p.assessment.institution_id, participantId: p.id,
+          talentUserId: p.talent_user_id, action: "responded", status: p.status,
+        });
+      }
       return res.json({ success: true, message: decision === "accept" ? "Offer accepted." : "Offer declined.", data: shapeParticipant(p) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to respond", error: error.message });

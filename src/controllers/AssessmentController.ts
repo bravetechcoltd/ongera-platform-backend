@@ -7,6 +7,11 @@ import { ExcellenceMember, ExcellenceMemberStatus } from "../database/models/Exc
 import { TalentAssessment, AssessmentStatus } from "../database/models/TalentAssessment";
 import { AssessmentParticipant, ParticipantStatus } from "../database/models/AssessmentParticipant";
 import { AssessmentSubmissionFile } from "../database/models/AssessmentSubmissionFile";
+import { AssessmentQuestion, QuestionType, isObjectiveType } from "../database/models/AssessmentQuestion";
+import { AssessmentAnswer } from "../database/models/AssessmentAnswer";
+import { upsertAnswers, autoGradeParticipant, recomputeAfterManualGrading } from "../services/assessmentGrading";
+import { notifyUser } from "../services/excellenceNotify";
+import { NotificationType, NotificationEntityType, RecipientRole } from "../database/models/Notification";
 import { UploadToCloud } from "../helpers/cloud";
 import {
   sendAssessmentInvitation,
@@ -43,6 +48,9 @@ function shapeAssessment(a: TalentAssessment, extra: any = {}) {
     opens_at: a.opens_at,
     closes_at: a.closes_at,
     max_score: a.max_score,
+    passing_score: a.passing_score ?? null,
+    has_subjective: a.has_subjective,
+    question_count: a.question_count,
     allow_files: a.allow_files,
     status: a.status,
     invited_count: a.invited_count,
@@ -51,6 +59,123 @@ function shapeAssessment(a: TalentAssessment, extra: any = {}) {
     updated_at: a.updated_at,
     ...extra,
   };
+}
+
+/** Full question (institution view — includes the answer key). */
+function shapeQuestionFull(q: AssessmentQuestion) {
+  return {
+    id: q.id,
+    order_index: q.order_index,
+    type: q.type,
+    prompt: q.prompt,
+    options: q.options || [],
+    correct_answer: q.correct_answer ?? null,
+    points: q.points,
+    explanation: q.explanation ?? null,
+    is_auto_gradable: q.is_auto_gradable,
+  };
+}
+
+/** Talent view of a question. Hides the key unless `reveal` is true (post-grade review). */
+function shapeQuestionForTalent(q: AssessmentQuestion, reveal: boolean) {
+  return {
+    id: q.id,
+    order_index: q.order_index,
+    type: q.type,
+    prompt: q.prompt,
+    options: q.options || [],
+    points: q.points,
+    is_auto_gradable: q.is_auto_gradable,
+    correct_answer: reveal ? q.correct_answer ?? null : undefined,
+    explanation: reveal ? q.explanation ?? null : undefined,
+  };
+}
+
+function shapeAnswer(ans: AssessmentAnswer, reveal: boolean) {
+  return {
+    id: ans.id,
+    question_id: ans.question_id,
+    answer: ans.answer ?? "",
+    is_correct: reveal ? ans.is_correct : null,
+    points_earned: reveal ? ans.points_earned : null,
+    is_graded: ans.is_graded,
+    instructor_feedback: reveal ? ans.instructor_feedback ?? null : null,
+  };
+}
+
+/**
+ * Validate + normalise incoming questions for create/update. Returns the rows
+ * to persist plus aggregate flags. Throws a string message on validation error.
+ */
+function buildQuestionRows(assessmentId: string, input: any[]): {
+  rows: Partial<AssessmentQuestion>[];
+  hasSubjective: boolean;
+  totalPoints: number;
+} {
+  const rows: Partial<AssessmentQuestion>[] = [];
+  let hasSubjective = false;
+  let totalPoints = 0;
+
+  input.forEach((q: any, idx: number) => {
+    const type: QuestionType = q?.type;
+    if (!Object.values(QuestionType).includes(type)) throw `Question ${idx + 1}: invalid type.`;
+    const prompt = String(q?.prompt || "").trim();
+    if (!prompt) throw `Question ${idx + 1}: prompt is required.`;
+    const points = Math.max(1, parseInt(q?.points, 10) || 1);
+    totalPoints += points;
+
+    let options: string[] | null = null;
+    let correct_answer: string | null = null;
+    const objective = isObjectiveType(type);
+
+    if (type === QuestionType.MULTIPLE_CHOICE || type === QuestionType.CHECKBOXES) {
+      options = (Array.isArray(q?.options) ? q.options : []).map((o: any) => String(o).trim()).filter(Boolean);
+      if (options.length < 2) throw `Question ${idx + 1}: provide at least 2 options.`;
+      const raw = Array.isArray(q?.correct_answer) ? q.correct_answer : [q?.correct_answer];
+      const correct = raw.map((c: any) => String(c ?? "").trim()).filter(Boolean);
+      if (correct.length === 0) throw `Question ${idx + 1}: mark the correct answer.`;
+      if (type === QuestionType.MULTIPLE_CHOICE && correct.length !== 1)
+        throw `Question ${idx + 1}: exactly one correct option.`;
+      if (!correct.every((c: string) => options!.includes(c)))
+        throw `Question ${idx + 1}: correct answer must be one of the options.`;
+      correct_answer = correct.join(",");
+    } else if (type === QuestionType.TRUE_FALSE) {
+      options = ["true", "false"];
+      const c = String(q?.correct_answer ?? "").trim().toLowerCase();
+      if (!["true", "false"].includes(c)) throw `Question ${idx + 1}: mark true or false.`;
+      correct_answer = c;
+    } else {
+      hasSubjective = true; // SHORT_ANSWER / ESSAY
+    }
+
+    rows.push({
+      assessment_id: assessmentId,
+      order_index: idx,
+      type,
+      prompt,
+      options,
+      correct_answer,
+      points,
+      explanation: q?.explanation ? String(q.explanation).trim() : null,
+      is_auto_gradable: objective,
+    });
+  });
+
+  return { rows, hasSubjective, totalPoints };
+}
+
+/** Parse a possibly-stringified array (multipart form fields arrive as strings). */
+function parseArrayField(v: any): any[] {
+  if (Array.isArray(v)) return v;
+  if (typeof v === "string" && v.trim()) {
+    try {
+      const parsed = JSON.parse(v);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }
 
 function shapeParticipant(p: AssessmentParticipant, files: any[] = []) {
@@ -96,10 +221,21 @@ export class AssessmentController {
       if (user.account_type !== AccountType.INSTITUTION) {
         return res.status(403).json({ success: false, message: "Institution accounts only." });
       }
-      const { title, brief, instructions, required_skills, duration_minutes, opens_at, closes_at, max_score, allow_files } = req.body || {};
+      const { title, brief, instructions, required_skills, duration_minutes, opens_at, closes_at, max_score, passing_score, allow_files, questions } = req.body || {};
       if (!title || !String(title).trim() || !brief || String(brief).trim().length < 10) {
         return res.status(400).json({ success: false, message: "Title and a brief (min 10 chars) are required." });
       }
+
+      // Validate questions up front (if any) before creating the assessment.
+      const questionInput = Array.isArray(questions) ? questions : [];
+      let built: { rows: Partial<AssessmentQuestion>[]; hasSubjective: boolean; totalPoints: number };
+      try {
+        built = buildQuestionRows("", questionInput);
+      } catch (msg: any) {
+        return res.status(400).json({ success: false, message: String(msg) });
+      }
+
+      const hasQuestions = built.rows.length > 0;
       const repo = dbConnection.getRepository(TalentAssessment);
       const a = await repo.save(
         repo.create({
@@ -111,11 +247,24 @@ export class AssessmentController {
           duration_minutes: Number.isFinite(+duration_minutes) ? Math.max(0, parseInt(duration_minutes, 10)) : 60,
           opens_at: opens_at ? new Date(opens_at) : null,
           closes_at: closes_at ? new Date(closes_at) : null,
-          max_score: Number.isFinite(+max_score) ? Math.max(1, parseInt(max_score, 10)) : 100,
+          // With structured questions, max_score is the sum of question points.
+          max_score: hasQuestions ? built.totalPoints : Number.isFinite(+max_score) ? Math.max(1, parseInt(max_score, 10)) : 100,
+          passing_score:
+            passing_score === undefined || passing_score === null || passing_score === ""
+              ? null
+              : Math.max(0, Math.min(100, parseInt(passing_score, 10) || 0)),
+          // No structured questions = legacy free-text brief, which is graded manually.
+          has_subjective: hasQuestions ? built.hasSubjective : true,
+          question_count: built.rows.length,
           allow_files: allow_files === false ? false : true,
           status: AssessmentStatus.DRAFT,
         })
       );
+
+      if (hasQuestions) {
+        const qRepo = dbConnection.getRepository(AssessmentQuestion);
+        await qRepo.save(built.rows.map((r) => qRepo.create({ ...r, assessment_id: a.id })));
+      }
       return res.status(201).json({ success: true, message: "Assessment created.", data: shapeAssessment(a) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to create assessment", error: error.message });
@@ -176,9 +325,32 @@ export class AssessmentController {
         (fileMap[f.participant_id] = fileMap[f.participant_id] || []).push({ id: f.id, file_url: f.file_url, original_name: f.original_name });
       });
 
+      // Structured questions (with answer key — institution owns them).
+      const questions = await dbConnection
+        .getRepository(AssessmentQuestion)
+        .find({ where: { assessment_id: a.id }, order: { order_index: "ASC" } });
+
+      // All answers across participants, grouped per participant.
+      const answers = pIds.length
+        ? await dbConnection.getRepository(AssessmentAnswer).find({ where: { participant_id: In(pIds) } })
+        : [];
+      const answerMap: Record<string, any[]> = {};
+      answers.forEach((ans) => {
+        (answerMap[ans.participant_id] = answerMap[ans.participant_id] || []).push(shapeAnswer(ans, true));
+      });
+
       return res.json({
         success: true,
-        data: shapeAssessment(a, { participants: participants.map((p) => shapeParticipant(p, fileMap[p.id] || [])) }),
+        data: shapeAssessment(a, {
+          questions: questions.map(shapeQuestionFull),
+          participants: participants.map((p) => ({
+            ...shapeParticipant(p, fileMap[p.id] || []),
+            auto_score: p.auto_score ?? null,
+            manual_score: p.manual_score ?? null,
+            pending_manual: p.pending_manual,
+            answers: answerMap[p.id] || [],
+          })),
+        }),
       });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to load assessment", error: error.message });
@@ -197,7 +369,7 @@ export class AssessmentController {
       if (a.status !== AssessmentStatus.DRAFT) {
         return res.status(400).json({ success: false, message: "Only draft assessments can be edited." });
       }
-      const { title, brief, instructions, required_skills, duration_minutes, opens_at, closes_at, max_score, allow_files } = req.body || {};
+      const { title, brief, instructions, required_skills, duration_minutes, opens_at, closes_at, max_score, passing_score, allow_files, questions } = req.body || {};
       if (title !== undefined) a.title = String(title).trim();
       if (brief !== undefined) a.brief = String(brief).trim();
       if (instructions !== undefined) a.instructions = instructions ? String(instructions).trim() : null;
@@ -205,8 +377,35 @@ export class AssessmentController {
       if (duration_minutes !== undefined) a.duration_minutes = Math.max(0, parseInt(duration_minutes, 10) || 0);
       if (opens_at !== undefined) a.opens_at = opens_at ? new Date(opens_at) : null;
       if (closes_at !== undefined) a.closes_at = closes_at ? new Date(closes_at) : null;
-      if (max_score !== undefined) a.max_score = Math.max(1, parseInt(max_score, 10) || 100);
       if (allow_files !== undefined) a.allow_files = !!allow_files;
+      if (passing_score !== undefined)
+        a.passing_score =
+          passing_score === null || passing_score === ""
+            ? null
+            : Math.max(0, Math.min(100, parseInt(passing_score, 10) || 0));
+
+      // Replace the whole question set when provided.
+      if (questions !== undefined) {
+        const questionInput = Array.isArray(questions) ? questions : [];
+        let built: { rows: Partial<AssessmentQuestion>[]; hasSubjective: boolean; totalPoints: number };
+        try {
+          built = buildQuestionRows(a.id, questionInput);
+        } catch (msg: any) {
+          return res.status(400).json({ success: false, message: String(msg) });
+        }
+        const qRepo = dbConnection.getRepository(AssessmentQuestion);
+        await qRepo.delete({ assessment_id: a.id });
+        if (built.rows.length) await qRepo.save(built.rows.map((r) => qRepo.create(r)));
+
+        const hasQuestions = built.rows.length > 0;
+        a.question_count = built.rows.length;
+        a.has_subjective = hasQuestions ? built.hasSubjective : true;
+        a.max_score = hasQuestions ? built.totalPoints : a.max_score;
+      } else if (max_score !== undefined && a.question_count === 0) {
+        // Only honour a manual max_score when there are no structured questions.
+        a.max_score = Math.max(1, parseInt(max_score, 10) || 100);
+      }
+
       await repo.save(a);
       return res.json({ success: true, message: "Assessment updated.", data: shapeAssessment(a) });
     } catch (error: any) {
@@ -255,6 +454,16 @@ export class AssessmentController {
         if (m.user?.email) {
           sendAssessmentInvitation(m.user.email, m.user.first_name || "there", a.title, instName, a.duration_minutes, a.closes_at).catch(() => {});
         }
+        notifyUser({
+          recipientId: m.user_id,
+          role: RecipientRole.LEARNER,
+          type: NotificationType.ASSESSMENT_INVITED,
+          title: "New selection assessment",
+          body: `${instName} invited you to "${a.title}".`,
+          entityId: a.id,
+          actorId: user.id,
+          institutionId: user.id,
+        });
       }
 
       a.invited_count = (a.invited_count || 0) + invited;
@@ -317,9 +526,151 @@ export class AssessmentController {
       if (p.talent?.email) {
         sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", a.title, s, a.max_score, p.feedback).catch(() => {});
       }
+      notifyUser({
+        recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_GRADED,
+        title: "Assessment graded", body: `Your result for "${a.title}" is ready: ${s} / ${a.max_score}.`,
+        entityId: a.id, actorId: user.id, institutionId: a.institution_id,
+      });
       return res.json({ success: true, message: "Submission graded.", data: shapeParticipant(p) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to grade", error: error.message });
+    }
+  }
+
+  /**
+   * PATCH /api/excellence/assessments/:id/participants/:pid/grade-answers
+   * body { grades: [{ answer_id, points_earned, feedback }] }
+   * Grades the subjective answers; objective answers are already auto-graded.
+   * Recomputes the total and flips to GRADED once nothing remains ungraded.
+   */
+  static async gradeAnswers(req: Request, res: Response) {
+    try {
+      const user = await loadUser(req);
+      if (!user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const { id, pid } = req.params;
+      const a = await dbConnection.getRepository(TalentAssessment).findOne({ where: { id } });
+      if (!a || a.institution_id !== user.id) return res.status(403).json({ success: false, message: "Not allowed." });
+
+      const partRepo = dbConnection.getRepository(AssessmentParticipant);
+      const p = await partRepo.findOne({ where: { id: pid, assessment_id: id }, relations: ["talent"] });
+      if (!p) return res.status(404).json({ success: false, message: "Participant not found" });
+      if (![ParticipantStatus.SUBMITTED, ParticipantStatus.GRADED].includes(p.status)) {
+        return res.status(400).json({ success: false, message: "Only submitted entries can be graded." });
+      }
+
+      const grades = Array.isArray(req.body?.grades) ? req.body.grades : [];
+      if (!grades.length) return res.status(400).json({ success: false, message: "No grades provided." });
+
+      const ansRepo = dbConnection.getRepository(AssessmentAnswer);
+      const qRepo = dbConnection.getRepository(AssessmentQuestion);
+      const answers = await ansRepo.find({ where: { participant_id: p.id } });
+      const ansMap = new Map(answers.map((x) => [x.id, x]));
+      const questions = await qRepo.find({ where: { assessment_id: id } });
+      const qMap = new Map(questions.map((q) => [q.id, q]));
+
+      for (const g of grades) {
+        const row = ansMap.get(g?.answer_id);
+        if (!row) continue;
+        const q = qMap.get(row.question_id);
+        if (!q || isObjectiveType(q.type)) continue; // never override auto-graded answers
+        const pts = Math.max(0, Math.min(q.points, parseInt(g?.points_earned, 10) || 0));
+        row.points_earned = pts;
+        row.is_correct = pts >= q.points; // full marks counts as "correct" for review styling
+        row.is_graded = true;
+        if (g?.feedback !== undefined) row.instructor_feedback = g.feedback ? String(g.feedback).trim() : null;
+        await ansRepo.save(row);
+      }
+
+      const { fullyGraded } = await recomputeAfterManualGrading(p);
+      if (fullyGraded) p.graded_by_id = user.id;
+      await partRepo.save(p);
+
+      if (fullyGraded && p.talent?.email) {
+        sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", a.title, p.score, p.max_score, null).catch(() => {});
+      }
+      if (fullyGraded) {
+        notifyUser({
+          recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_GRADED,
+          title: "Assessment graded", body: `Your result for "${a.title}" is ready: ${p.score} / ${p.max_score}.`,
+          entityId: a.id, actorId: user.id, institutionId: a.institution_id,
+        });
+      }
+
+      const fresh = await ansRepo.find({ where: { participant_id: p.id } });
+      return res.json({
+        success: true,
+        message: fullyGraded ? "Grading complete." : "Grades saved.",
+        data: {
+          participant: { ...shapeParticipant(p), auto_score: p.auto_score, manual_score: p.manual_score, pending_manual: p.pending_manual },
+          answers: fresh.map((x) => shapeAnswer(x, true)),
+          fully_graded: fullyGraded,
+        },
+      });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to grade answers", error: error.message });
+    }
+  }
+
+  /**
+   * GET /api/excellence/assessments/pending-grading
+   * All submissions across this institution's assessments awaiting manual grading.
+   */
+  static async pendingGrading(req: Request, res: Response) {
+    try {
+      const user = await loadUser(req);
+      if (!user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      if (user.account_type !== AccountType.INSTITUTION) {
+        return res.status(403).json({ success: false, message: "Institution accounts only." });
+      }
+      const assessments = await dbConnection
+        .getRepository(TalentAssessment)
+        .find({ where: { institution_id: user.id } });
+      const ids = assessments.map((a) => a.id);
+      if (!ids.length) return res.json({ success: true, data: [] });
+      const aMap = new Map(assessments.map((a) => [a.id, a]));
+
+      const parts = await dbConnection.getRepository(AssessmentParticipant).find({
+        where: { assessment_id: In(ids), status: ParticipantStatus.SUBMITTED, pending_manual: true },
+        relations: ["talent"],
+        order: { submitted_at: "ASC" },
+      });
+
+      // Count ungraded subjective answers per participant for the queue badge.
+      const pIds = parts.map((p) => p.id);
+      const answers = pIds.length
+        ? await dbConnection.getRepository(AssessmentAnswer).find({ where: { participant_id: In(pIds) } })
+        : [];
+      const ungradedMap: Record<string, number> = {};
+      answers.forEach((ans) => {
+        if (!ans.is_graded) ungradedMap[ans.participant_id] = (ungradedMap[ans.participant_id] || 0) + 1;
+      });
+
+      const data = parts.map((p) => {
+        const a = aMap.get(p.assessment_id);
+        return {
+          participant_id: p.id,
+          assessment_id: p.assessment_id,
+          assessment_title: a?.title || "Assessment",
+          status: p.status,
+          submitted_at: p.submitted_at,
+          auto_submitted: p.auto_submitted,
+          auto_score: p.auto_score ?? null,
+          max_score: p.max_score ?? a?.max_score ?? null,
+          ungraded_count: ungradedMap[p.id] || 0,
+          talent: p.talent
+            ? {
+                id: p.talent.id,
+                first_name: p.talent.first_name,
+                last_name: p.talent.last_name,
+                email: p.talent.email,
+                profile_picture_url: p.talent.profile_picture_url,
+              }
+            : null,
+        };
+      });
+      return res.json({ success: true, data });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to load pending grading", error: error.message });
     }
   }
 
@@ -346,6 +697,11 @@ export class AssessmentController {
       if (p.talent?.email) {
         sendAssessmentOffer(p.talent.email, p.talent.first_name || "there", a.title, await institutionName(user.id), p.offer_message).catch(() => {});
       }
+      notifyUser({
+        recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_OFFER,
+        title: "You received an offer", body: `Based on "${a.title}", ${await institutionName(user.id)} extended you an offer.`,
+        entityId: a.id, actorId: user.id, institutionId: a.institution_id,
+      });
       return res.json({ success: true, message: "Offer sent.", data: shapeParticipant(p) });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to send offer", error: error.message });
@@ -460,10 +816,31 @@ export class AssessmentController {
 
       const files = await dbConnection.getRepository(AssessmentSubmissionFile).find({ where: { participant_id: p.id } });
       const a = p.assessment;
+
+      // Reveal the answer key + per-question results only once fully graded.
+      const reveal = [
+        ParticipantStatus.GRADED,
+        ParticipantStatus.OFFERED,
+        ParticipantStatus.ACCEPTED,
+        ParticipantStatus.DECLINED,
+      ].includes(p.status);
+
+      const questions = await dbConnection
+        .getRepository(AssessmentQuestion)
+        .find({ where: { assessment_id: a.id }, order: { order_index: "ASC" } });
+      const answers = await dbConnection.getRepository(AssessmentAnswer).find({ where: { participant_id: p.id } });
+
       return res.json({
         success: true,
         data: {
-          participant: shapeParticipant(p, files.map((f) => ({ id: f.id, file_url: f.file_url, original_name: f.original_name }))),
+          participant: {
+            ...shapeParticipant(p, files.map((f) => ({ id: f.id, file_url: f.file_url, original_name: f.original_name }))),
+            auto_score: p.auto_score ?? null,
+            manual_score: p.manual_score ?? null,
+            pending_manual: p.pending_manual,
+          },
+          questions: questions.map((q) => shapeQuestionForTalent(q, reveal)),
+          answers: answers.map((ans) => shapeAnswer(ans, reveal)),
           assessment: {
             ...shapeAssessment(a),
             institution_name: await institutionName(a.institution_id),
@@ -532,8 +909,13 @@ export class AssessmentController {
       if (p.status !== ParticipantStatus.IN_PROGRESS) {
         return res.status(400).json({ success: false, message: "Not in progress." });
       }
-      p.response_text = req.body?.response_text != null ? String(req.body.response_text) : p.response_text;
+      if (req.body?.response_text != null) p.response_text = String(req.body.response_text);
       await repo.save(p);
+
+      // Autosave structured answers (no grading happens here).
+      const answersInput = parseArrayField(req.body?.answers);
+      if (answersInput.length) await upsertAnswers(p.id, p.assessment_id, answersInput);
+
       return res.json({ success: true, message: "Saved." });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to save", error: error.message });
@@ -554,9 +936,18 @@ export class AssessmentController {
       const a = p.assessment;
 
       if (req.body?.response_text != null) p.response_text = String(req.body.response_text);
-      p.status = ParticipantStatus.SUBMITTED;
+
+      // Persist the final structured answers before grading.
+      const answersInput = parseArrayField(req.body?.answers);
+      if (answersInput.length) await upsertAnswers(p.id, p.assessment_id, answersInput);
+
       p.submitted_at = new Date();
       p.auto_submitted = false;
+
+      // Auto-grade objective questions and decide the resulting status:
+      //  - all objective → GRADED instantly
+      //  - mixed / essay / legacy free-text → SUBMITTED (pending manual grading)
+      const grade = await autoGradeParticipant(p);
       await repo.save(p);
 
       const files = (req.files?.submission_files as any[]) || [];
@@ -587,11 +978,31 @@ export class AssessmentController {
         .where("id = :id", { id: a.id })
         .execute();
 
-      if (p.talent?.email) sendAssessmentSubmitted(p.talent.email, p.talent.first_name || "there", a.title, false).catch(() => {});
       const instUser = await dbConnection.getRepository(User).findOne({ where: { id: a.institution_id } });
-      if (instUser?.email) sendAssessmentSubmissionNotice(instUser.email, fullName(p.talent), a.title, false).catch(() => {});
+      if (p.status === ParticipantStatus.GRADED) {
+        // Fully auto-graded — talent can see their result immediately.
+        if (p.talent?.email)
+          sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", a.title, p.score, p.max_score, null).catch(() => {});
+        notifyUser({
+          recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_GRADED,
+          title: "Assessment graded", body: `Your result for "${a.title}" is ready: ${p.score} / ${p.max_score}.`,
+          entityId: a.id, institutionId: a.institution_id,
+        });
+      } else {
+        if (p.talent?.email) sendAssessmentSubmitted(p.talent.email, p.talent.first_name || "there", a.title, false).catch(() => {});
+        if (instUser?.email) sendAssessmentSubmissionNotice(instUser.email, fullName(p.talent), a.title, false).catch(() => {});
+        notifyUser({
+          recipientId: a.institution_id, role: RecipientRole.INSTITUTION_ADMIN, type: NotificationType.ASSESSMENT_SUBMITTED,
+          title: "New submission to review", body: `${fullName(p.talent)} submitted "${a.title}".`,
+          entityId: a.id, actorId: p.talent_user_id, institutionId: a.institution_id,
+        });
+      }
 
-      return res.json({ success: true, message: "Submitted successfully.", data: shapeParticipant(p) });
+      return res.json({
+        success: true,
+        message: p.status === ParticipantStatus.GRADED ? "Submitted and graded." : "Submitted successfully.",
+        data: { ...shapeParticipant(p), auto_score: p.auto_score, pending_manual: p.pending_manual, auto_graded: p.status === ParticipantStatus.GRADED },
+      });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to submit", error: error.message });
     }

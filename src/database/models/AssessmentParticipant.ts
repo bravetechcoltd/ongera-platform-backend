@@ -74,8 +74,21 @@ export class AssessmentParticipant {
   @Column({ type: "text", nullable: true })
   response_text: string;
 
+  // Final total score (auto_score + manual_score) once fully graded.
   @Column({ type: "int", nullable: true })
   score: number;
+
+  // Points earned from auto-graded objective questions.
+  @Column({ type: "int", nullable: true })
+  auto_score: number;
+
+  // Points earned from manually graded subjective questions.
+  @Column({ type: "int", nullable: true })
+  manual_score: number;
+
+  // True while subjective answers still await institution grading.
+  @Column({ default: false })
+  pending_manual: boolean;
 
   @Column({ type: "int", nullable: true })
   max_score: number;

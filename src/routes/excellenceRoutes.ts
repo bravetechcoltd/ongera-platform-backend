@@ -24,6 +24,8 @@ router.post("/my-assessments/:pid/offer-response", authenticate, AssessmentContr
 // Institution side
 router.get("/assessments", authenticate, AssessmentController.myAssessments);
 router.post("/assessments", authenticate, AssessmentController.createAssessment);
+// Static sub-path must be declared before "/assessments/:id".
+router.get("/assessments/pending-grading", authenticate, AssessmentController.pendingGrading);
 router.get("/assessments/:id", authenticate, AssessmentController.getAssessment);
 router.patch("/assessments/:id", authenticate, AssessmentController.updateAssessment);
 router.delete("/assessments/:id", authenticate, AssessmentController.deleteAssessment);
@@ -31,6 +33,7 @@ router.post("/assessments/:id/invite", authenticate, AssessmentController.invite
 router.post("/assessments/:id/publish", authenticate, AssessmentController.publishAssessment);
 router.post("/assessments/:id/close", authenticate, AssessmentController.closeAssessment);
 router.patch("/assessments/:id/participants/:pid/grade", authenticate, AssessmentController.gradeParticipant);
+router.patch("/assessments/:id/participants/:pid/grade-answers", authenticate, AssessmentController.gradeAnswers);
 router.post("/assessments/:id/participants/:pid/offer", authenticate, AssessmentController.offerParticipant);
 router.post("/assessments/:id/participants/:pid/reject", authenticate, AssessmentController.rejectParticipant);
 

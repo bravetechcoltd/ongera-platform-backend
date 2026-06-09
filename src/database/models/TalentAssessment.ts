@@ -64,6 +64,19 @@ export class TalentAssessment {
   @Column({ type: "int", default: 100 })
   max_score: number;
 
+  // Optional pass threshold (percentage 0-100). Null = no pass/fail gate.
+  @Column({ type: "int", nullable: true })
+  passing_score: number;
+
+  // True when the assessment contains at least one subjective (manually graded)
+  // question, or no structured questions at all (legacy free-text brief).
+  @Column({ default: true })
+  has_subjective: boolean;
+
+  // Number of structured questions (0 = legacy free-text brief only).
+  @Column({ default: 0 })
+  question_count: number;
+
   @Column({ default: true })
   allow_files: boolean;
 

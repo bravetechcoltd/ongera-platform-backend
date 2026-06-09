@@ -5,7 +5,10 @@ import { AssessmentParticipant, ParticipantStatus } from "../database/models/Ass
 import { TalentAssessment } from "../database/models/TalentAssessment";
 import { User } from "../database/models/User";
 import { logger } from "../helpers/logger";
-import { sendAssessmentSubmitted, sendAssessmentSubmissionNotice } from "../services/emailTemplates";
+import { sendAssessmentSubmitted, sendAssessmentSubmissionNotice, sendAssessmentGraded } from "../services/emailTemplates";
+import { autoGradeParticipant } from "./assessmentGrading";
+import { notifyUser } from "./excellenceNotify";
+import { NotificationType, RecipientRole } from "../database/models/Notification";
 
 /**
  * Periodically finalises timed assessment attempts whose deadline has passed.
@@ -56,9 +59,12 @@ export class AssessmentAutoSubmitService {
 
     for (const p of due) {
       if (!p.due_at) continue;
-      p.status = ParticipantStatus.SUBMITTED;
       p.submitted_at = now;
       p.auto_submitted = true;
+
+      // Auto-grade objective answers from the last autosaved work. Fully objective
+      // attempts finalise to GRADED; anything with subjective stays SUBMITTED.
+      await autoGradeParticipant(p);
       await partRepo.save(p);
 
       try {
@@ -71,16 +77,34 @@ export class AssessmentAutoSubmitService {
       } catch (_) {}
 
       const title = p.assessment?.title || "Assessment";
-      if (p.talent?.email) {
-        sendAssessmentSubmitted(p.talent.email, p.talent.first_name || "there", title, true).catch(() => {});
-      }
-      try {
-        const inst = p.assessment ? await userRepo.findOne({ where: { id: p.assessment.institution_id } }) : null;
-        if (inst?.email) {
-          const talentName = `${p.talent?.first_name || ""} ${p.talent?.last_name || ""}`.trim() || (p.talent?.email || "A talent");
-          sendAssessmentSubmissionNotice(inst.email, talentName, title, true).catch(() => {});
+      const talentName = `${p.talent?.first_name || ""} ${p.talent?.last_name || ""}`.trim() || (p.talent?.email || "A talent");
+      if (p.status === ParticipantStatus.GRADED) {
+        if (p.talent?.email) {
+          sendAssessmentGraded(p.talent.email, p.talent.first_name || "there", title, p.score, p.max_score, null).catch(() => {});
         }
-      } catch (_) {}
+        notifyUser({
+          recipientId: p.talent_user_id, role: RecipientRole.LEARNER, type: NotificationType.ASSESSMENT_GRADED,
+          title: "Assessment graded", body: `Your result for "${title}" is ready: ${p.score} / ${p.max_score}.`,
+          entityId: p.assessment_id, institutionId: p.assessment?.institution_id,
+        });
+      } else {
+        if (p.talent?.email) {
+          sendAssessmentSubmitted(p.talent.email, p.talent.first_name || "there", title, true).catch(() => {});
+        }
+        try {
+          const inst = p.assessment ? await userRepo.findOne({ where: { id: p.assessment.institution_id } }) : null;
+          if (inst?.email) {
+            sendAssessmentSubmissionNotice(inst.email, talentName, title, true).catch(() => {});
+          }
+        } catch (_) {}
+        if (p.assessment?.institution_id) {
+          notifyUser({
+            recipientId: p.assessment.institution_id, role: RecipientRole.INSTITUTION_ADMIN, type: NotificationType.ASSESSMENT_SUBMITTED,
+            title: "New submission to review", body: `${talentName} auto-submitted "${title}" (time elapsed).`,
+            entityId: p.assessment_id, actorId: p.talent_user_id, institutionId: p.assessment.institution_id,
+          });
+        }
+      }
     }
 
     logger.info(`Auto-submitted ${due.length} expired assessment attempt(s)`);

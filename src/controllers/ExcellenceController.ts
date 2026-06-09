@@ -21,6 +21,8 @@ import { BountySubmissionFile } from "../database/models/BountySubmissionFile";
 import { BountyPayout, PayoutStatus } from "../database/models/BountyPayout";
 import { BountyActivity, BountyActivityType } from "../database/models/BountyActivity";
 import { ExcellenceBookmark } from "../database/models/ExcellenceBookmark";
+import { notifyUser } from "../services/excellenceNotify";
+import { NotificationType, NotificationEntityType, RecipientRole } from "../database/models/Notification";
 import { UploadToCloud } from "../helpers/cloud";
 
 // ---------- Helpers ----------
@@ -341,6 +343,19 @@ export class ExcellenceController {
         BountyActivityType.SUBMITTED,
         `${user.first_name} ${user.last_name} submitted a solution.`
       );
+
+      // Live-notify the posting company so their review queue updates in real time.
+      notifyUser({
+        recipientId: bounty.institution_id,
+        role: RecipientRole.INSTITUTION_ADMIN,
+        type: NotificationType.BOUNTY_SUBMISSION,
+        title: "New bounty submission",
+        body: `${user.first_name} ${user.last_name} submitted a solution to "${bounty.title}".`,
+        entityId: bounty.id,
+        entityType: NotificationEntityType.BOUNTY,
+        actorId: user.id,
+        institutionId: bounty.institution_id,
+      });
 
       return res.status(201).json({
         success: true,
@@ -715,6 +730,17 @@ export class ExcellenceController {
         submission.status = SubmissionStatus.SHORTLISTED;
         await subRepo.save(submission);
         await logBounty(bounty.id, user.id, "COMPANY", BountyActivityType.SHORTLISTED, `A submission was shortlisted.`);
+        notifyUser({
+          recipientId: submission.submitter_id,
+          role: RecipientRole.LEARNER,
+          type: NotificationType.BOUNTY_SHORTLISTED,
+          title: "You were shortlisted",
+          body: `Your solution to "${bounty.title}" has been shortlisted.`,
+          entityId: bounty.id,
+          entityType: NotificationEntityType.BOUNTY,
+          actorId: user.id,
+          institutionId: bounty.institution_id,
+        });
         return res.json({ success: true, message: "Submission shortlisted.", data: { id: submission.id, status: submission.status } });
       }
 
@@ -764,6 +790,18 @@ export class ExcellenceController {
           BountyActivityType.AWARDED,
           `Winner selected — payout of ${bounty.currency} ${net} is pending platform confirmation.`
         );
+
+        notifyUser({
+          recipientId: submission.submitter_id,
+          role: RecipientRole.LEARNER,
+          type: NotificationType.BOUNTY_RESULT,
+          title: "You won the bounty! 🎉",
+          body: `Your solution to "${bounty.title}" was selected. A payout of ${bounty.currency} ${net} is pending.`,
+          entityId: bounty.id,
+          entityType: NotificationEntityType.BOUNTY,
+          actorId: user.id,
+          institutionId: bounty.institution_id,
+        });
 
         return res.json({
           success: true,

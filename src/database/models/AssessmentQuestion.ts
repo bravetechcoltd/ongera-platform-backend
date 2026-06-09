@@ -33,7 +33,6 @@ export const isObjectiveType = (t: QuestionType) => OBJECTIVE_TYPES.includes(t);
  * subjective questions (short answer / essay) are graded manually.
  */
 @Entity("assessment_questions")
-@Index(["assessment_id"])
 export class AssessmentQuestion {
   @PrimaryGeneratedColumn("uuid")
   id: string;

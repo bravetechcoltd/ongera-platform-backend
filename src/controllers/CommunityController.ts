@@ -6,6 +6,9 @@ import dbConnection from '../database/db';
 import { UploadToCloud } from "../helpers/cloud";
 import { ResearchProject } from "../database/models/ResearchProject";
 import { CommunityPost } from "../database/models/CommunityPost";
+import { CommunityPostLike } from "../database/models/CommunityPostLike";
+import { CommunityPostComment } from "../database/models/CommunityPostComment";
+import { In } from "typeorm";
 import { sendEmail } from "../helpers/utils";
 import { ActivateDeactiveCommunityTemplate } from '../helpers/ActivateDeactiveCommunityTemplate';
 import { AccountType, User } from "../database/models/User";
@@ -513,10 +516,54 @@ static async searchCommunities(req: Request, res: Response) {
 
       const [posts, total] = await queryBuilder.getManyAndCount();
 
+      // Attach like/comment counts + whether the current viewer liked each post.
+      const postIds = posts.map((p: any) => p.id);
+      let likeCounts: Record<string, number> = {};
+      let commentCounts: Record<string, number> = {};
+      let likedByMe: Set<string> = new Set();
+      if (postIds.length > 0) {
+        const likeRepo = dbConnection.getRepository(CommunityPostLike);
+        const commentRepo = dbConnection.getRepository(CommunityPostComment);
+
+        const likeRows = await likeRepo
+          .createQueryBuilder("l")
+          .select("l.post_id", "post_id")
+          .addSelect("COUNT(*)", "count")
+          .where("l.post_id IN (:...postIds)", { postIds })
+          .groupBy("l.post_id")
+          .getRawMany();
+        likeCounts = Object.fromEntries(likeRows.map((r: any) => [r.post_id, Number(r.count)]));
+
+        const commentRows = await commentRepo
+          .createQueryBuilder("c")
+          .select("c.post_id", "post_id")
+          .addSelect("COUNT(*)", "count")
+          .where("c.post_id IN (:...postIds)", { postIds })
+          .groupBy("c.post_id")
+          .getRawMany();
+        commentCounts = Object.fromEntries(commentRows.map((r: any) => [r.post_id, Number(r.count)]));
+
+        const viewerId = req.user?.userId;
+        if (viewerId) {
+          const myLikes = await likeRepo.find({
+            where: { post_id: In(postIds), user_id: viewerId },
+            select: ["post_id"],
+          });
+          likedByMe = new Set(myLikes.map((l: any) => l.post_id));
+        }
+      }
+
+      const shapedPosts = posts.map((p: any) => ({
+        ...p,
+        like_count: likeCounts[p.id] || 0,
+        comment_count: commentCounts[p.id] || 0,
+        liked_by_me: likedByMe.has(p.id),
+      }));
+
       res.json({
         success: true,
         data: {
-          posts,
+          posts: shapedPosts,
           community: {
             id: community.id,
             name: community.name,
@@ -536,6 +583,107 @@ static async searchCommunities(req: Request, res: Response) {
         message: "Failed to fetch community posts",
         error: error.message
       });
+    }
+  }
+
+  // ── Post likes ───────────────────────────────────────────────────────────
+  // Toggle the current user's like on a post. Idempotent: liking twice removes it.
+  static async togglePostLike(req: Request, res: Response) {
+    try {
+      const userId = req.user.userId;
+      const { postId } = req.params;
+
+      const postRepo = dbConnection.getRepository(CommunityPost);
+      const likeRepo = dbConnection.getRepository(CommunityPostLike);
+
+      const post = await postRepo.findOne({ where: { id: postId } });
+      if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+      const existing = await likeRepo.findOne({ where: { post_id: postId, user_id: userId } });
+      let liked: boolean;
+      if (existing) {
+        await likeRepo.remove(existing);
+        liked = false;
+      } else {
+        await likeRepo.save(likeRepo.create({ post_id: postId, user_id: userId }));
+        liked = true;
+      }
+
+      const like_count = await likeRepo.count({ where: { post_id: postId } });
+      return res.json({ success: true, data: { liked, like_count } });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to toggle like", error: error.message });
+    }
+  }
+
+  // ── Post comments ────────────────────────────────────────────────────────
+  static async getPostComments(req: Request, res: Response) {
+    try {
+      const { postId } = req.params;
+      const commentRepo = dbConnection.getRepository(CommunityPostComment);
+      const comments = await commentRepo.find({
+        where: { post_id: postId },
+        relations: ["author", "author.profile"],
+        order: { created_at: "ASC" },
+      });
+      return res.json({ success: true, data: { comments } });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to fetch comments", error: error.message });
+    }
+  }
+
+  static async addPostComment(req: Request, res: Response) {
+    try {
+      const userId = req.user.userId;
+      const { postId } = req.params;
+      const { content } = req.body;
+
+      if (!content || !String(content).trim()) {
+        return res.status(400).json({ success: false, message: "Comment content is required" });
+      }
+
+      const postRepo = dbConnection.getRepository(CommunityPost);
+      const commentRepo = dbConnection.getRepository(CommunityPostComment);
+
+      const post = await postRepo.findOne({ where: { id: postId } });
+      if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+      const saved = await commentRepo.save(
+        commentRepo.create({ post_id: postId, author: { id: userId } as any, content: String(content).trim() })
+      );
+
+      const comment = await commentRepo.findOne({
+        where: { id: saved.id },
+        relations: ["author", "author.profile"],
+      });
+      return res.status(201).json({ success: true, data: { comment } });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to add comment", error: error.message });
+    }
+  }
+
+  static async deletePostComment(req: Request, res: Response) {
+    try {
+      const userId = req.user.userId;
+      const { commentId } = req.params;
+
+      const commentRepo = dbConnection.getRepository(CommunityPostComment);
+      const comment = await commentRepo.findOne({
+        where: { id: commentId },
+        relations: ["author", "post", "post.community", "post.community.creator"],
+      });
+      if (!comment) return res.status(404).json({ success: false, message: "Comment not found" });
+
+      const isAuthor = comment.author?.id === userId;
+      const isCommunityCreator = comment.post?.community?.creator?.id === userId;
+      if (!isAuthor && !isCommunityCreator) {
+        return res.status(403).json({ success: false, message: "Not allowed to delete this comment" });
+      }
+
+      await commentRepo.remove(comment);
+      return res.json({ success: true, message: "Comment deleted" });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: "Failed to delete comment", error: error.message });
     }
   }
 

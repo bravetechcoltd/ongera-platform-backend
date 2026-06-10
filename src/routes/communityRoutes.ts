@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { CommunityController } from "../controllers/CommunityController";
-import { authenticate, requireAdmin } from "../middlewares/authMiddleware";
+import { authenticate, requireAdmin, optionalAuthenticate } from "../middlewares/authMiddleware";
 import upload from "../helpers/multer";
 
 const router = Router();
@@ -19,7 +19,13 @@ router.get("/my-communities", authenticate, CommunityController.getUserCommuniti
 router.post("/community-posts", authenticate, CommunityController.createPost);
 
 router.post("/:community_id/posts", authenticate, upload.single("post_image"), CommunityController.createCommunityPost);
-router.get("/:community_id/posts", CommunityController.getCommunityPosts);
+router.get("/:community_id/posts", optionalAuthenticate, CommunityController.getCommunityPosts);
+
+// Community post likes & comments (share is client-side)
+router.post("/posts/:postId/like", authenticate, CommunityController.togglePostLike);
+router.get("/posts/:postId/comments", CommunityController.getPostComments);
+router.post("/posts/:postId/comments", authenticate, CommunityController.addPostComment);
+router.delete("/posts/:postId/comments/:commentId", authenticate, CommunityController.deletePostComment);
 
 router.get("/suggestions/:projectId", authenticate, CommunityController.getSuggestedCommunities);
 router.get("/:community_id/members", CommunityController.getCommunityMembers);

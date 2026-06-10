@@ -127,6 +127,10 @@ export class InstitutionResearchProject {
   @Column({ nullable: true })
   doi: string;
 
+  // Formatted academic citation reference for this work (additive).
+  @Column({ type: "text", nullable: true })
+  citation: string;
+
   @Column({ type: "date", nullable: true })
   publication_date: Date;
 

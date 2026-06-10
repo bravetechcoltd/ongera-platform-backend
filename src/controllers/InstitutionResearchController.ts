@@ -200,6 +200,7 @@ export class InstitutionResearchController {
         semester,
         keywords,
         doi,
+        citation,
         is_multi_student,
         max_students,
         collaborators,
@@ -277,6 +278,7 @@ export class InstitutionResearchController {
         semester: semester && Object.values(AcademicSemester).includes(semester) ? semester : null,
         keywords: kw,
         doi,
+        citation,
         is_multi_student:
           is_multi_student === true || is_multi_student === "true" || projectStudents.length > 1,
         max_students: Math.max(parseInt(max_students) || 1, projectStudents.length),
@@ -573,7 +575,7 @@ static async listProjects(req: Request, res: Response) {
 
       const fields = [
         "title", "abstract", "full_description", "project_type", "field_of_study",
-        "academic_year", "semester", "doi", "is_multi_student", "max_students",
+        "academic_year", "semester", "doi", "citation", "is_multi_student", "max_students",
       ];
       for (const f of fields) {
         if (req.body[f] !== undefined) project[f] = req.body[f];
@@ -1129,6 +1131,7 @@ static async publishProject(req: Request, res: Response) {
             visibility: Visibility.PUBLIC,
             field_of_study: project.field_of_study,
             doi: project.doi,
+            citation: project.citation,
             publication_date: new Date(),
             research_type:
               project.project_type === InstitutionProjectType.FUNDS

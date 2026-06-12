@@ -33,6 +33,9 @@ export enum AcademicLevel {
   UNDERGRADUATE = "Undergraduate",
   MASTERS = "Masters",
   PHD = "PhD",
+  // DISSERTATION moved to ResearchType (it's a type of research, not an academic
+  // level). Kept here for backward compatibility with existing rows but no longer
+  // offered in forms — same as DIASPORA/INSTITUTION below.
   DISSERTATION = "Dissertation",
   // RESEARCHER kept (now shown in UI as "Research"); DIASPORA/INSTITUTION retained
   // for backward compatibility with existing rows but no longer offered in forms.
@@ -50,6 +53,7 @@ export enum ProjectStatus {
 
 export enum ResearchType {
   THESIS = "Thesis",
+  DISSERTATION = "Dissertation",
   PAPER = "Paper",
   PROJECT = "Project",
   DATASET = "Dataset",

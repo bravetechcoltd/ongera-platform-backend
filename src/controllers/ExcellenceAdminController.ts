@@ -103,8 +103,26 @@ export class ExcellenceAdminController {
    */
   static async listCandidates(req: Request, res: Response) {
     try {
-      const { search = "", limit = "20" } = req.query as any;
-      const limitNum = Math.min(50, Math.max(1, parseInt(limit, 10) || 20));
+      const { search = "", limit, account_type } = req.query as any;
+
+      // Flexible limit: by default return EVERY eligible candidate (no cap).
+      // A positive `limit` honors that count; `limit=all`/0/empty => unlimited.
+      let take: number | undefined = undefined;
+      if (limit !== undefined && String(limit).trim() !== "" && String(limit).toLowerCase() !== "all") {
+        const parsed = parseInt(limit, 10);
+        if (!isNaN(parsed) && parsed > 0) take = parsed;
+      }
+
+      // Optional account_type filter (student | researcher | diaspora). Anything
+      // outside the eligible set is ignored so we never return non-members.
+      let types = MEMBER_ACCOUNT_TYPES;
+      if (account_type && String(account_type).trim()) {
+        const requested = String(account_type)
+          .split(",")
+          .map((t) => t.trim().toLowerCase())
+          .filter((t) => MEMBER_ACCOUNT_TYPES.includes(t as AccountType));
+        if (requested.length) types = requested as AccountType[];
+      }
 
       const memberRepo = dbConnection.getRepository(ExcellenceMember);
       const existing = await memberRepo.find({ select: ["user_id"] });
@@ -114,10 +132,11 @@ export class ExcellenceAdminController {
       const qb = userRepo
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.profile", "profile")
-        .where("user.account_type IN (:...types)", { types: MEMBER_ACCOUNT_TYPES })
+        .where("user.account_type IN (:...types)", { types })
         .andWhere("user.is_active = TRUE")
-        .orderBy("user.date_joined", "DESC")
-        .take(limitNum);
+        .orderBy("user.date_joined", "DESC");
+
+      if (take !== undefined) qb.take(take);
 
       if (excludeIds.length) {
         qb.andWhere("user.id NOT IN (:...excludeIds)", { excludeIds });
@@ -142,7 +161,22 @@ export class ExcellenceAdminController {
         city: u.city,
         headline: (u.profile as any)?.headline || (u.profile as any)?.title || null,
       }));
-      return res.json({ success: true, data });
+
+      // Clear, unambiguous counts so the admin UI never looks "limited".
+      const counts = data.reduce(
+        (acc, u) => {
+          acc[u.account_type] = (acc[u.account_type] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
+
+      return res.json({
+        success: true,
+        total: data.length,
+        counts,
+        data,
+      });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to load candidates", error: error.message });
     }

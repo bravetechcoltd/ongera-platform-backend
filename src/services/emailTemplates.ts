@@ -749,6 +749,94 @@ export const sendAdminNewApplicationEmail = async (
 };
 
 // ============================================
+// ADMIN NEW INSTITUTION APPLICATION NOTIFICATION
+// ============================================
+export const sendAdminNewInstitutionApplicationEmail = async (
+  adminEmail: string,
+  info: {
+    institution_name: string;
+    contact_name: string;
+    email: string;
+    phone_number?: string;
+    institution_type?: string;
+    institution_address?: string;
+    institution_website?: string;
+    institution_description?: string;
+    applied_at?: string;
+    applicationId?: string;
+  }
+): Promise<boolean> => {
+  const row = (label: string, value?: string) =>
+    value
+      ? `<tr><td style="padding:8px 12px;color:#6c757d;font-size:13px;width:38%;"><strong>${label}</strong></td><td style="padding:8px 12px;color:#1a1a1a;font-size:13px;">${value}</td></tr>`
+      : "";
+
+  const frontendBase = (
+    process.env.FRONTEND_URL || process.env.CLIENT_URL || "https://bwenge.com"
+  ).replace(/\/+$/, "");
+  const reviewUrl = `${frontendBase}/dashboard/admin/institutions`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>New Institution Application</title></head>
+<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;background:white;">
+    <div style="background:#0158B7;padding:25px 30px;text-align:center;">
+      <div style="color:white;font-size:22px;font-weight:bold;">🏛️ NEW INSTITUTION APPLICATION</div>
+    </div>
+    <div style="padding:30px;">
+      <div style="font-size:18px;color:#1a1a1a;margin-bottom:8px;font-weight:600;">Hello Admin,</div>
+      <div style="color:#4a4a4a;font-size:15px;line-height:1.6;margin-bottom:15px;">
+        <strong>${info.institution_name}</strong> has requested to join the Bwenge Institution Portal.
+        Please review the details below and approve or reject the request.
+      </div>
+      <div style="background:#E3F2FD;padding:18px;border-radius:8px;border-left:4px solid #0158B7;margin:15px 0;">
+        <table style="width:100%;border-collapse:collapse;">
+          ${row("Institution", info.institution_name)}
+          ${row("Contact person", info.contact_name)}
+          ${row("Email", info.email)}
+          ${row("Phone", info.phone_number)}
+          ${row("Type", info.institution_type)}
+          ${row("Address", info.institution_address)}
+          ${row("Website", info.institution_website)}
+          ${row("Applied at", info.applied_at)}
+        </table>
+      </div>
+      ${info.institution_description ? `
+      <div style="background:#fff;padding:18px;border-radius:8px;border:1px solid #e9ecef;margin-top:15px;">
+        <div style="color:#0158B7;font-weight:600;font-size:14px;margin-bottom:8px;">About the institution</div>
+        <div style="color:#4a4a4a;font-size:14px;line-height:1.6;white-space:pre-wrap;">${info.institution_description}</div>
+      </div>` : ""}
+      <div style="text-align:center;margin:28px 0 8px;">
+        <a href="${reviewUrl}" style="display:inline-block;background:#0158B7;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;padding:12px 28px;border-radius:8px;">
+          Review &amp; Approve / Reject
+        </a>
+      </div>
+      <div style="text-align:center;color:#6c757d;font-size:12px;">
+        Or open <span style="color:#0158B7;">/dashboard/admin/institutions</span> in your browser.
+      </div>
+    </div>
+    <div style="background:#f8f9fa;padding:18px 30px;text-align:center;border-top:2px solid #e9ecef;">
+      <div style="color:#94a3b8;font-size:12px;">© ${new Date().getFullYear()} Bwenge Admin Notification.</div>
+    </div>
+  </div>
+</body>
+</html>`;
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: adminEmail,
+      subject: `🏛️ New institution application — ${info.institution_name}`,
+      html,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// ============================================
 // INSTITUTION ACCOUNT CREATED BY ADMIN (credentials)
 // ============================================
 export const sendInstitutionCredentials = async (

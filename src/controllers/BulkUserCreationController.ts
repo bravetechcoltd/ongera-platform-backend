@@ -8,6 +8,7 @@ import { BulkUserCreation, BulkCreationStatus } from "../database/models/BulkUse
 import { InstructorStudent } from "../database/models/InstructorStudent";
 import { sendInstructorCredentials, sendStudentCredentials, buildPortalEmail } from "../services/emailTemplates";
 import { sendEmail } from "../helpers/utils";
+import { resolveInstitutionContext } from "../helpers/institutionContext";
 import * as XLSX from 'xlsx';
 
 export class BulkUserCreationController {
@@ -230,7 +231,6 @@ static async downloadTemplate(req: Request, res: Response) {
 
 static async createBulkUsers(req: Request, res: Response) {
   try {
-    const creatorId = req.user.userId;
     const { instructors, students } = req.body;
 
     if (!instructors || !Array.isArray(instructors) || instructors.length === 0) {
@@ -248,26 +248,28 @@ static async createBulkUsers(req: Request, res: Response) {
     }
 
     const userRepo = dbConnection.getRepository(User);
-    const creator = await userRepo.findOne({
-      where: { id: creatorId },
-      relations: ["profile"]
-    });
 
-    if (!creator) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    if (creator.account_type !== AccountType.INSTITUTION) {
+    // Resolve the institution the caller administers — root institution account
+    // OR a delegated institution admin. Members are linked to this institution,
+    // not to the caller's own id.
+    const ctx = await resolveInstitutionContext(req.user.userId);
+    if (!ctx.isAdmin || !ctx.institutionId) {
       return res.status(403).json({
         success: false,
-        message: "Only institutions can create bulk users"
+        message: "Institution admin access required to create bulk users."
       });
     }
 
-    const institutionName = creator.profile?.institution_name || creator.first_name;
+    const institution = await userRepo.findOne({
+      where: { id: ctx.institutionId },
+      relations: ["profile"]
+    });
+    if (!institution) {
+      return res.status(404).json({ success: false, message: "Institution not found" });
+    }
+
+    const creator = ctx.caller; // who initiated (recorded for audit)
+    const institutionName = institution.profile?.institution_name || institution.first_name;
 
     const bulkCreationRepo = dbConnection.getRepository(BulkUserCreation);
     const bulkCreation = bulkCreationRepo.create({
@@ -289,7 +291,7 @@ static async createBulkUsers(req: Request, res: Response) {
       instructors,
       students,
       institutionName,
-      creatorId
+      ctx.institutionId
     ).catch(err => console.error("Bulk creation error:", err));
 
     res.status(202).json({
@@ -317,7 +319,7 @@ static async processBulkCreation(
   instructors: any[],
   students: any[],
   institutionName: string,
-  creatorId: string
+  institutionId: string
 ) {
   const bulkCreationRepo = dbConnection.getRepository(BulkUserCreation);
   const userRepo = dbConnection.getRepository(User);
@@ -379,10 +381,10 @@ static async processBulkCreation(
 
         // === KEY: Register as institution portal member ===
         instructor.is_institution_member = true;
-        instructor.primary_institution_id = creatorId;
+        instructor.primary_institution_id = institutionId;
         const existingIds = instructor.institution_ids || [];
-        if (!existingIds.includes(creatorId)) {
-          instructor.institution_ids = [...existingIds, creatorId];
+        if (!existingIds.includes(institutionId)) {
+          instructor.institution_ids = [...existingIds, institutionId];
         }
         instructor.institution_role = InstitutionRole.INSTRUCTOR;
         if (
@@ -458,7 +460,7 @@ static async processBulkCreation(
             where: {
               instructor: { id: instructor.id },
               student: { id: student.id },
-              institution_id: creatorId
+              institution_id: institutionId
             }
           });
 
@@ -467,7 +469,7 @@ static async processBulkCreation(
             const link = instructorStudentRepo.create({
               instructor,
               student,
-              institution_id: creatorId,
+              institution_id: institutionId,
               academic_year: studentData.academic_year || null,
               semester: studentData.semester || null,
               department: studentData.department || null,
@@ -481,11 +483,11 @@ static async processBulkCreation(
           // === KEY: Register student as institution member ===
           student.is_institution_member = true;
           if (!student.primary_institution_id) {
-            student.primary_institution_id = creatorId;
+            student.primary_institution_id = institutionId;
           }
           const existingIds = student.institution_ids || [];
-          if (!existingIds.includes(creatorId)) {
-            student.institution_ids = [...existingIds, creatorId];
+          if (!existingIds.includes(institutionId)) {
+            student.institution_ids = [...existingIds, institutionId];
           }
           student.institution_role = InstitutionRole.MEMBER;
           await userRepo.save(student);

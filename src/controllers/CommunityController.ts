@@ -24,6 +24,14 @@ import { QAThread } from "../database/models/QAThread";
 
 export class CommunityController {
  
+// Returns true if the user is the community creator (root admin) or one of the
+// additional admins. Requires `creator` and `admins` to be loaded on the entity.
+static _isCommunityAdmin(community: any, userId: string): boolean {
+  if (!community || !userId) return false;
+  if (community.creator?.id === userId) return true;
+  return Array.isArray(community.admins) && community.admins.some((a: any) => a?.id === userId);
+}
+
 static async editCommunity(req: Request, res: Response) {
   try {
     const { id } = req.params;
@@ -31,16 +39,23 @@ static async editCommunity(req: Request, res: Response) {
     const { name, description, category, community_type, join_approval_required, rules } = req.body;
 
     const communityRepo = dbConnection.getRepository(Community);
-    
+
     const community = await communityRepo.findOne({
       where: { id },
-      relations: ["creator", "members"]
+      relations: ["creator", "admins", "members"]
     });
 
     if (!community) {
       return res.status(404).json({
         success: false,
         message: "Community not found"
+      });
+    }
+
+    if (!CommunityController._isCommunityAdmin(community, userId)) {
+      return res.status(403).json({
+        success: false,
+        message: "Only a community admin can edit this community"
       });
     }
 
@@ -134,7 +149,7 @@ static async canEditCommunity(req: Request, res: Response) {
     
     const community = await communityRepo.findOne({
       where: { id },
-      relations: ["creator"]
+      relations: ["creator", "admins"]
     });
 
     if (!community) {
@@ -145,13 +160,15 @@ static async canEditCommunity(req: Request, res: Response) {
       });
     }
 
-    const canEdit = community.creator.id === userId && community.is_active;
+    const isAdmin = CommunityController._isCommunityAdmin(community, userId);
+    const canEdit = isAdmin && community.is_active;
 
     res.json({
       success: true,
       data: {
         canEdit,
         isCreator: community.creator.id === userId,
+        isAdmin,
         isActive: community.is_active
       }
     });
@@ -670,13 +687,13 @@ static async searchCommunities(req: Request, res: Response) {
       const commentRepo = dbConnection.getRepository(CommunityPostComment);
       const comment = await commentRepo.findOne({
         where: { id: commentId },
-        relations: ["author", "post", "post.community", "post.community.creator"],
+        relations: ["author", "post", "post.community", "post.community.creator", "post.community.admins"],
       });
       if (!comment) return res.status(404).json({ success: false, message: "Comment not found" });
 
       const isAuthor = comment.author?.id === userId;
-      const isCommunityCreator = comment.post?.community?.creator?.id === userId;
-      if (!isAuthor && !isCommunityCreator) {
+      const isCommunityAdmin = CommunityController._isCommunityAdmin(comment.post?.community, userId);
+      if (!isAuthor && !isCommunityAdmin) {
         return res.status(403).json({ success: false, message: "Not allowed to delete this comment" });
       }
 
@@ -1053,13 +1070,13 @@ static async getCommunityById(req: Request, res: Response) {
     const communityRepo = dbConnection.getRepository(Community);
     const community = await communityRepo.findOne({
       where: { id },
-      relations: ["creator", "creator.profile", "members"],
+      relations: ["creator", "creator.profile", "members", "admins", "admins.profile"],
     });
 
     if (!community) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Community not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Community not found"
       });
     }
 
@@ -1765,7 +1782,7 @@ static async getCommunityJoinRequests(req: Request, res: Response) {
 
     const community = await communityRepo.findOne({
       where: { id: community_id },
-      relations: ["creator"]
+      relations: ["creator", "admins"]
     });
 
     if (!community) {
@@ -1775,10 +1792,10 @@ static async getCommunityJoinRequests(req: Request, res: Response) {
       });
     }
 
-    if (community.creator.id !== userId) {
+    if (!CommunityController._isCommunityAdmin(community, userId)) {
       return res.status(403).json({
         success: false,
-        message: "Only the community creator can view join requests"
+        message: "Only a community admin can view join requests"
       });
     }
 
@@ -2070,7 +2087,7 @@ static async approveJoinRequest(req: Request, res: Response) {
 
     const joinRequest = await joinRequestRepo.findOne({
       where: { id: request_id },
-      relations: ["community", "community.creator", "community.members", "user", "user.profile"]
+      relations: ["community", "community.creator", "community.admins", "community.members", "user", "user.profile"]
     });
 
     if (!joinRequest) {
@@ -2080,10 +2097,10 @@ static async approveJoinRequest(req: Request, res: Response) {
       });
     }
 
-    if (joinRequest.community.creator.id !== userId) {
+    if (!CommunityController._isCommunityAdmin(joinRequest.community, userId)) {
       return res.status(403).json({
         success: false,
-        message: "Only the community creator can approve join requests"
+        message: "Only a community admin can approve join requests"
       });
     }
 
@@ -2159,7 +2176,7 @@ static async rejectJoinRequest(req: Request, res: Response) {
 
     const joinRequest = await joinRequestRepo.findOne({
       where: { id: request_id },
-      relations: ["community", "community.creator", "user"]
+      relations: ["community", "community.creator", "community.admins", "user"]
     });
 
     if (!joinRequest) {
@@ -2169,10 +2186,10 @@ static async rejectJoinRequest(req: Request, res: Response) {
       });
     }
 
-    if (joinRequest.community.creator.id !== userId) {
+    if (!CommunityController._isCommunityAdmin(joinRequest.community, userId)) {
       return res.status(403).json({
         success: false,
-        message: "Only the community creator can reject join requests"
+        message: "Only a community admin can reject join requests"
       });
     }
 
@@ -2719,8 +2736,11 @@ static async addCommunityAdmin(req: Request, res: Response) {
       community.creator.id === userId || (community.admins || []).some((a) => a.id === userId);
     if (!isAuthorized) return res.status(403).json({ success: false, message: "Only an admin can manage admins" });
 
-    const target = await userRepo.findOne({ where: { id: user_id } });
+    const target = await userRepo.findOne({ where: { id: user_id }, relations: ["profile"] });
     if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+    // The promoted user should be a member of the community.
+    const isMember = (community.members || []).some((m) => m.id === user_id);
 
     community.admins = community.admins || [];
     if (community.creator.id === user_id || community.admins.some((a) => a.id === user_id)) {
@@ -2729,10 +2749,67 @@ static async addCommunityAdmin(req: Request, res: Response) {
     community.admins.push(target);
     await repo.save(community);
 
+    // Reload to confirm the join-table change actually persisted.
+    const reloaded = await repo.findOne({
+      where: { id },
+      relations: ["creator", "admins"],
+    });
+    const adminsList = [
+      { id: reloaded!.creator.id, is_root: true },
+      ...(reloaded!.admins || []).map((a) => ({ id: a.id, is_root: false })),
+    ];
+    const isNowAdmin = (reloaded!.admins || []).some((a) => a.id === user_id);
+
+    // Notify the promoted user (best-effort — must not fail the request).
+    try {
+      const name = target.first_name || "there";
+      await sendEmail({
+        to: target.email,
+        subject: `You're now an admin of "${community.name}" on Bwenge`,
+        html: `
+          <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;">
+            <div style="background:#0158B7;padding:20px;color:#fff;text-align:center;">
+              <h2 style="margin:0;">Bwenge Communities</h2>
+            </div>
+            <div style="padding:25px;background:#fff;border:1px solid #e5e7eb;">
+              <h3 style="color:#111827;margin-top:0;">You're now a community admin</h3>
+              <div style="color:#374151;line-height:1.6;font-size:15px;">
+                <p>Hi ${name},</p>
+                <p>You have been granted <b>administrator</b> access to the community
+                <b>${community.name}</b> on Bwenge.</p>
+                <p>As a community admin, you can now:</p>
+                <ul>
+                  <li>Approve or reject requests to join the community</li>
+                  <li>Manage resources, posts and comments</li>
+                  <li>Edit community details</li>
+                  <li>Add and manage other administrators</li>
+                </ul>
+                <p>Open the community dashboard on Bwenge to get started.</p>
+              </div>
+            </div>
+            <div style="padding:15px;background:#f9fafb;color:#6b7280;font-size:12px;text-align:center;">
+              Bwenge Platform · Communities
+            </div>
+          </div>`,
+      });
+    } catch (_) {}
+
     return res.json({
       success: true,
-      message: `${target.first_name} ${target.last_name} is now a community admin.`,
-      data: { id: target.id },
+      message: `${target.first_name} ${target.last_name} is now a community admin with full access. A notification email has been sent.`,
+      data: {
+        id: target.id,
+        first_name: target.first_name,
+        last_name: target.last_name,
+        name: `${target.first_name || ""} ${target.last_name || ""}`.trim(),
+        email: target.email,
+        community_id: community.id,
+        community_name: community.name,
+        was_member: isMember,
+        is_admin: isNowAdmin,
+        admins: adminsList,
+      },
+      email_sent_to: target.email,
     });
   } catch (error: any) {
     return res.status(500).json({ success: false, message: "Failed to add admin", error: error.message });

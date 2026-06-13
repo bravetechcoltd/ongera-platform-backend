@@ -26,6 +26,9 @@ router.get("/", ResearchProjectController.getAllProjects);
 // Get single project by ID
 router.get("/:id", ResearchProjectController.getProjectById);
 
+// Record a file download (public — counts every downloader for evaluation)
+router.post("/:id/download", ResearchProjectController.recordDownload);
+
 // Like and Comment routes
 router.post("/:id/like", authenticate, ResearchProjectController.likeProject);
 router.post("/:id/comment", authenticate, ResearchProjectController.commentOnProject);

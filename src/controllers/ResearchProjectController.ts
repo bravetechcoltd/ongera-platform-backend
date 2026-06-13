@@ -20,6 +20,40 @@ import { ProjectApproval } from "../database/models/ProjectApproval";
 
 export class ResearchProjectController {
 
+/**
+ * POST /api/projects/:id/download
+ * Records a download of a research project's file and returns the updated
+ * downloader count. Public — anyone who downloads is counted, feeding the
+ * "most downloaded" ranking and research-evaluation metrics.
+ */
+static async recordDownload(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const repo = dbConnection.getRepository(ResearchProject);
+    const project = await repo.findOne({ where: { id } });
+    if (!project) {
+      return res.status(404).json({ success: false, message: "Research project not found" });
+    }
+    project.download_count = (project.download_count || 0) + 1;
+    await repo.save(project);
+    return res.json({
+      success: true,
+      message: "Download recorded",
+      data: {
+        id: project.id,
+        download_count: project.download_count,
+        file_url: project.project_file_url || null,
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to record download",
+      error: error.message,
+    });
+  }
+}
+
 static async searchProjects(req: Request, res: Response) {
   try {
     const { 

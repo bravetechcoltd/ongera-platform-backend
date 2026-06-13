@@ -22,6 +22,8 @@ import {
   sendAccountActivatedEmail,
   sendAccountRejectedEmail,
   sendInstitutionCredentials,
+  sendApplicationReceivedEmail,
+  sendAdminNewInstitutionApplicationEmail,
 } from "../services/emailTemplates";
 
 function generateTemporaryPassword(length: number = 12): string {
@@ -295,6 +297,17 @@ export class AdminInstitutionUsersController {
       const ids = Array.isArray(target.institution_ids) ? [...target.institution_ids] : [];
       if (!ids.includes(target.id)) ids.push(target.id);
 
+      // Accounts coming from a public application are approved from PENDING and
+      // were created with an un-loginable placeholder password. On approval we
+      // issue a fresh temporary password and email the login credentials. An
+      // already-approved account being re-approved keeps its working password.
+      const wasPending = target.application_status === ApplicationStatus.PENDING;
+      let issuedPassword: string | null = null;
+      if (wasPending) {
+        issuedPassword = generateTemporaryPassword(12);
+        target.password_hash = await bcrypt.hash(issuedPassword, 10);
+      }
+
       target.is_active = true;
       target.is_verified = true;
       target.application_status = ApplicationStatus.APPROVED;
@@ -309,12 +322,27 @@ export class AdminInstitutionUsersController {
       await userRepo.save(target);
 
       try {
-        await sendAccountActivatedEmail(target.email, target.first_name, target.last_name);
+        if (issuedPassword) {
+          const institutionName =
+            (target.profile as any)?.institution_name ||
+            `${target.first_name} ${target.last_name}`.trim();
+          await sendInstitutionCredentials(
+            target.email,
+            target.first_name,
+            target.last_name,
+            issuedPassword,
+            institutionName
+          );
+        } else {
+          await sendAccountActivatedEmail(target.email, target.first_name, target.last_name);
+        }
       } catch (_) {}
 
       return res.json({
         success: true,
-        message: `Institution ${target.first_name} ${target.last_name} approved and portal access granted.`,
+        message: issuedPassword
+          ? `Institution ${target.first_name} ${target.last_name} approved. Login credentials have been emailed.`
+          : `Institution ${target.first_name} ${target.last_name} approved and portal access granted.`,
         data: await shapeInstitution(target),
       });
     } catch (error: any) {
@@ -508,6 +536,141 @@ export class AdminInstitutionUsersController {
       return res.status(500).json({
         success: false,
         message: "Failed to load stats",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * POST /api/institutions/apply   (PUBLIC — no auth)
+   * A prospective institution submits a join request. We store a PENDING
+   * Institution account with an un-loginable placeholder password (the real
+   * credentials are generated and emailed only on admin approval), notify the
+   * applicant that the request was received, and notify the admin to review it.
+   */
+  static async applyAsInstitution(req: Request, res: Response) {
+    try {
+      const {
+        institution_name,
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        institution_type,
+        institution_address,
+        institution_website,
+        institution_description,
+      } = req.body || {};
+
+      if (!institution_name || !first_name || !last_name || !email || !phone_number) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Institution name, contact person name, email and telephone are required.",
+        });
+      }
+
+      const normalizedEmail = String(email).trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Please enter a valid email address." });
+      }
+
+      const userRepo = dbConnection.getRepository(User);
+      const profileRepo = dbConnection.getRepository(UserProfile);
+
+      const exists = await userRepo.findOne({ where: { email: normalizedEmail } });
+      if (exists) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "An application or account already exists for this email. Please check your inbox, or contact support if you need help.",
+        });
+      }
+
+      // Placeholder password — random and never shared, so the account cannot be
+      // logged into until approval issues real, emailed credentials.
+      const placeholder = await bcrypt.hash(generateTemporaryPassword(16), 10);
+
+      const user = userRepo.create({
+        first_name: String(first_name).trim(),
+        last_name: String(last_name).trim(),
+        email: normalizedEmail,
+        phone_number: String(phone_number).trim(),
+        password_hash: placeholder,
+        account_type: AccountType.INSTITUTION,
+        is_active: false,
+        is_verified: false,
+        application_status: ApplicationStatus.PENDING,
+        applied_at: new Date(),
+        is_institution_member: false,
+        institution_ids: [],
+      } as Partial<User>);
+
+      const savedUser = await userRepo.save(user);
+
+      const profile = profileRepo.create({
+        user: { id: savedUser.id } as any,
+        institution_name: String(institution_name).trim(),
+        institution_type: institution_type || null,
+        institution_address: institution_address || null,
+        institution_phone: String(phone_number).trim(),
+        institution_website: institution_website || null,
+        institution_description: institution_description || null,
+      } as Partial<UserProfile>);
+      await profileRepo.save(profile);
+
+      // Notify the applicant (best-effort — must not fail the request).
+      try {
+        await sendApplicationReceivedEmail(
+          savedUser.email,
+          savedUser.first_name,
+          savedUser.last_name
+        );
+      } catch (_) {}
+
+      // Notify the admin(s). Admins are User rows with account_type = ADMIN —
+      // we email every active admin found in the system. No hard-coded address.
+      try {
+        const adminUsers = await userRepo.find({
+          where: { account_type: AccountType.ADMIN },
+        });
+        const adminEmails = new Set<string>();
+        adminUsers.forEach((a) => {
+          if (a.email && a.is_active !== false) adminEmails.add(a.email);
+        });
+
+        const payload = {
+          institution_name: String(institution_name).trim(),
+          contact_name: `${savedUser.first_name} ${savedUser.last_name}`.trim(),
+          email: savedUser.email,
+          phone_number: String(phone_number).trim(),
+          institution_type: institution_type || undefined,
+          institution_address: institution_address || undefined,
+          institution_website: institution_website || undefined,
+          institution_description: institution_description || undefined,
+          applied_at: new Date().toLocaleString(),
+          applicationId: savedUser.id,
+        };
+
+        await Promise.all(
+          Array.from(adminEmails).map((adminEmail) =>
+            sendAdminNewInstitutionApplicationEmail(adminEmail, payload)
+          )
+        );
+      } catch (_) {}
+
+      return res.status(201).json({
+        success: true,
+        message:
+          "Thank you! Your request has been submitted. Our team will review it shortly, and you'll receive an email with your login credentials once your institution is approved.",
+        data: { id: savedUser.id, email: savedUser.email },
+      });
+    } catch (error: any) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to submit institution request",
         error: error.message,
       });
     }

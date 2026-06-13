@@ -543,6 +543,8 @@ static async login(req: Request, res: Response) {
         "user.IsForWhichSystem", "user.bwenge_role",
         "user.primary_institution_id", "user.is_institution_member", 
         "user.institution_ids", "user.institution_role",
+        "user.institution_portal_role",
+        "user.is_industrial_supervisor", "user.industrial_supervisor_institutions",
         "user.is_excellence_member", "user.excellence_tier",
         "profile", "assignedStudents", "student", "assignedInstructor", "instructor"
       ])
@@ -1198,6 +1200,8 @@ static async googleLogin(req: Request, res: Response) {
         "user.IsForWhichSystem", "user.bwenge_role",
         "user.primary_institution_id", "user.is_institution_member",
         "user.institution_ids", "user.institution_role",
+        "user.institution_portal_role",
+        "user.is_industrial_supervisor", "user.industrial_supervisor_institutions",
         "user.is_excellence_member", "user.excellence_tier",
         "profile", "assignedStudents", "student", "assignedInstructor", "instructor"
       ])

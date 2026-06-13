@@ -11,6 +11,7 @@ import {
 import { InstructorStudent } from "../database/models/InstructorStudent";
 import { InstitutionResearchProject } from "../database/models/InstitutionResearchProject";
 import { sendEmail } from "../helpers/utils";
+import { resolveInstitutionContext } from "../helpers/institutionContext";
 
 function buildInviteEmail(
   institutionName: string,
@@ -70,7 +71,11 @@ function buildAcceptedDigestEmail(institutionName: string, projects: { title: st
 export class IndustrialSupervisorController {
   static async invite(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { user_id, expertise_area, organization, project_ids } = req.body;
 
       const userRepo = dbConnection.getRepository(User);
@@ -448,7 +453,11 @@ if (Array.isArray(project_ids) && project_ids.length > 0) {
 
   static async listSupervisors(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const supRepo = dbConnection.getRepository(IndustrialSupervisor);
       const projectRepo = dbConnection.getRepository(InstitutionResearchProject);
 
@@ -493,7 +502,11 @@ if (Array.isArray(project_ids) && project_ids.length > 0) {
 
   static async revokeSupervisor(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { supervisorId } = req.params;
       const supRepo = dbConnection.getRepository(IndustrialSupervisor);
       const userRepo = dbConnection.getRepository(User);
@@ -554,7 +567,11 @@ if (Array.isArray(project_ids) && project_ids.length > 0) {
 
   static async assignSupervisorToStudent(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { supervisor_id, student_id } = req.body;
 
       const supRepo = dbConnection.getRepository(IndustrialSupervisor);

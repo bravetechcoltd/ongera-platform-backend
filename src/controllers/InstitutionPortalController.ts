@@ -17,6 +17,7 @@ import {
 import { InstitutionProjectActivity, InstitutionActivityType } from "../database/models/InstitutionProjectActivity";
 import { UserProfile } from "../database/models/UserProfile";
 import { sendEmail } from "../helpers/utils";
+import { resolveInstitutionContext } from "../helpers/institutionContext";
 
 // ---------- Shared portal email template ----------
 function buildPortalEmail(title: string, body: string) {
@@ -50,7 +51,11 @@ export class InstitutionPortalController {
   
   static async getInstitutionOverview(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
 
       const userRepo = dbConnection.getRepository(User);
       const instructorStudentRepo = dbConnection.getRepository(InstructorStudent);
@@ -257,7 +262,11 @@ export class InstitutionPortalController {
 
   static async getInstitutionMembers(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { type, page = 1, limit = 20, search } = req.query;
 
       const userRepo = dbConnection.getRepository(User);
@@ -664,7 +673,11 @@ export class InstitutionPortalController {
    */
   static async addStudentToInstitutionPortal(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const {
         student_email,
         instructor_id,
@@ -798,7 +811,11 @@ export class InstitutionPortalController {
    */
   static async addInstructorToInstitutionPortal(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { instructor_email, department } = req.body;
 
       if (!instructor_email) {
@@ -928,7 +945,11 @@ export class InstitutionPortalController {
    */
   static async getInstitutionPortalStudents(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { page = 1, limit = 20, search, instructor_id, academic_year } = req.query;
 
       const instructorStudentRepo = dbConnection.getRepository(InstructorStudent);
@@ -1007,7 +1028,11 @@ export class InstitutionPortalController {
    */
   static async getInstitutionAdmins(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const userRepo = dbConnection.getRepository(User);
 
       const admins = await userRepo
@@ -1040,28 +1065,122 @@ export class InstitutionPortalController {
    */
   static async addInstitutionAdmin(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { user_id } = req.body || {};
       if (!user_id) return res.status(400).json({ success: false, message: "user_id is required" });
 
       const userRepo = dbConnection.getRepository(User);
-      const target = await userRepo.findOne({ where: { id: user_id } });
+      const target = await userRepo.findOne({ where: { id: user_id }, relations: ["profile"] });
       if (!target) return res.status(404).json({ success: false, message: "User not found" });
 
-      const belongs = Array.isArray(target.institution_ids) && target.institution_ids.includes(institutionId);
-      if (!belongs) {
+      const ids = Array.isArray(target.institution_ids) ? [...target.institution_ids] : [];
+      if (!ids.includes(institutionId)) {
         return res.status(403).json({ success: false, message: "This user is not a member of your institution" });
       }
 
+      // Snapshot the fields we are about to change, so the response can show the
+      // admin exactly what changed on the user entity.
+      const before = {
+        account_type: target.account_type,
+        institution_portal_role: target.institution_portal_role,
+        institution_role: target.institution_role,
+        is_institution_member: target.is_institution_member,
+        bwenge_role: target.bwenge_role,
+        primary_institution_id: target.primary_institution_id,
+        institution_ids: [...ids],
+      };
+
+      // Full grant: this user now behaves exactly like the institution admin and
+      // gets full access to every institution-portal feature.
       target.institution_portal_role = InstitutionPortalRole.INSTITUTION_ADMIN;
+      target.institution_role = InstitutionRole.ADMIN;
       target.is_institution_member = true;
-      if (!target.bwenge_role) target.bwenge_role = BwengeRole.INSTITUTION_ADMIN;
+      target.institution_ids = ids;
+      // Point the admin's primary institution at the one they are being made an
+      // admin of. The portal resolves a delegated admin's institution from
+      // primary_institution_id, so this must be the promoting institution —
+      // otherwise they would see a different institution's data.
+      target.primary_institution_id = institutionId;
+      // Force the platform role to institution admin so this user matches a
+      // normal institution admin in every respect.
+      target.bwenge_role = BwengeRole.INSTITUTION_ADMIN;
       await userRepo.save(target);
+
+      const after = {
+        account_type: target.account_type,
+        institution_portal_role: target.institution_portal_role,
+        institution_role: target.institution_role,
+        is_institution_member: target.is_institution_member,
+        bwenge_role: target.bwenge_role,
+        primary_institution_id: target.primary_institution_id,
+        institution_ids: target.institution_ids,
+      };
+
+      // Build a field-by-field diff of what actually changed.
+      const changes: Record<string, { from: any; to: any }> = {};
+      (Object.keys(after) as (keyof typeof after)[]).forEach((k) => {
+        const a = JSON.stringify((before as any)[k]);
+        const b = JSON.stringify((after as any)[k]);
+        if (a !== b) changes[k as string] = { from: (before as any)[k], to: (after as any)[k] };
+      });
+
+      // Resolve the institution name for the notification email.
+      const institution = await userRepo.findOne({
+        where: { id: institutionId },
+        relations: ["profile"],
+      });
+      const institutionName = institutionDisplayName(institution);
+
+      // Notify the promoted user (best-effort — must not fail the request).
+      try {
+        const name = target.first_name || "there";
+        await sendEmail({
+          to: target.email,
+          subject: `You're now an admin of ${institutionName} on Bwenge`,
+          html: buildPortalEmail(
+            `You're now an institution admin`,
+            `<p>Hi ${name},</p>
+             <p>You have been granted <b>administrator</b> access to <b>${institutionName}</b>'s Institution Research Portal on Bwenge.</p>
+             <p>As an institution admin, you can now:</p>
+             <ul>
+               <li>View the institution dashboard and all projects</li>
+               <li>Add and manage students and instructors</li>
+               <li>Bulk-upload members</li>
+               <li>Manage industrial supervisors and other administrators</li>
+             </ul>
+             <p>Sign in to your Bwenge dashboard and open the <b>Institution Research Portal</b> to get started.</p>`
+          ),
+        });
+      } catch (_) {}
+
+      const shaped = {
+        id: target.id,
+        first_name: target.first_name,
+        last_name: target.last_name,
+        name: `${target.first_name || ""} ${target.last_name || ""}`.trim(),
+        email: target.email,
+        account_type: target.account_type,
+        institution_portal_role: target.institution_portal_role,
+        institution_role: target.institution_role,
+        is_institution_member: target.is_institution_member,
+        bwenge_role: target.bwenge_role,
+        primary_institution_id: target.primary_institution_id,
+        institution_ids: target.institution_ids,
+        institution_id: institutionId,
+        institution_name: institutionName,
+        profile: target.profile || null,
+      };
 
       return res.json({
         success: true,
-        message: `${target.first_name} ${target.last_name} is now an institution admin.`,
-        data: { id: target.id },
+        message: `${target.first_name} ${target.last_name} is now an institution admin with full portal access. A notification email has been sent.`,
+        data: shaped,
+        changes,
+        email_sent_to: target.email,
       });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: "Failed to add admin", error: error.message });
@@ -1075,7 +1194,11 @@ export class InstitutionPortalController {
    */
   static async removeInstitutionAdmin(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { userId } = req.params;
       if (userId === institutionId) {
         return res.status(400).json({ success: false, message: "The root institution account cannot be demoted." });
@@ -1085,7 +1208,12 @@ export class InstitutionPortalController {
       const target = await userRepo.findOne({ where: { id: userId } });
       if (!target) return res.status(404).json({ success: false, message: "User not found" });
 
+      // Revert to a regular instructor; membership/institution links are kept.
       target.institution_portal_role = InstitutionPortalRole.INSTRUCTOR;
+      target.institution_role = InstitutionRole.INSTRUCTOR;
+      if (target.bwenge_role === BwengeRole.INSTITUTION_ADMIN) {
+        target.bwenge_role = BwengeRole.INSTRUCTOR;
+      }
       await userRepo.save(target);
 
       return res.json({ success: true, message: "Admin access revoked.", data: { id: target.id } });
@@ -1096,7 +1224,11 @@ export class InstitutionPortalController {
 
   static async getInstitutionPortalInstructors(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { page = 1, limit = 20, search } = req.query;
 
       const userRepo = dbConnection.getRepository(User);
@@ -1188,9 +1320,16 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // ── INSTITUTION ADMIN (the institution account itself) ────────────────────
-    if (user.account_type === AccountType.INSTITUTION) {
-      const institutionId = userId;
+    // ── INSTITUTION ADMIN (the institution account, or a delegated admin) ──────
+    if (
+      user.account_type === AccountType.INSTITUTION ||
+      user.institution_portal_role === InstitutionPortalRole.INSTITUTION_ADMIN
+    ) {
+      const institutionId =
+        user.account_type === AccountType.INSTITUTION
+          ? userId
+          : user.primary_institution_id ||
+            (Array.isArray(user.institution_ids) ? user.institution_ids[0] : null);
 
       const studentCountRaw = await instructorStudentRepo
         .createQueryBuilder("link")
@@ -1366,7 +1505,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
 }
   static async removeStudentFromInstitutionPortal(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { studentId } = req.params;
 
       const userRepo = dbConnection.getRepository(User);
@@ -1428,7 +1571,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
    */
   static async removeInstructorFromInstitutionPortal(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { instructorId } = req.params;
 
       const userRepo = dbConnection.getRepository(User);
@@ -1488,7 +1635,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
    */
   static async reassignStudentInstructor(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { studentId } = req.params;
       const { new_instructor_id } = req.body;
 
@@ -1556,7 +1707,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
    */
   static async getSupervisorAssignedProjects(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { supervisorId } = req.params;
 
       const supRepo = dbConnection.getRepository(IndustrialSupervisor);
@@ -1598,7 +1753,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
    */
   static async assignProjectsToSupervisor(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { supervisorId } = req.params;
       const { project_ids } = req.body || {};
 
@@ -1679,7 +1838,11 @@ static async getInstitutionPortalDashboard(req: Request, res: Response) {
    */
   static async unassignProjectFromSupervisor(req: Request, res: Response) {
     try {
-      const institutionId = req.user.userId;
+      const __ctx = await resolveInstitutionContext(req.user.userId);
+      if (!__ctx.isAdmin || !__ctx.institutionId) {
+        return res.status(403).json({ success: false, message: "Institution admin access required." });
+      }
+      const institutionId = __ctx.institutionId;
       const { supervisorId, projectId } = req.params;
 
       const supRepo = dbConnection.getRepository(IndustrialSupervisor);
